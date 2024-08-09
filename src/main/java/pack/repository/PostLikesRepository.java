@@ -1,5 +1,9 @@
 package pack.repository;
 
-public interface PostLikesRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import pack.entity.PostLikes;
+
+public interface PostLikesRepository extends JpaRepository<PostLikes, Integer>{
 
 }

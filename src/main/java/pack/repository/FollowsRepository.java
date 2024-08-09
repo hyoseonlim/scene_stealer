@@ -1,5 +1,9 @@
 package pack.repository;
 
-public interface FollowsRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import pack.entity.Follows;
+
+public interface FollowsRepository extends JpaRepository<Follows, Integer>{
 
 }

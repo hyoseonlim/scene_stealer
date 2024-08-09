@@ -1,5 +1,9 @@
 package pack.repository;
 
-public interface StylesRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import pack.entity.Styles;
+
+public interface StylesRepository extends JpaRepository<Styles, Integer>{
 
 }
