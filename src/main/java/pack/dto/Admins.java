@@ -1,5 +1,5 @@
 package pack.dto;
 
-public class Notice {
+public class Admins {
 
 }
