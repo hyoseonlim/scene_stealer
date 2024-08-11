@@ -1,5 +1,5 @@
 package pack.entity;
 
-public class PostLikes {
+public class Admins {
 
 }

@@ -2,8 +2,8 @@ package pack.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import pack.entity.Notice;
+import pack.entity.Notices;
 
-public interface NoticeRepository extends JpaRepository<Notice, Integer>{
+public interface NoticeRepository extends JpaRepository<Notices, Integer>{
 
 }

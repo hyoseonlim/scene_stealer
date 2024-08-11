@@ -2,8 +2,8 @@ package pack.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import pack.entity.ShowActors;
+import pack.entity.ShowActor;
 
-public interface ShowActorsRepository extends JpaRepository<ShowActors, Integer>{
+public interface ShowActorsRepository extends JpaRepository<ShowActor, Integer>{
 
 }

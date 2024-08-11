@@ -2,8 +2,8 @@ package pack.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import pack.entity.PostComments;
+import pack.entity.Comments;
 
-public interface PostCommentsRepository extends JpaRepository<PostComments, Integer>{
+public interface PostCommentsRepository extends JpaRepository<Comments, Integer>{
 
 }

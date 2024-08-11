@@ -2,8 +2,8 @@ package pack.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import pack.entity.PostReports;
+import pack.entity.ReportedPosts;
 
-public interface PostReportsRepository extends JpaRepository<PostReports, Integer>{
+public interface PostReportsRepository extends JpaRepository<ReportedPosts, Integer>{
 
 }
