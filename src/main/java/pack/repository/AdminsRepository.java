@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import pack.entity.Admins;
 
-public interface AdminRepository extends JpaRepository<Admins, Integer>{
+public interface AdminsRepository extends JpaRepository<Admins, Integer>{
 
 }
