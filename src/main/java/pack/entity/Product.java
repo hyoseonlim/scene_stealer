@@ -42,18 +42,20 @@ public class Product {
     @Builder.Default
     private List<OrderProduct> orderProducts = new ArrayList<>();
     
-    public static Product toEntity(ProductDto dto) {
-    	return Product.builder()
-    			.no(dto.getNo())
-    			.name(dto.getName())
-    			.price(dto.getPrice())
-    			.contents(dto.getContents())
-    			.date(dto.getDate())
-    			.category(dto.getCategory())
-    			.pic(dto.getPic())
-    			.stock(dto.getStock())
-    			.discountRate(dto.getDiscountRate())
-    			.score(dto.getScore())
+    
+    
+    public static ProductDto toDto(Product entity) {
+    	return ProductDto.builder()
+    			.no(entity.getNo())
+    			.name(entity.getName())
+    			.price(entity.getPrice())
+    			.contents(entity.getContents())
+    			.date(entity.getDate())
+    			.category(entity.getCategory())
+    			.pic(entity.getPic())
+    			.stock(entity.getStock())
+    			.discountRate(entity.getDiscountRate())
+    			.score(entity.getScore())
     			.build();
     }
 }
