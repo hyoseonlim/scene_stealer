@@ -19,9 +19,8 @@ public class ShowDto {
     private Integer no;
     private String title;
     private String pic;
-    private List<ShowActorDto> showActors; // Assuming ShowActorDto is the DTO for ShowActor
+    private List<ShowActorDto> showActors;
 
-    // Convert ShowDto to Show entity
     public Show toEntity() {
         return Show.builder()
                 .no(this.no)
@@ -29,7 +28,7 @@ public class ShowDto {
                 .pic(this.pic)
                 .showActor(this.showActors != null ? 
                 		this.showActors.stream()
-                                .map(ShowActorDto::toEntity)  // Convert each ShowActorDto to ShowActor
+                                .map(ShowActorDto::toEntity)
                                 .collect(Collectors.toList()) : null)
                 .build();
     }

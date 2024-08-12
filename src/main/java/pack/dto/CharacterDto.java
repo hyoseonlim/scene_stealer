@@ -23,22 +23,21 @@ public class CharacterDto {
     private String name;
     private Integer likesCount;
     private String pic;
-    private ActorDto actor; // Assuming ActorDto is the DTO for Actor
-    private ShowDto show;   // Assuming ShowDto is the DTO for Show
-    private List<CharacterLikeDto> characterLikes; // Assuming CharacterLikeDto is the DTO for CharacterLike
+    private ActorDto actor;
+    private ShowDto show;
+    private List<CharacterLikeDto> characterLikes;
 
-    // Convert CharacterDto to Character entity
     public Character toEntity() {
         return Character.builder()
                 .no(this.no)
                 .name(this.name)
                 .likesCount(this.likesCount)
                 .pic(this.pic)
-                .actor(this.actor != null ? this.actor.toEntity() : null) // Ensure actor is not null before calling toEntity
-                .show(this.show != null ? this.show.toEntity() : null) // Ensure show is not null before calling toEntity
+                .actor(this.actor != null ? this.actor.toEntity() : null)
+                .show(this.show != null ? this.show.toEntity() : null)
                 .characterLikes(this.characterLikes != null ?
                     this.characterLikes.stream()
-                                        .map(CharacterLikeDto::toEntity) // Convert each CharacterLikeDto to CharacterLike
+                                        .map(CharacterLikeDto::toEntity)
                                         .collect(Collectors.toList()) : null)
                 .build();
     }
