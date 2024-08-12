@@ -11,15 +11,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import pack.dto.PostLikeDto;
+import pack.dto.ReportedPostsDto;
 
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "post_likes")
-public class PostLike {
+@Table(name = "reported_posts")
+public class ReportedPost {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer no;
@@ -31,11 +31,14 @@ public class PostLike {
     @ManyToOne
     @JoinColumn(name = "user_no")
     private User user;
-    public static PostLikeDto toDto(PostLike entity) {
-    	return PostLikeDto.builder()
-    			 .no(entity.getNo())
-				  .post(entity.getPost())
-				  .user(entity.getUser())
-				  .build();
+
+    private String category;
+    public static ReportedPostsDto toDto(ReportedPost entity) {
+    	return ReportedPostsDto.builder()
+    			.no(entity.getNo())
+    			.post(entity.getPost())
+    			.user(entity.getUser())
+    			.category(entity.getCategory())
+    			.build();
     }
 }

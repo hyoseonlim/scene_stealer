@@ -11,31 +11,34 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import pack.dto.PostLikeDto;
+import pack.dto.FollowDto;
+import pack.dto.UserDto;
 
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "post_likes")
-public class PostLike {
+@Table(name = "follows")
+public class Follow {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer no;
 
     @ManyToOne
-    @JoinColumn(name = "post_no")
-    private Post post;
+    @JoinColumn(name = "followee_no")
+    private Integer followee;
 
     @ManyToOne
-    @JoinColumn(name = "user_no")
-    private User user;
-    public static PostLikeDto toDto(PostLike entity) {
-    	return PostLikeDto.builder()
-    			 .no(entity.getNo())
-				  .post(entity.getPost())
-				  .user(entity.getUser())
-				  .build();
+    @JoinColumn(name = "follower_no")
+    private Integer follower;
+
+    public static Follow toEntity(Follow dto) {
+    	return Follow.builder()
+    			.no(dto.getNo())
+    			.followee(dto.getFollowee())
+    			.follower(dto.getFollower())
+    			.build();
     }
+    
 }

@@ -1,5 +1,6 @@
 package pack.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,15 +12,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import pack.dto.PostLikeDto;
+import pack.dto.CommentDto;
 
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "post_likes")
-public class PostLike {
+@Table(name = "comments")
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer no;
@@ -31,11 +32,24 @@ public class PostLike {
     @ManyToOne
     @JoinColumn(name = "user_no")
     private User user;
-    public static PostLikeDto toDto(PostLike entity) {
-    	return PostLikeDto.builder()
-    			 .no(entity.getNo())
-				  .post(entity.getPost())
-				  .user(entity.getUser())
-				  .build();
+
+    @ManyToOne
+    @JoinColumn(name = "parent_comment_no")
+    private Comment parentComment;
+
+    private String content;
+
+    @Column(name = "date")
+    private java.util.Date date;
+    
+    public static CommentDto toDto(Comment entity) {
+    	return CommentDto.builder()
+    			.no(entity.getNo())
+    			.post(entity.getPost())
+    			.user(entity.getUser())
+    			.parentComment(entity.getParentComment())
+    			.content(entity.getContent())
+    			.date(entity.getDate())
+    			.build();
     }
 }
