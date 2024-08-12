@@ -3,17 +3,18 @@ package pack.dto;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pack.entity.Alerts;
-import pack.entity.CharacterLikes;
-import pack.entity.Comments;
+import pack.entity.Alert;
+import pack.entity.CharacterLike;
+import pack.entity.Comment;
 import pack.entity.Coupon;
-import pack.entity.Posts;
-import pack.entity.Reviews;
+import pack.entity.Post;
+import pack.entity.Review;
 import pack.entity.User;
 
 @Getter
@@ -37,17 +38,17 @@ public class UserDto {
 
     private String pic;  // URL or file path
 
-    private List<Posts> posts = new ArrayList<>();
+    private List<Post> posts = new ArrayList<>();
 
-    private List<Comments> comments = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
 
-    private List<Reviews> reviews = new ArrayList<>();
+    private List<Review> reviews = new ArrayList<>();
 
     private List<Coupon> coupons = new ArrayList<>();
 
-    private List<Alerts> alerts = new ArrayList<>();
+    private List<Alert> alerts = new ArrayList<>();
 
-    private List<CharacterLikes> characterLikes = new ArrayList<>();
+    private List<CharacterLike> characterLikes = new ArrayList<>();
     
     public static User toEntity(UserDto dto) {
     	return User.builder()

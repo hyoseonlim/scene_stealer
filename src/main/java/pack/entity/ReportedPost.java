@@ -11,7 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import pack.dto.ReportedPostsDto;
+import pack.dto.ReportedPostDto;
 
 @Getter
 @Builder
@@ -33,8 +33,8 @@ public class ReportedPost {
     private User user;
 
     private String category;
-    public static ReportedPostsDto toDto(ReportedPost entity) {
-    	return ReportedPostsDto.builder()
+    public static ReportedPostDto toDto(ReportedPost entity) {
+    	return ReportedPostDto.builder()
     			.no(entity.getNo())
     			.post(entity.getPost())
     			.user(entity.getUser())

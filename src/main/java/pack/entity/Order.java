@@ -1,5 +1,5 @@
 package pack.entity;
-import java.util.List;
+import java.util.*;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

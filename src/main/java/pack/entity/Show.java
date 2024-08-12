@@ -1,6 +1,6 @@
 package pack.entity;
 
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import jakarta.persistence.Column;

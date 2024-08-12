@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pack.entity.OrderProduct;
 import pack.entity.Product;
-import pack.entity.Reviews;
+import pack.entity.Review;
 
 @Getter
 @Setter
@@ -34,7 +34,7 @@ public class ProductDto {
 	private Integer discountRate;
 	private java.math.BigDecimal score;
 
-	private List<Reviews> reviews = new ArrayList<>();
+	private List<Review> reviews = new ArrayList<>();
 
 	private List<OrderProduct> orderProducts = new ArrayList<>();
 	

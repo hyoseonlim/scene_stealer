@@ -11,8 +11,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import pack.dto.FollowDto;
-import pack.dto.UserDto;
 
 @Getter
 @Builder
@@ -27,11 +25,11 @@ public class Follow {
 
     @ManyToOne
     @JoinColumn(name = "followee_no")
-    private Integer followee;
+    private User followee;
 
     @ManyToOne
     @JoinColumn(name = "follower_no")
-    private Integer follower;
+    private User follower;
 
     public static Follow toEntity(Follow dto) {
     	return Follow.builder()

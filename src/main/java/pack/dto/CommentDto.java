@@ -13,7 +13,6 @@ import pack.entity.User;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
 public class CommentDto {
 	 private Integer no;
 	 private Post post;

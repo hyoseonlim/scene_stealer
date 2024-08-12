@@ -2,8 +2,8 @@ package pack.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import pack.entity.Reviews;
+import pack.entity.Review;
 
-public interface ReviewsRepository extends JpaRepository<Reviews, Integer>{
+public interface ReviewsRepository extends JpaRepository<Review, Integer>{
 
 }

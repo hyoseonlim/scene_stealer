@@ -36,7 +36,7 @@ public class Product {
 
     @OneToMany(mappedBy = "product")
     @Builder.Default
-    private List<Reviews> reviews = new ArrayList<>();
+    private List<Review> reviews = new ArrayList<>();
 
     @OneToMany(mappedBy = "product")
     @Builder.Default

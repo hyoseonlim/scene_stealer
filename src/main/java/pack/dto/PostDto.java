@@ -27,7 +27,6 @@ import pack.entity.User;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
 public class PostDto {
 	
 	    private Integer no;

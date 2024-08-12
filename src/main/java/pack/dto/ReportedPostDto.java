@@ -13,13 +13,12 @@ import pack.entity.User;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-public class ReportedPostsDto {
+public class ReportedPostDto {
 	 private Integer no;
 	 private Post post;
 	 private User user;
 	 private String category;
-	 public static ReportedPost toEntity(ReportedPostsDto dto) {
+	 public static ReportedPost toEntity(ReportedPostDto dto) {
 		 return ReportedPost.builder()
 				 .no(dto.getNo())
 	    			.post(dto.getPost())
