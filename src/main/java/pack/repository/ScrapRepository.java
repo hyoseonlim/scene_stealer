@@ -2,8 +2,8 @@ package pack.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import pack.entity.Scrap;
+import pack.entity.CharacterLikes;
 
-public interface ScrapRepository extends JpaRepository<Scrap, Integer>{
+public interface ScrapRepository extends JpaRepository<CharacterLikes, Integer>{
 
 }

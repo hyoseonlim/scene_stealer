@@ -2,8 +2,8 @@ package pack.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import pack.entity.Admins;
+import pack.entity.Admin;
 
-public interface AdminsRepository extends JpaRepository<Admins, Integer>{
+public interface AdminsRepository extends JpaRepository<Admin, Integer>{
 
 }
