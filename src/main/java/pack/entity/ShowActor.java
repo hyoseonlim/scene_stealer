@@ -14,7 +14,7 @@ public class ShowActor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer no;
-
+    
     @ManyToOne
     @JoinColumn(name = "show_no")
     private Show show;
