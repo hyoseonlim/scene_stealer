@@ -1,5 +1,4 @@
 package pack.entity;
-
 import java.util.*;
 
 import jakarta.persistence.Column;
@@ -15,37 +14,43 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import pack.dto.CharacterLikeDto;
-import pack.dto.StyleDto;
+import pack.dto.OrderDto;
 
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "styles")
-public class Style {
+@Table(name = "orders")
+public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer no;
 
-    @Column(name = "pic")
-    private String pic;  // URL or file path
-
     @ManyToOne
-    @JoinColumn(name = "character_no")
-    private Character character;
+    @JoinColumn(name = "user_no")
+    private User user;
 
-    @OneToMany(mappedBy = "style")
+    private String state;
+
+    @Column(name = "date")
+    private java.util.Date date;
+
+    private Integer price;
+
+    @OneToMany(mappedBy = "order")
     @Builder.Default
-    private List<Item> item = new ArrayList<>();
-    
-    public static StyleDto toDto(Style entity) {
-    	return StyleDto.builder()
-    			.no(entity.getNo())
-    			.pic(entity.getPic())
-    			.character(entity.getCharacter())
-    			.item(entity.getItem())
-    			.build();
-    }
+    private List<OrderProduct> orderProducts = new ArrayList<>();
+
+
+		public static OrderDto toDto (Order entity) {
+	    	return OrderDto.builder()
+	    			.no(entity.getNo())
+	    			.user(entity.getUser())
+	    			.state(entity.getState())
+	    			.date(entity.getDate())
+	    			.price(entity.getPrice())
+	    			.orderProducts(entity.getOrderProducts())
+	    			.build();
+	    }
 }

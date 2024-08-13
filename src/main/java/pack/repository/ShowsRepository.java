@@ -2,8 +2,8 @@ package pack.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import pack.entity.Shows;
+import pack.entity.Show;
 
-public interface ShowsRepository extends JpaRepository<Shows, Integer>{
+public interface ShowsRepository extends JpaRepository<Show, Integer>{
 
 }

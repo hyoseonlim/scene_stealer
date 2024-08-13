@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pack.entity.Character;
 import pack.entity.CharacterLike;
+import pack.entity.Item;
 import pack.entity.Style;
 import pack.entity.User;
 

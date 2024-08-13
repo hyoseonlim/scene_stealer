@@ -34,15 +34,15 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     @Builder.Default
-    private List<Posts> posts = new ArrayList<>();
+    private List<Post> posts = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
     @Builder.Default
-    private List<Comments> comments = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
     @Builder.Default
-    private List<Reviews> reviews = new ArrayList<>();
+    private List<Review> reviews = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
     @Builder.Default
@@ -50,11 +50,11 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     @Builder.Default
-    private List<Alerts> alerts = new ArrayList<>();
+    private List<Alert> alerts = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
     @Builder.Default
-    private List<CharacterLikes> characterLikes = new ArrayList<>();
+    private List<CharacterLike> characterLikes = new ArrayList<>();
     
     public static UserDto toDto (User entity) {
     	return UserDto.builder()

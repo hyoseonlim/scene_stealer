@@ -1,5 +1,6 @@
 package pack.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,32 +12,36 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import pack.dto.ItemDto;
 
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "follows")
-public class Follow {
+@Table(name = "items")
+public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer no;
 
-    @ManyToOne
-    @JoinColumn(name = "followee_no")
-    private User followee;
+    @Column(name = "pic")
+    private String pic;  // URL or file path
 
     @ManyToOne
-    @JoinColumn(name = "follower_no")
-    private User follower;
+    @JoinColumn(name = "style_no")
+    private Style style;
 
-    public static Follow toEntity(Follow dto) {
-    	return Follow.builder()
-    			.no(dto.getNo())
-    			.followee(dto.getFollowee())
-    			.follower(dto.getFollower())
+    @ManyToOne
+    @JoinColumn(name = "product_no")
+    private Product product;
+    
+    public static ItemDto toDto (Item entity) {
+    	return ItemDto.builder()
+    			.no(entity.getNo())
+    			.pic(entity.getPic())
+    			.style(entity.getStyle())
+    			.product(entity.getProduct())
     			.build();
     }
-    
 }

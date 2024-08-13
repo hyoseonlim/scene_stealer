@@ -2,8 +2,8 @@ package pack.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import pack.entity.Posts;
+import pack.entity.Post;
 
-public interface PostsRepository extends JpaRepository<Posts, Integer>{
+public interface PostsRepository extends JpaRepository<Post, Integer>{
 
 }

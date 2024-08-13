@@ -1,5 +1,6 @@
 package pack.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,34 +12,43 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import pack.dto.ReportedPostDto;
+import pack.dto.AdminDto;
+import pack.dto.ReviewDto;
 
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "reported_posts")
-public class ReportedPost {
+@Table(name = "reviews")
+public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer no;
 
     @ManyToOne
-    @JoinColumn(name = "post_no")
-    private Post post;
-
-    @ManyToOne
     @JoinColumn(name = "user_no")
     private User user;
 
-    private String category;
-    public static ReportedPostDto toDto(ReportedPost entity) {
-    	return ReportedPostDto.builder()
+    @ManyToOne
+    @JoinColumn(name = "product_no")
+    private Product product;
+
+    private String contents;
+
+    @Column(name = "pic")
+    private String pic;  // URL or file path
+
+    private Integer score;
+    
+    public static ReviewDto toDto (Review entity) {
+    	return ReviewDto.builder()
     			.no(entity.getNo())
-    			.post(entity.getPost())
     			.user(entity.getUser())
-    			.category(entity.getCategory())
+    			.product(entity.getProduct())
+    			.contents(entity.getContents())
+    			.pic(entity.getPic())
+    			.score(entity.getScore())
     			.build();
     }
 }

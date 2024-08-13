@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pack.entity.OrderProduct;
 import pack.entity.Product;
-import pack.entity.Reviews;
+import pack.entity.Review;
 
 @Getter
 @Setter
@@ -34,23 +34,23 @@ public class ProductDto {
 	private Integer discountRate;
 	private java.math.BigDecimal score;
 
-	private List<Reviews> reviews = new ArrayList<>();
+	private List<Review> reviews = new ArrayList<>();
 
 	private List<OrderProduct> orderProducts = new ArrayList<>();
 	
-	 public static ProductDto toDto(Product entity) {
-	    	return ProductDto.builder()
-	    			.no(entity.getNo())
-	    			.name(entity.getName())
-	    			.price(entity.getPrice())
-	    			.contents(entity.getContents())
-	    			.date(entity.getDate())
-	    			.category(entity.getCategory())
-	    			.pic(entity.getPic())
-	    			.stock(entity.getStock())
-	    			.discountRate(entity.getDiscountRate())
-	    			.score(entity.getScore())
-	    			.build();
-	    }
+	public static Product toEntity(ProductDto dto) {
+    	return Product.builder()
+    			.no(dto.getNo())
+    			.name(dto.getName())
+    			.price(dto.getPrice())
+    			.contents(dto.getContents())
+    			.date(dto.getDate())
+    			.category(dto.getCategory())
+    			.pic(dto.getPic())
+    			.stock(dto.getStock())
+    			.discountRate(dto.getDiscountRate())
+    			.score(dto.getScore())
+    			.build();
+    }
 
 }

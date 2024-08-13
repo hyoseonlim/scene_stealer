@@ -13,7 +13,6 @@ import pack.entity.User;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
 public class PostLikeDto {
 	 private Integer no;
 	 private Post post;
