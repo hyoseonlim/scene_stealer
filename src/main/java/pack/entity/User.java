@@ -1,6 +1,10 @@
 package pack.entity;
 
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.ArrayList;
 
 import jakarta.persistence.*;
@@ -13,6 +17,7 @@ import pack.dto.UserDto;
 @AllArgsConstructor
 @Entity
 @Table(name = "users")
+@JsonIgnoreProperties({"comments", "reviews", "coupons", "alerts", "characterLikes", "posts"})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

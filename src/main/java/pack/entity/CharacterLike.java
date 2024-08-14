@@ -18,7 +18,7 @@ import pack.dto.CharacterLikeDto;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "character_likes")
+@Table(name = "character_like")
 public class CharacterLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

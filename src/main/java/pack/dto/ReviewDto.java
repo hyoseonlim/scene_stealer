@@ -18,8 +18,9 @@ public class ReviewDto {
 	 private Integer no;
 	 
 	 private User user;
-	 private Product product;
 
+	 private Product product;
+	 
 	 private String contents;
 	    
 	 private String pic;  // URL or file path
