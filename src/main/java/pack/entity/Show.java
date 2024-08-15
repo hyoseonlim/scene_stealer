@@ -46,8 +46,10 @@ public class Show {
                 .no(entity.getNo())
                 .title(entity.getTitle())
                 .pic(entity.getPic())
-                .showActors(entity.getShowActor().stream().map(ShowActor::toDto).collect(Collectors.toList()))
-                .characters(entity.getCharacters().stream().map(Character::toDto).collect(Collectors.toList()))
+                .characterNo(entity.getCharacters().stream().map(Character::getNo).collect(Collectors.toList()))
+                .showActorsNo(entity.getShowActor().stream().map(s -> s.getActor().getNo()).collect(Collectors.toList()))
+//                .showActors(entity.getShowActor().stream().map(ShowActor::toDto).collect(Collectors.toList()))
+//                .characters(entity.getCharacters().stream().map(Character::toDto).collect(Collectors.toList()))
                 .build();
     }
 }

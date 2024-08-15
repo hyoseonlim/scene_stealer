@@ -17,16 +17,17 @@ public class CommentDto {
 	private Integer no;
 	private PostDto post;
 	private UserDto user;
-	private CommentDto parentComment;
+//	private CommentDto parentComment;
 	private java.util.Date date;
 	private String content;
+	private Integer postNo, userNo, parentCommentNo;
 
 	public static Comment toEntity(CommentDto dto) {
 		return Comment.builder()
 				.no(dto.getNo())
 				.post(PostDto.toEntity(dto.getPost()))
 				.user(UserDto.toEntity(dto.getUser()))
-				.parentComment(CommentDto.toEntity(dto.getParentComment()))
+				.parentCommentNo(dto.getParentCommentNo())
 				.content(dto.getContent())
 				.date(dto.getDate())
 				.build();

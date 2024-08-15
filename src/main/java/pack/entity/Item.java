@@ -40,8 +40,10 @@ public class Item {
     	return ItemDto.builder()
     			.no(entity.getNo())
     			.pic(entity.getPic())
-    			.style(Style.toDto(entity.getStyle()))
-    			.product(Product.toDto(entity.getProduct()))
+    			.styleNo(entity.getStyle().getNo())
+//    			.style(Style.toDto(entity.getStyle()))
+    			.productNo(entity.getProduct().getNo())
+//    			.product(Product.toDto(entity.getProduct()))
     			.build();
     }
 }

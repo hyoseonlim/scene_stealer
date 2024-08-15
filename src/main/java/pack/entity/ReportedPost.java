@@ -37,8 +37,11 @@ public class ReportedPost {
     public static ReportedPostDto toDto(ReportedPost entity) {
     	return ReportedPostDto.builder()
     			.no(entity.getNo())
-    			.post(Post.toDto(entity.getPost()))
-    			.user(User.toDto(entity.getUser()))
+    			.postNo(entity.getPost().getNo())
+    			.postWriteUserNo(entity.getPost().getUser().getNo())
+    			.userNo(entity.getUser().getNo())
+//    			.post(Post.toDto(entity.getPost()))
+//    			.user(User.toDto(entity.getUser()))
     			.category(entity.getCategory())
     			.build();
     }

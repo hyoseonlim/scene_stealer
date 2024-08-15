@@ -47,8 +47,10 @@ public class Review {
     public static ReviewDto toDto (Review entity) {
     	return ReviewDto.builder()
     			.no(entity.getNo())
-    			.user(User.toDto(entity.getUser()))
-    			.product(Product.toDto(entity.getProduct()))
+    			.userNo(entity.getUser().getNo())
+    			.productNo(entity.getProduct().getNo())
+//    			.user(User.toDto(entity.getUser()))
+//    			.product(Product.toDto(entity.getProduct()))
     			.contents(entity.getContents())
     			.pic(entity.getPic())
     			.score(entity.getScore())

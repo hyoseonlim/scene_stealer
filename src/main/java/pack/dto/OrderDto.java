@@ -1,6 +1,5 @@
 package pack.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,10 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pack.entity.Coupon;
 import pack.entity.Order;
-import pack.entity.OrderProduct;
-import pack.entity.User;
 
 @Getter
 @Setter
@@ -28,6 +24,9 @@ public class OrderDto {
 	  private java.util.Date date;
 
 	  private Integer price;
+	  
+	  private Integer userNo;
+	  
 	  
 	  private List<OrderProductDto> orderProducts;
 

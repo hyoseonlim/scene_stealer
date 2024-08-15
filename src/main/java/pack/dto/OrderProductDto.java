@@ -5,9 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pack.entity.Order;
 import pack.entity.OrderProduct;
-import pack.entity.Product;
 
 
 @Getter
@@ -24,6 +22,8 @@ public class OrderProductDto {
 
 	    private Integer price;
 	    private Integer quantity;
+	    
+	    private Integer orderNo, productNo;
 	    
 		public static OrderProduct toEntity (OrderProductDto dto) {
 	    	return OrderProduct.builder()

@@ -5,9 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pack.entity.Product;
 import pack.entity.Review;
-import pack.entity.User;
 
 @Getter
 @Setter
@@ -26,6 +24,8 @@ public class ReviewDto {
 	 private String pic;  // URL or file path
 
 	 private Integer score;
+	 
+	 private Integer userNo, productNo;
 	 
 	 public static Review toEntity(ReviewDto dto) {
 			return Review.builder()

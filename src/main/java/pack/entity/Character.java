@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 import jakarta.persistence.*;
 import lombok.*;
 import pack.dto.CharacterDto;
-import pack.dto.CharacterLikeDto;
 
 @Getter
 @Builder
@@ -48,10 +48,14 @@ public class Character {
                 .name(entity.getName())
                 .likesCount(entity.getLikesCount())
                 .pic(entity.getPic())
-                .actor(Actor.toDto(entity.getActor()))
-                .show(Show.toDto(entity.getShow()))
-                .characterLikes(entity.getCharacterLikes().stream().map(CharacterLike::toDto).collect(Collectors.toList()))
-                .styles(entity.getStyles().stream().map(Style::toDto).collect(Collectors.toList()))
+                .actorNo(entity.getActor().getNo())
+                .showNo(entity.getShow().getNo())
+                .characterLikeNo(entity.getCharacterLikes().stream().map(characterLike -> characterLike.getUser().getNo()).collect(Collectors.toList()))
+                .styleNo(entity.getStyles().stream().map(Style::getNo).collect(Collectors.toList()))
+//                .actor(Actor.toDto(entity.getActor()))
+//                .show(Show.toDto(entity.getShow()))
+//                .characterLikes(entity.getCharacterLikes().stream().map(CharacterLike::toDto).collect(Collectors.toList()))
+//                .styles(entity.getStyles().stream().map(Style::toDto).collect(Collectors.toList()))
                 .build();
     }
 }

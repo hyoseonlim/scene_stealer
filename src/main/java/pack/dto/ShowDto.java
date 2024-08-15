@@ -5,9 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pack.entity.Character;
 import pack.entity.Show;
-import pack.entity.ShowActor;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,6 +21,8 @@ public class ShowDto {
 	private String pic;
 	private List<ShowActorDto> showActors;
 	private List<CharacterDto> characters;
+	
+	private List<Integer> showActorsNo, characterNo;
 
 	public static Show toEntity(ShowDto dto) {
         return Show.builder()

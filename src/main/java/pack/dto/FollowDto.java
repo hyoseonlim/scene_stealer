@@ -1,5 +1,7 @@
 package pack.dto;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,6 +17,10 @@ public class FollowDto {
     private Integer no;
     private UserDto followee;
     private UserDto follower;
+    
+    private List<Integer> followees;
+    private List<Integer> followers;
+    
 
    public static Follow toEntity(FollowDto dto) {
 	   return Follow.builder()

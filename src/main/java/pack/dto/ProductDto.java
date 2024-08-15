@@ -9,9 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pack.entity.OrderProduct;
 import pack.entity.Product;
-import pack.entity.Review;
 
 @Getter
 @Setter
@@ -28,12 +26,15 @@ public class ProductDto {
 	private java.util.Date date;
 
 	private String category;
+	private PostDto post;
 
 	private String pic; // URL or file path
 
 	private Integer stock;
 	private Integer discountRate;
 	private java.math.BigDecimal score;
+	
+	private List<Integer> reviewNoList, orderProductNoList;
 
 	private List<ReviewDto> reviews = new ArrayList<>();
 

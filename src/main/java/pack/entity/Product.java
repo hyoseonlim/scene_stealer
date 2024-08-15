@@ -19,8 +19,8 @@ import pack.dto.ReviewDto;
 @AllArgsConstructor
 @Entity
 @Table(name = "products")
-@JsonIgnoreProperties({"orderProducts", "reviews"})
 public class Product {
+	
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer no;
@@ -49,7 +49,8 @@ public class Product {
     @Builder.Default
     private List<OrderProduct> orderProducts = new ArrayList<>();
     
-    
+    @OneToMany(mappedBy = "product")
+    private List<Post> post;
     
     public static ProductDto toDto(Product entity) {
     	return ProductDto.builder()
@@ -63,9 +64,10 @@ public class Product {
     			.stock(entity.getStock())
     			.discountRate(entity.getDiscountRate())
     			.score(entity.getScore())
-    			.reviews(entity.getReviews().stream().map(Review::toDto).collect(Collectors.toList()))
-    			.orderProducts(entity.getOrderProducts().stream().map(OrderProduct::toDto).collect(Collectors.toList()))
+    			.reviewNoList(entity.getReviews().stream().map(Review::getNo).collect(Collectors.toList()))
+    			.orderProductNoList(entity.getOrderProducts().stream().map(OrderProduct::getNo).collect(Collectors.toList()))
+//    			.reviews(entity.getReviews().stream().map(Review::toDto).collect(Collectors.toList()))
+//    			.orderProducts(entity.getOrderProducts().stream().map(OrderProduct::toDto).collect(Collectors.toList()))
     			.build();
     }
 }
-

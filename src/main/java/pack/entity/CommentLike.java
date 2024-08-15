@@ -9,7 +9,7 @@ import pack.dto.CommentLikeDto;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "comment_likes")
+@Table(name = "comment_like")
 public class CommentLike {
 	 	@Id
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)

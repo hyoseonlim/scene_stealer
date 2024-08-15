@@ -4,9 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import pack.entity.Post;
 import pack.entity.PostLike;
-import pack.entity.User;
 
 @Getter
 @Builder

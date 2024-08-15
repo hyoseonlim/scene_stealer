@@ -1,5 +1,7 @@
 package pack.dto;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,6 +22,8 @@ public class AlertDto {
 	private String category; 
 	private String content;
 	private java.util.Date date;
+	
+	private Integer userNo;
 
 	private Boolean isRead;
 	

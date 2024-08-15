@@ -21,6 +21,7 @@ public class ActorDto {
     private String name;
     private String pic;
     private List<CharacterDto> characters;
+    private List<Integer> characterNo;
 
     public static Actor toEntity(ActorDto dto) {
         return Actor.builder()

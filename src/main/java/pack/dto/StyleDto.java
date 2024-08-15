@@ -8,11 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pack.entity.Character;
-import pack.entity.CharacterLike;
-import pack.entity.Item;
 import pack.entity.Style;
-import pack.entity.User;
 
 @Getter
 @Setter
@@ -24,6 +20,9 @@ public class StyleDto {
 	private String pic;
 	private CharacterDto character;
 	private List<ItemDto> item;
+	
+	private Integer characterNo;
+	private List<Integer> itemNoList;
 	
 	public static Style toEntity (StyleDto dto) {
 		return Style.builder()

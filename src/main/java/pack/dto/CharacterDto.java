@@ -1,5 +1,6 @@
 package pack.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,6 +29,10 @@ public class CharacterDto {
     private ShowDto show;
     private List<CharacterLikeDto> characterLikes;
     private List<StyleDto> styles;
+    
+    private Integer actorNo, showNo;
+    private List<Integer> characterLikeNo;
+    private List<Integer> styleNo;
 
     public static Character toEntity(CharacterDto dto) {
         return Character.builder()

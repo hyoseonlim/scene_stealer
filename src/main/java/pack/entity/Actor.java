@@ -2,7 +2,6 @@ package pack.entity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -32,7 +31,8 @@ public class Actor {
                 .no(entity.getNo())
                 .name(entity.getName())
                 .pic(entity.getPic())
-                .characters(entity.getCharacters().stream().map(Character::toDto).collect(Collectors.toList()))
+                .characterNo(entity.getCharacters().stream().map(Character::getNo).toList())
+//                .characters(entity.getCharacters().stream().map(Character::toDto).collect(Collectors.toList()))
                 .build();
     }
 }

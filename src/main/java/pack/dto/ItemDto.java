@@ -1,5 +1,7 @@
 package pack.dto;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,6 +21,7 @@ public class ItemDto {
 	  private String pic;  // URL or file path
 	  private StyleDto style;
 	  private ProductDto product;
+	  private Integer styleNo, productNo;
 	  
 	  public static Item toEntity(ItemDto dto) {
 			return Item.builder()

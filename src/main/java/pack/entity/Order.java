@@ -46,7 +46,8 @@ public class Order {
 		public static OrderDto toDto (Order entity) {
 	    	return OrderDto.builder()
 	    			.no(entity.getNo())
-	    			.user(User.toDto(entity.getUser()))
+	    			.userNo(entity.getUser().getNo())
+//	    			.user(User.toDto(entity.getUser()))
 	    			.state(entity.getState())
 	    			.date(entity.getDate())
 	    			.price(entity.getPrice())
