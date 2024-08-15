@@ -60,17 +60,18 @@ public class Post {
     @OneToMany(mappedBy = "post")
     @Builder.Default
     private List<PostLike> postLikes = new ArrayList<>();
+    
     public static PostDto toDto(Post entity) {
     	return PostDto.builder()
     			.no(entity.getNo())
-    			.user(entity.getUser())
+    			.user(User.toDto(entity.getUser()))
     			.content(entity.getContent())
     			.date(entity.getDate())
     			.pic(entity.getPic())
     			.likesCount(entity.getLikesCount())
     			.commentsCount(entity.getCommentsCount())
     			.reportsCount(entity.getReportsCount())
-    			.product(entity.getProduct())
+    			.product(Product.toDto(entity.getProduct()))
     			.build();
     }
 }

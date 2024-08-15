@@ -1,5 +1,6 @@
 package pack.entity;
 
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -36,8 +37,8 @@ public class ReportedPost {
     public static ReportedPostDto toDto(ReportedPost entity) {
     	return ReportedPostDto.builder()
     			.no(entity.getNo())
-    			.post(entity.getPost())
-    			.user(entity.getUser())
+    			.post(Post.toDto(entity.getPost()))
+    			.user(User.toDto(entity.getUser()))
     			.category(entity.getCategory())
     			.build();
     }

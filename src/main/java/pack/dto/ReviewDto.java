@@ -17,9 +17,9 @@ import pack.entity.User;
 public class ReviewDto {
 	 private Integer no;
 	 
-	 private User user;
+	 private UserDto user;
 
-	 private Product product;
+	 private ProductDto product;
 	 
 	 private String contents;
 	    
@@ -30,8 +30,8 @@ public class ReviewDto {
 	 public static Review toEntity(ReviewDto dto) {
 			return Review.builder()
 					.no(dto.getNo())
-	    			.user(dto.getUser())
-	    			.product(dto.getProduct())
+	    			.user(UserDto.toEntity(dto.getUser()))
+	    			.product(ProductDto.toEntity(dto.getProduct()))
 	    			.contents(dto.getContents())
 	    			.pic(dto.getPic())
 	    			.score(dto.getScore())

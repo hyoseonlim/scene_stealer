@@ -32,7 +32,7 @@ public class Coupon {
 				.discountRate(entity.getDiscountRate())
 				.expiryDate(entity.getExpiryDate())
 				.isUsed(entity.getIsUsed())
-				.user(entity.getUser())
+				.user(User.toDto(entity.getUser()))
 				.build();
 	}
 

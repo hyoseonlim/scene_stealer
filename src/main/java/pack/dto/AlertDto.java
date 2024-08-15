@@ -16,8 +16,8 @@ import pack.entity.User;
 public class AlertDto {
 	private Integer no;
 	
-	private User user;
-	private String category;
+	private UserDto user;
+	private String category; 
 	private String content;
 	private java.util.Date date;
 
@@ -26,7 +26,7 @@ public class AlertDto {
 	public static Alert toEntity(AlertDto dto) {
 		return Alert.builder()
 				.no(dto.getNo())
-    			.user(dto.getUser())
+    			.user(UserDto.toEntity(dto.getUser()))
     			.category(dto.getCategory())
     			.content(dto.getContent())
     			.date(dto.getDate())

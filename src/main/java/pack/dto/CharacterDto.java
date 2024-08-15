@@ -11,6 +11,7 @@ import lombok.Setter;
 import pack.entity.Character;
 import pack.entity.Actor;
 import pack.entity.Show;
+import pack.entity.Style;
 import pack.entity.CharacterLike; // Ensure CharacterLike is imported
 
 @Getter
@@ -26,19 +27,18 @@ public class CharacterDto {
     private ActorDto actor;
     private ShowDto show;
     private List<CharacterLikeDto> characterLikes;
+    private List<StyleDto> styles;
 
-    public Character toEntity() {
+    public static Character toEntity(CharacterDto dto) {
         return Character.builder()
-                .no(this.no)
-                .name(this.name)
-                .likesCount(this.likesCount)
-                .pic(this.pic)
-                .actor(this.actor != null ? this.actor.toEntity() : null)
-                .show(this.show != null ? this.show.toEntity() : null)
-                .characterLikes(this.characterLikes != null ?
-                    this.characterLikes.stream()
-                                        .map(CharacterLikeDto::toEntity)
-                                        .collect(Collectors.toList()) : null)
+                .no(dto.getNo())
+                .name(dto.getName())
+                .likesCount(dto.getLikesCount())
+                .pic(dto.getPic())
+                .actor(ActorDto.toEntity(dto.getActor()))
+                .show(ShowDto.toEntity(dto.getShow())) 
+                .characterLikes(dto.getCharacterLikes().stream().map(CharacterLikeDto::toEntity).collect(Collectors.toList()))
+                .styles(dto.getStyles().stream().map(StyleDto::toEntity).collect(Collectors.toList()))
                 .build();
     }
 }

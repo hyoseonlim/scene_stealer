@@ -1,6 +1,7 @@
 package pack.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,14 +22,15 @@ import pack.entity.User;
 public class StyleDto {
 	private Integer no;
 	private String pic;
-	private Character character;
-	private List<Item> item;
+	private CharacterDto character;
+	private List<ItemDto> item;
 	
 	public static Style toEntity (StyleDto dto) {
 		return Style.builder()
 				.no(dto.getNo())
 				.pic(dto.getPic())
-				.item(dto.getItem())
+				.item(dto.getItem().stream().map(ItemDto::toEntity).collect(Collectors.toList()))
+				.character(CharacterDto.toEntity(dto.getCharacter()))
 				.build();
 	}
 }

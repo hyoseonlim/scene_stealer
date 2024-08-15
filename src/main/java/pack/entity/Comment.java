@@ -45,9 +45,9 @@ public class Comment {
     public static CommentDto toDto(Comment entity) {
     	return CommentDto.builder()
     			.no(entity.getNo())
-    			.post(entity.getPost())
-    			.user(entity.getUser())
-    			.parentComment(entity.getParentComment())
+    			.post(Post.toDto(entity.getPost()))
+    			.user(User.toDto(entity.getUser()))
+    			.parentComment(Comment.toDto(entity.getParentComment()))
     			.content(entity.getContent())
     			.date(entity.getDate())
     			.build();

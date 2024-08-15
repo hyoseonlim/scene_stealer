@@ -16,14 +16,14 @@ import pack.entity.User;
 @NoArgsConstructor
 public class CharacterLikeDto {
 	private Integer no;
-	private Character character;
-	private User user;
+	private CharacterDto character;
+	private UserDto user;
 	
     public static CharacterLike toEntity(CharacterLikeDto dto) {
     	return CharacterLike.builder()
     			.no(dto.getNo())
-    			.character(dto.getCharacter())
-    			.user(dto.getUser())
+    			.character(CharacterDto.toEntity(dto.getCharacter()))
+    			.user(UserDto.toEntity(dto.getUser()))
     			.build();
     }
 	

@@ -14,20 +14,21 @@ import pack.entity.User;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CommentDto {
-	 private Integer no;
-	 private Post post;
-	    private User user;
-	    private Comment parentComment;
-	    private java.util.Date date;
-	    private String content;
-	    public static Comment toEntity(CommentDto dto) {
-	    	return Comment.builder()
-	    			.no(dto.getNo())
-	    			.post(dto.getPost())
-	    			.user(dto.getUser())
-	    			.parentComment(dto.getParentComment())
-	    			.content(dto.getContent())
-	    			.date(dto.getDate())
-	    			.build();
-	    }
+	private Integer no;
+	private PostDto post;
+	private UserDto user;
+	private CommentDto parentComment;
+	private java.util.Date date;
+	private String content;
+
+	public static Comment toEntity(CommentDto dto) {
+		return Comment.builder()
+				.no(dto.getNo())
+				.post(PostDto.toEntity(dto.getPost()))
+				.user(UserDto.toEntity(dto.getUser()))
+				.parentComment(CommentDto.toEntity(dto.getParentComment()))
+				.content(dto.getContent())
+				.date(dto.getDate())
+				.build();
+	}
 }

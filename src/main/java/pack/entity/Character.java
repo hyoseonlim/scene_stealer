@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import jakarta.persistence.*;
 import lombok.*;
 import pack.dto.CharacterDto;
+import pack.dto.CharacterLikeDto;
 
 @Getter
 @Builder
@@ -28,6 +29,10 @@ public class Character {
     @ManyToOne
     @JoinColumn(name = "actor_no")
     private Actor actor;
+    
+    @OneToMany(mappedBy = "character")
+    @Builder.Default
+    private List<Style> styles = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "show_no")
@@ -37,18 +42,16 @@ public class Character {
     @Builder.Default
     private List<CharacterLike> characterLikes = new ArrayList<>();
 
-    public CharacterDto toDto() {
+    public static CharacterDto toDto(Character entity) {
         return CharacterDto.builder()
-                .no(this.no)
-                .name(this.name)
-                .likesCount(this.likesCount)
-                .pic(this.pic)
-                .actor(this.actor != null ? this.actor.toDto() : null)
-                .show(this.show != null ? this.show.toDto() : null)
-                .characterLikes(this.characterLikes != null ?
-                    this.characterLikes.stream()
-                                        .map(CharacterLike::toDto)
-                                        .collect(Collectors.toList()) : null)
+                .no(entity.getNo())
+                .name(entity.getName())
+                .likesCount(entity.getLikesCount())
+                .pic(entity.getPic())
+                .actor(Actor.toDto(entity.getActor()))
+                .show(Show.toDto(entity.getShow()))
+                .characterLikes(entity.getCharacterLikes().stream().map(CharacterLike::toDto).collect(Collectors.toList()))
+                .styles(entity.getStyles().stream().map(Style::toDto).collect(Collectors.toList()))
                 .build();
     }
 }

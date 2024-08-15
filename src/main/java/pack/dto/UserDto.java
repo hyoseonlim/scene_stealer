@@ -2,7 +2,7 @@ package pack.dto;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,17 +38,17 @@ public class UserDto {
 
     private String pic;  // URL or file path
 
-    private List<Post> posts = new ArrayList<>();
+    private List<PostDto> posts = new ArrayList<>();
 
-    private List<Comment> comments = new ArrayList<>();
+    private List<CommentDto> comments = new ArrayList<>();
 
-    private List<Review> reviews = new ArrayList<>();
+    private List<ReviewDto> reviews = new ArrayList<>();
 
-    private List<Coupon> coupons = new ArrayList<>();
+    private List<CouponDto> coupons = new ArrayList<>();
 
-    private List<Alert> alerts = new ArrayList<>();
+    private List<AlertDto> alerts = new ArrayList<>();
 
-    private List<CharacterLike> characterLikes = new ArrayList<>();
+    private List<CharacterLikeDto> characterLikes = new ArrayList<>();
     
     public static User toEntity(UserDto dto) {
     	return User.builder()
@@ -63,12 +63,12 @@ public class UserDto {
     			.nickname(dto.getNickname())
     			.bio(dto.getBio())
     			.pic(dto.getPic())
-    			.posts(dto.getPosts())
-    			.comments(dto.getComments())
-    			.reviews(dto.getReviews())
-    			.coupons(dto.getCoupons())
-    			.alerts(dto.getAlerts())
-    			.characterLikes(dto.getCharacterLikes())
+    			.posts(dto.getPosts().stream().map(PostDto::toEntity).collect(Collectors.toList()))
+    			.comments(dto.getComments().stream().map(CommentDto::toEntity).collect(Collectors.toList()))
+    			.reviews(dto.getReviews().stream().map(ReviewDto::toEntity).collect(Collectors.toList()))
+    			.coupons(dto.getCoupons().stream().map(CouponDto::toEntity).collect(Collectors.toList()))
+    			.alerts(dto.getAlerts().stream().map(AlertDto::toEntity).collect(Collectors.toList()))
+    			.characterLikes(dto.getCharacterLikes().stream().map(CharacterLikeDto::toEntity).collect(Collectors.toList()))
     			.build();
     }
 

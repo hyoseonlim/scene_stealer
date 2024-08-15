@@ -3,6 +3,8 @@ package pack.entity;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -26,6 +28,10 @@ public class Show {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer no;
+    
+    @OneToMany(mappedBy = "show")
+    @Builder.Default
+    private List<Character> characters = new ArrayList<>();
 
     private String title;
 
@@ -35,14 +41,13 @@ public class Show {
     @Builder.Default
     private List<ShowActor> showActor = new ArrayList<>();
     
-    public ShowDto toDto() {
+    public static ShowDto toDto(Show entity) {
         return ShowDto.builder()
-                .no(this.no)
-                .title(this.title)
-                .pic(this.pic)
-                .showActors(this.showActor.stream()
-                        .map(ShowActor::toDto)
-                        .collect(Collectors.toList()))
+                .no(entity.getNo())
+                .title(entity.getTitle())
+                .pic(entity.getPic())
+                .showActors(entity.getShowActor().stream().map(ShowActor::toDto).collect(Collectors.toList()))
+                .characters(entity.getCharacters().stream().map(Character::toDto).collect(Collectors.toList()))
                 .build();
     }
 }

@@ -35,8 +35,8 @@ public class CharacterLike {
 	public static CharacterLikeDto toDto (CharacterLike entity) {
 		return CharacterLikeDto.builder()
 				.no(entity.getNo())
-				.character(entity.getCharacter())
-				.user(entity.getUser())
+				.character(Character.toDto(entity.getCharacter()))
+				.user(User.toDto(entity.getUser()))
 				.build();
 	}
 }

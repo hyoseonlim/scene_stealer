@@ -34,8 +34,8 @@ public class PostLike {
     public static PostLikeDto toDto(PostLike entity) {
     	return PostLikeDto.builder()
     			 .no(entity.getNo())
-				  .post(entity.getPost())
-				  .user(entity.getUser())
+				  .post(Post.toDto(entity.getPost()))
+				  .user(User.toDto(entity.getUser()))
 				  .build();
     }
 }

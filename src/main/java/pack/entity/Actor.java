@@ -27,15 +27,12 @@ public class Actor {
     @Builder.Default
     private List<Character> characters = new ArrayList<>();
 
-    public ActorDto toDto() {
+    public static ActorDto toDto(Actor entity) {
         return ActorDto.builder()
-                .no(this.no)
-                .name(this.name)
-                .pic(this.pic)
-                .characters(this.characters != null ? 
-                    this.characters.stream()
-                                    .map(Character::toDto) // Convert each Character to CharacterDto
-                                    .collect(Collectors.toList()) : null)
+                .no(entity.getNo())
+                .name(entity.getName())
+                .pic(entity.getPic())
+                .characters(entity.getCharacters().stream().map(Character::toDto).collect(Collectors.toList()))
                 .build();
     }
 }

@@ -28,39 +28,30 @@ import pack.entity.User;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostDto {
-	
-	    private Integer no;
 
-	  
-	    private User user;
+	private Integer no;
 
-	    private String content;
+	private UserDto user;
 
-	   
-	    private java.util.Date date;
+	private String content;
 
-	 
-	    private String pic;  // URL or file path
+	private java.util.Date date;
 
-	    private Integer likesCount;
-	    private Integer commentsCount;
-	    private Integer reportsCount;
+	private String pic; // URL or file path
 
-	    private Product product;
-	    private List<Comment> comments = new ArrayList<>();
-	    private List<PostLike> postLikes = new ArrayList<>();
-	    private List<ReportedPost> reportedPosts = new ArrayList<>();
-	    public static Post toEntity(PostDto dto) {
-	    	return Post.builder()
-	    			.no(dto.getNo())
-	    			.user(dto.getUser())
-	    			.content(dto.getContent())
-	    			.date(dto.getDate())
-	    			.pic(dto.getPic())
-	    			.likesCount(dto.getLikesCount())
-	    			.commentsCount(dto.getCommentsCount())
-	    			.reportsCount(dto.getReportsCount())
-	    			.product(dto.getProduct())
-	    			.build();
-	    }
+	private Integer likesCount;
+	private Integer commentsCount;
+	private Integer reportsCount;
+
+	private ProductDto product;
+	private List<CommentDto> comments = new ArrayList<>();
+	private List<PostLikeDto> postLikes = new ArrayList<>();
+	private List<ReportedPostDto> reportedPosts = new ArrayList<>();
+
+	public static Post toEntity(PostDto dto) {
+		return Post.builder().no(dto.getNo()).user(UserDto.toEntity(dto.getUser())).content(dto.getContent())
+				.date(dto.getDate()).pic(dto.getPic()).likesCount(dto.getLikesCount())
+				.commentsCount(dto.getCommentsCount()).reportsCount(dto.getReportsCount())
+				.product(ProductDto.toEntity(dto.getProduct())).build();
+	}
 }

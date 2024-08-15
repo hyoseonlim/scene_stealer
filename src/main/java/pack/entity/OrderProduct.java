@@ -38,8 +38,8 @@ public class OrderProduct {
 		public static OrderProductDto toDto (OrderProduct entity) {
 	    	return OrderProductDto.builder()
 	    			.no(entity.getNo())
-	    			.order(entity.getOrder())
-	    			.product(entity.getProduct())
+	    			.order(Order.toDto(entity.getOrder()))
+	    			.product(Product.toDto(entity.getProduct()))
 	    			.price(entity.getPrice())
 	    			.quantity(entity.getQuantity())
 	    			.build();

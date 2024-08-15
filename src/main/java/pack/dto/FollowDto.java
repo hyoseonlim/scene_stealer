@@ -13,14 +13,14 @@ import pack.entity.User;
 @AllArgsConstructor
 public class FollowDto {
     private Integer no;
-    private User followee;
-    private User follower;
+    private UserDto followee;
+    private UserDto follower;
 
    public static Follow toEntity(FollowDto dto) {
 	   return Follow.builder()
 			   .no(dto.getNo())
-			   .followee(dto.getFollowee())
-			   .follower(dto.getFollower())
+			   .followee(UserDto.toEntity(dto.getFollowee()))
+			   .follower(UserDto.toEntity(dto.getFollower()))
 			   .build();
    }
     

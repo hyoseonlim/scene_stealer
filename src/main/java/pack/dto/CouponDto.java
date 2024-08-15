@@ -21,7 +21,7 @@ public class CouponDto {
 	private java.sql.Date expiryDate;
 	private Boolean isUsed;
 
-	private User user;
+	private UserDto user;
 	
 	public static Coupon toEntity(CouponDto dto) {
 		return Coupon.builder()
@@ -30,7 +30,7 @@ public class CouponDto {
 				.discountRate(dto.getDiscountRate())
 				.expiryDate(dto.getExpiryDate())
 				.isUsed(dto.getIsUsed())
-				.user(dto.getUser())
+				.user(UserDto.toEntity(dto.getUser()))
 				.build();
 	}
 }

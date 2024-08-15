@@ -2,6 +2,7 @@ package pack.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,9 +35,9 @@ public class ProductDto {
 	private Integer discountRate;
 	private java.math.BigDecimal score;
 
-	private List<Review> reviews = new ArrayList<>();
+	private List<ReviewDto> reviews = new ArrayList<>();
 
-	private List<OrderProduct> orderProducts = new ArrayList<>();
+	private List<OrderProductDto> orderProducts = new ArrayList<>();
 	
 	public static Product toEntity(ProductDto dto) {
     	return Product.builder()
@@ -50,6 +51,8 @@ public class ProductDto {
     			.stock(dto.getStock())
     			.discountRate(dto.getDiscountRate())
     			.score(dto.getScore())
+    			.reviews(dto.getReviews().stream().map(ReviewDto::toEntity).collect(Collectors.toList()))
+    			.orderProducts(dto.getOrderProducts().stream().map(OrderProductDto::toEntity).collect(Collectors.toList()))
     			.build();
     }
 

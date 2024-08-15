@@ -15,14 +15,14 @@ import pack.entity.User;
 @AllArgsConstructor
 public class ReportedPostDto {
 	 private Integer no;
-	 private Post post;
-	 private User user;
+	 private PostDto post;
+	 private UserDto user;
 	 private String category;
 	 public static ReportedPost toEntity(ReportedPostDto dto) {
 		 return ReportedPost.builder()
 				 .no(dto.getNo())
-	    			.post(dto.getPost())
-	    			.user(dto.getUser())
+	    			.post(PostDto.toEntity(dto.getPost()))
+	    			.user(UserDto.toEntity(dto.getUser()))
 	    			.category(dto.getCategory())
 	    			.build();
 	 }

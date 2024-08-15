@@ -17,14 +17,14 @@ import pack.entity.User;
 @AllArgsConstructor
 public class CommentLikeDto {
 	private Integer no;
-	 private Comment comment;
-	 private User user;
+	 private CommentDto comment;
+	 private UserDto user;
 	 
 		public static CommentLike toEntity(CommentLikeDto dto) {
 			return CommentLike.builder()
 					.no(dto.getNo())
-					.comment(dto.getComment())
-					.user(dto.getUser())
+					.comment(CommentDto.toEntity(dto.getComment()))
+					.user(UserDto.toEntity(dto.getUser()))
 					.build();
 		}
 	

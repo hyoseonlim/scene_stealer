@@ -17,11 +17,11 @@ public class ShowActorDto {
     private ShowDto show;
     private ActorDto actor;
 
-    public ShowActor toEntity() {
+    public static ShowActor toEntity(ShowActorDto dto) {
         return ShowActor.builder()
-                .no(this.no)
-                .show(this.show != null ? this.show.toEntity() : null)
-                .actor(this.actor != null ? this.actor.toEntity() : null)
+                .no(dto.getNo())
+                .show(ShowDto.toEntity(dto.getShow()))
+                .actor(ActorDto.toEntity(dto.getActor()))
                 .build();
     }
 }

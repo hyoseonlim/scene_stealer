@@ -1,6 +1,7 @@
 package pack.entity;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -8,7 +9,9 @@ import java.util.ArrayList;
 
 import jakarta.persistence.*;
 import lombok.*;
+import pack.dto.OrderProductDto;
 import pack.dto.ProductDto;
+import pack.dto.ReviewDto;
 
 @Getter
 @Builder
@@ -60,6 +63,8 @@ public class Product {
     			.stock(entity.getStock())
     			.discountRate(entity.getDiscountRate())
     			.score(entity.getScore())
+    			.reviews(entity.getReviews().stream().map(Review::toDto).collect(Collectors.toList()))
+    			.orderProducts(entity.getOrderProducts().stream().map(OrderProduct::toDto).collect(Collectors.toList()))
     			.build();
     }
 }

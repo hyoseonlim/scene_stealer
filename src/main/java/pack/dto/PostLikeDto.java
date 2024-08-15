@@ -13,14 +13,11 @@ import pack.entity.User;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostLikeDto {
-	 private Integer no;
-	 private Post post;
-	  private User user;
-	  public static PostLike toEntity(PostLikeDto dto) {
-		  return PostLike.builder()
-				  .no(dto.getNo())
-				  .post(dto.getPost())
-				  .user(dto.getUser())
-				  .build();
-	  }
+	private Integer no;
+	private PostDto post;
+	private UserDto user;
+
+	public static PostLike toEntity(PostLikeDto dto) {
+		return PostLike.builder().no(dto.getNo()).post(PostDto.toEntity(dto.getPost())).user(UserDto.toEntity(dto.getUser())).build();
+	}
 }

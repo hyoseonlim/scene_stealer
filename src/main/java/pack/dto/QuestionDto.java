@@ -23,7 +23,7 @@ public class QuestionDto {
 
 	private String answer;
 
-	private User user;
+	private UserDto user;
 	
 	public static Question toEntity(QuestionDto dto) {
 		return Question.builder()
@@ -32,7 +32,7 @@ public class QuestionDto {
 				.contents(dto.getContents())
 				.pic(dto.getPic())
 				.answer(dto.getAnswer())
-				.user(dto.getUser())
+				.user(UserDto.toEntity(dto.getUser()))
 				.build();
 	}
 	

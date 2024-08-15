@@ -34,7 +34,7 @@ public class Question {
 				.contents(entity.getContents())
 				.pic(entity.getPic())
 				.answer(entity.getAnswer())
-				.user(entity.getUser())
+				.user(User.toDto(entity.getUser()))
 				.build();
 	}
 
