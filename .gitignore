@@ -42,3 +42,5 @@ out/
 /.lock
 /.log
 /version.ini
+
+.properties
