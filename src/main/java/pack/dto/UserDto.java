@@ -33,6 +33,9 @@ public class UserDto {
     private List<CouponUserDto> couponUsers = new ArrayList<>();
     
     private List<Integer> couponNoList;
+    private List<Integer> postsNoList;
+    private List<Integer> reviewsNoList;
+    private List<Integer> alertsNoList;
 
     public static User toEntity(UserDto dto) {
         return User.builder()
