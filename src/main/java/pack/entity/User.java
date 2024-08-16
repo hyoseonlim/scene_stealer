@@ -86,6 +86,9 @@ public class User {
 //				.coupons(entity.getCoupons().stream().map(Coupon::toDto).collect(Collectors.toList()))
 //				.alerts(entity.getAlerts().stream().map(Alert::toDto).collect(Collectors.toList()))
 //              .couponUsers(entity.getCouponUsers().stream().map(CouponUser::toDto).collect(Collectors.toList()))
+                .postsNoList(entity.getPosts().stream().map(Post::getNo).collect(Collectors.toList()))
+                .reviewsNoList(entity.getReviews().stream().map(Review::getNo).collect(Collectors.toList()))
+                .alertsNoList(entity.getAlerts().stream().map(Alert::getNo).collect(Collectors.toList()))
                 .couponNoList(entity.getCouponUsers().stream().map(CouponUser::getNo).collect(Collectors.toList()))
                 .build();
     }
