@@ -2,6 +2,7 @@ package pack.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -12,6 +13,7 @@ import pack.dto.PostDto;
 import pack.dto.ReviewDto;
 import pack.dto.ShowDto;
 import pack.dto.StyleDto;
+import pack.dto.SubDto;
 import pack.entity.Character;
 import pack.entity.CharacterLike;
 import pack.entity.Item;
@@ -63,11 +65,34 @@ public class MainModel {
 		return prps.findTop3ByOrderByNoDesc().stream().map(Post::toDto).toList();
 	}
 
-	public ShowDto subData(int no) {
-//		ShowDto dto = srps.findById(no).stream().map(Show::toDto).toList().get(0);
-//
-//
-		return null;
+	public SubDto subShowData(int no) {
+	    ShowDto dto = srps.findById(no).stream().map(Show::toDto).toList().get(0);
+	    
+	    List<CharacterDto> clist = new ArrayList<>();
+	    List<StyleDto> slist = new ArrayList<>();
+	    List<ItemDto> ilist = new ArrayList<>(); 
+
+	    for (Integer c : dto.getCharacterNo()) {
+	        crps.findById(c).map(Character::toDto)
+	        .ifPresent(cdto -> {
+	            clist.add(cdto);
+	            for (Integer s : cdto.getStyleNo()) {
+	                strps.findById(s).map(Style::toDto).ifPresent(sdto -> {
+	                	slist.add(sdto);
+	                	for(Integer i : sdto.getItemNoList()) {
+	                		irps.findById(i).map(Item::toDto).ifPresent(ilist::add);
+	                	};
+	                });
+	            }
+	        });
+	    }
+
+	    return SubDto.builder()
+	                 .show(dto)
+	                 .characters(clist)
+	                 .styles(slist)
+	                 .items(ilist)
+	                 .build();
 	}
 
 	public boolean isLike(int no, String id) {

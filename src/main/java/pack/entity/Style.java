@@ -48,7 +48,7 @@ public class Style {
 				.no(entity.getNo())
 				.pic(entity.getPic())
 				.characterNo(entity.getCharacter().getNo())
-				.item(entity.getItem().stream().map(Item::toDto).collect(Collectors.toList()))
+				.itemNoList(entity.getItem().stream().map(Item::getNo).collect(Collectors.toList()))
 //				.character(Character.toDto(entity.getCharacter()))
 //				.item(entity.getItem().stream().map(Item::toDto).collect(Collectors.toList()))
 				.build();

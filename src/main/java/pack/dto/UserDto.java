@@ -29,7 +29,7 @@ public class UserDto {
     private String nickname;
     private String bio;
     private String pic;
-
+    
     private List<CouponUserDto> couponUsers = new ArrayList<>();
     
     private List<Integer> couponNoList;

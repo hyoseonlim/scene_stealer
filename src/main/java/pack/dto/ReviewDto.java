@@ -26,6 +26,7 @@ public class ReviewDto {
 	 private Integer score;
 	 
 	 private Integer userNo, productNo;
+	 private String userNickname, productName;
 	 
 	 public static Review toEntity(ReviewDto dto) {
 			return Review.builder()
