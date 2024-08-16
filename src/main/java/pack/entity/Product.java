@@ -14,6 +14,7 @@ import pack.dto.ProductDto;
 import pack.dto.ReviewDto;
 
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
