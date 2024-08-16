@@ -67,7 +67,7 @@ public class Post {
     public static PostDto toDto(Post entity) {
     	return PostDto.builder()
     			.no(entity.getNo())
-    			.user(User.toDto(entity.getUser()))
+//    			.user(User.toDto(entity.getUser()))
     			.content(entity.getContent())
     			.date(entity.getDate())
     			.pic(entity.getPic())
@@ -75,6 +75,8 @@ public class Post {
     			.commentsCount(entity.getCommentsCount())
     			.reportsCount(entity.getReportsCount())
     			.productNo(entity.getProduct().getNo())
+    			.userNickname(entity.getUser().getNickname())
+    			.userNo(entity.getUser().getNo())
 //    			.product(Product.toDto(entity.getProduct()))
     			.build();
     }
