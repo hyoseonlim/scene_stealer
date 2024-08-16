@@ -19,11 +19,15 @@ public class CharacterLikeDto {
 	private CharacterDto character;
 	private UserDto user;
 	
+	private Integer characterNo, userNo;
+	
     public static CharacterLike toEntity(CharacterLikeDto dto) {
     	return CharacterLike.builder()
     			.no(dto.getNo())
-    			.character(CharacterDto.toEntity(dto.getCharacter()))
-    			.user(UserDto.toEntity(dto.getUser()))
+    			.character(Character.builder().no(dto.getCharacterNo()).build())
+                .user(User.builder().no(dto.getUserNo()).build())
+//    			.character(CharacterDto.toEntity(dto.getCharacter()))
+//    			.user(UserDto.toEntity(dto.getUser()))
     			.build();
     }
 	

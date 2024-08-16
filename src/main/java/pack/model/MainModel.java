@@ -7,7 +7,9 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import jakarta.transaction.Transactional;
 import pack.dto.CharacterDto;
+import pack.dto.CharacterLikeDto;
 import pack.dto.ItemDto;
 import pack.dto.PostDto;
 import pack.dto.ReviewDto;
@@ -52,6 +54,7 @@ public class MainModel {
 
 	@Autowired
 	private ItemsRepository irps;
+	
 
 	public List<ShowDto> mainShowData() {
 		return srps.findShowAll().stream().map(Show::toDto).toList();
@@ -95,8 +98,33 @@ public class MainModel {
 	                 .build();
 	}
 
-	public boolean isLike(int no, String id) {
-		return clrps.findByCharacterNoAndUserId(no, id) == null ? true : false;
+	public boolean isLike(int uno, int cno) {
+		return clrps.findByCharacterNoAndUserNo(uno, cno).size() == 0 ? false : true;
+	}
+	
+	@Transactional
+	public boolean deleteScrap(int cno, int uno) {
+		boolean b = false;
+		try {
+			if(clrps.deleteByCharacterNoAndUserNo(cno, uno) > 0) {				
+				b = true;
+			}
+		} catch (Exception e) {
+			System.out.println("deleteScrap ERROR : " + e.getMessage());
+		}
+		return b;
+		
+	}
+	
+	@Transactional
+	public boolean insertScrap(CharacterLikeDto dto) {
+		try {
+			clrps.save(CharacterLikeDto.toEntity(dto));
+			return true;
+		} catch (Exception e) {
+			System.out.println("insertScrap ERROR : " + e.getMessage());
+			return false;
+		}
 	}
 
 }

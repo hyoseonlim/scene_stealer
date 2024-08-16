@@ -43,4 +43,4 @@ out/
 /.log
 /version.ini
 
-.properties
+application.properties
