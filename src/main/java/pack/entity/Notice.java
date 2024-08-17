@@ -1,5 +1,7 @@
 package pack.entity;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -28,7 +30,7 @@ public class Notice {
     private String contents;
 
     @Column(name = "date")
-    private java.util.Date date;
+    private LocalDateTime date;
     
     public static NoticeDto toDto (Notice entity) {
     	return NoticeDto.builder()
