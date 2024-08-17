@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import pack.dto.ProductDto;
 import pack.entity.Product;
 import pack.repository.ProductsRepository;
 
@@ -18,4 +19,12 @@ public class ShopModel {
 		List<Product> list = productsRepository.findAll();
 		
 		return list;
-	}}
+	}
+	
+	public ProductDto list2(Integer no) { // 제품 no별 상품 읽기
+		return Product.toDto(productsRepository.findById(no).get());
+	           
+	}
+	
+}
+

@@ -7,7 +7,6 @@ import pack.dto.NoticeDto;
 import pack.entity.Notice;
 import pack.repository.NoticesRepository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
