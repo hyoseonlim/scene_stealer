@@ -32,6 +32,7 @@ public class ProductDto {
     private String pic; // URL or file path
 
     private Integer stock;
+    private Integer count;
     private Integer discountRate;
     private java.math.BigDecimal score;
     
@@ -53,6 +54,7 @@ public class ProductDto {
                 .category(dto.getCategory())
                 .pic(dto.getPic())
                 .stock(dto.getStock())
+                .count(dto.getCount())
                 .discountRate(dto.getDiscountRate())
                 .score(dto.getScore())
                 .reviews(dto.getReviews().stream().map(ReviewDto::toEntity).collect(Collectors.toList()))

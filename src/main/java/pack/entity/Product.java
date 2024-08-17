@@ -39,6 +39,7 @@ public class Product {
     private String pic;  // URL or file path
 
     private Integer stock;
+    private Integer count;
     private Integer discountRate;
     private java.math.BigDecimal score;
 
@@ -63,6 +64,7 @@ public class Product {
     			.category(entity.getCategory())
     			.pic(entity.getPic())
     			.stock(entity.getStock())
+    			.count(entity.getCount())
     			.discountRate(entity.getDiscountRate())
     			.score(entity.getScore())
     			.reviewNoList(entity.getReviews().stream().map(Review::getNo).collect(Collectors.toList()))
