@@ -1,5 +1,7 @@
 package pack.dto;
 
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,7 +21,7 @@ public class NoticeDto {
 	 private String title;
 	 private String contents;
 	 
-	 private java.util.Date date;
+	 private LocalDateTime date;
 	 
 	 public static Notice toEntity(NoticeDto dto) {
 			return Notice.builder()

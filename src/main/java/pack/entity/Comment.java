@@ -1,5 +1,7 @@
 package pack.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,9 +35,11 @@ public class Comment {
     @JoinColumn(name = "user_no")
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "parent_comment_no")
-    private Comment parentComment;
+//    @ManyToOne
+//    @JoinColumn(name = "parent_comment_no")
+//    private Comment parentComment;
+    
+    private Integer parentCommentNo;
 
     private String content;
 
@@ -45,9 +49,12 @@ public class Comment {
     public static CommentDto toDto(Comment entity) {
     	return CommentDto.builder()
     			.no(entity.getNo())
-    			.post(entity.getPost())
-    			.user(entity.getUser())
-    			.parentComment(entity.getParentComment())
+    			.postNo(entity.getPost().getNo())
+    			.userNo(entity.getUser().getNo())
+    			.parentCommentNo(entity.getParentCommentNo())
+//    			.post(Post.toDto(entity.getPost()))
+//    			.user(User.toDto(entity.getUser()))
+//    			.parentComment(Comment.toDto(entity.getParentComment()))
     			.content(entity.getContent())
     			.date(entity.getDate())
     			.build();

@@ -2,14 +2,18 @@ package pack.entity;
 
 import java.util.*;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -59,17 +63,21 @@ public class Post {
     @OneToMany(mappedBy = "post")
     @Builder.Default
     private List<PostLike> postLikes = new ArrayList<>();
+    
     public static PostDto toDto(Post entity) {
     	return PostDto.builder()
     			.no(entity.getNo())
-    			.user(entity.getUser())
+//    			.user(User.toDto(entity.getUser()))
     			.content(entity.getContent())
     			.date(entity.getDate())
     			.pic(entity.getPic())
     			.likesCount(entity.getLikesCount())
     			.commentsCount(entity.getCommentsCount())
     			.reportsCount(entity.getReportsCount())
-    			.product(entity.getProduct())
+    			.productNo(entity.getProduct().getNo())
+    			.userNickname(entity.getUser().getNickname())
+    			.userNo(entity.getUser().getNo())
+//    			.product(Product.toDto(entity.getProduct()))
     			.build();
     }
 }

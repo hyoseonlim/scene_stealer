@@ -16,20 +16,21 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ShowDto {
-    private Integer no;
-    private String title;
-    private String pic;
-    private List<ShowActorDto> showActors;
+	private Integer no;
+	private String title;
+	private String pic;
+	private List<ShowActorDto> showActors;
+	private List<CharacterDto> characters;
+	
+	private List<Integer> showActorsNo, characterNo;
 
-    public Show toEntity() {
+	public static Show toEntity(ShowDto dto) {
         return Show.builder()
-                .no(this.no)
-                .title(this.title)
-                .pic(this.pic)
-                .showActor(this.showActors != null ? 
-                		this.showActors.stream()
-                                .map(ShowActorDto::toEntity)
-                                .collect(Collectors.toList()) : null)
+                .no(dto.getNo())
+                .title(dto.getTitle())
+                .pic(dto.getPic())
+                .showActor(dto.getShowActors().stream().map(ShowActorDto::toEntity).collect(Collectors.toList()))
+                .characters(dto.getCharacters().stream().map(CharacterDto::toEntity).collect(Collectors.toList()))
                 .build();
     }
 }

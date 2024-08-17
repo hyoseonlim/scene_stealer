@@ -21,16 +21,14 @@ public class ActorDto {
     private String name;
     private String pic;
     private List<CharacterDto> characters;
+    private List<Integer> characterNo;
 
-    public Actor toEntity() {
+    public static Actor toEntity(ActorDto dto) {
         return Actor.builder()
-                .no(this.no)
-                .name(this.name)
-                .pic(this.pic)
-                .characters(this.characters != null ? 
-                    this.characters.stream()
-                                   .map(CharacterDto::toEntity)
-                                   .collect(Collectors.toList()) : null)
-                .build();
+               .no(dto.getNo())
+               .name(dto.getName())
+               .pic(dto.getPic())
+               .characters(dto.getCharacters().stream().map(CharacterDto::toEntity).collect(Collectors.toList()))
+               .build();
     }
 }

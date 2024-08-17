@@ -1,5 +1,7 @@
 package pack.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,7 +20,7 @@ import pack.dto.CharacterLikeDto;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "character_likes")
+@Table(name = "character_like")
 public class CharacterLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,8 +37,10 @@ public class CharacterLike {
 	public static CharacterLikeDto toDto (CharacterLike entity) {
 		return CharacterLikeDto.builder()
 				.no(entity.getNo())
-				.character(entity.getCharacter())
-				.user(entity.getUser())
+//				.character(Character.toDto(entity.getCharacter()))
+//				.user(User.toDto(entity.getUser()))
+				.characterNo(entity.getCharacter().getNo())
+				.userNo(entity.getUser().getNo())
 				.build();
 	}
 }

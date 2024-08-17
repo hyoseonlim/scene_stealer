@@ -9,7 +9,7 @@ import pack.dto.CommentLikeDto;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "comment_likes")
+@Table(name = "comment_like")
 public class CommentLike {
 	 	@Id
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,8 +26,8 @@ public class CommentLike {
 	    public static CommentLikeDto toDto(CommentLike entity) {
 	    	return CommentLikeDto.builder()
 	    			.no(entity.getNo())
-	    			.comment(entity.getComment())
-	    			.user(entity.getUser())
+	    			.comment(Comment.toDto(entity.getComment()))
+	    			.user(User.toDto(entity.getUser()))
 	    			.build();
 	    }
 

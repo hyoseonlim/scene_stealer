@@ -1,7 +1,8 @@
 package pack.entity;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -32,50 +33,64 @@ public class User {
     @Column(name = "pic")
     private String pic;  // URL or file path
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @Builder.Default
     private List<Post> posts = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @Builder.Default
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @Builder.Default
     private List<Review> reviews = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @Builder.Default
-    private List<Coupon> coupons = new ArrayList<>();
+    private List<CouponUser> couponUsers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @Builder.Default
     private List<Alert> alerts = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @Builder.Default
     private List<CharacterLike> characterLikes = new ArrayList<>();
     
-    public static UserDto toDto (User entity) {
-    	return UserDto.builder()
-    			.id(entity.getId())
-    			.pwd(entity.getPwd())
-    			.name(entity.getName())
-    			.tel(entity.getTel())
-    			.email(entity.getEmail())
-    			.zipcode(entity.getZipcode())
-    			.address(entity.getAddress())
-    			.reward(entity.getReward())
-    			.nickname(entity.getNickname())
-    			.bio(entity.getBio())
-    			.pic(entity.getPic())
-    			.posts(entity.getPosts())
-    			.comments(entity.getComments())
-    			.reviews(entity.getReviews())
-    			.coupons(entity.getCoupons())
-    			.alerts(entity.getAlerts())
-    			.characterLikes(entity.getCharacterLikes())
-    			.build();
+    @OneToMany(mappedBy = "followee", fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<Follow> followers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "follower", fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<Follow> followees = new ArrayList<>();
+    
+
+    public static UserDto toDto(User entity) {
+        return UserDto.builder()
+        		.no(entity.getNo())
+                .id(entity.getId())
+                .pwd(entity.getPwd())
+                .name(entity.getName())
+                .tel(entity.getTel())
+                .email(entity.getEmail())
+                .zipcode(entity.getZipcode())
+                .address(entity.getAddress())
+                .reward(entity.getReward())
+                .nickname(entity.getNickname())
+                .bio(entity.getBio())
+                .pic(entity.getPic())
+//				.posts(entity.getPosts().stream().map(Post::toDto).collect(Collectors.toList()))
+//				.comments(entity.getComments().stream().map(Comment::toDto).collect(Collectors.toList()))
+//				.reviews(entity.getReviews().stream().map(Review::toDto).collect(Collectors.toList()))
+//				.coupons(entity.getCoupons().stream().map(Coupon::toDto).collect(Collectors.toList()))
+//				.alerts(entity.getAlerts().stream().map(Alert::toDto).collect(Collectors.toList()))
+//              .couponUsers(entity.getCouponUsers().stream().map(CouponUser::toDto).collect(Collectors.toList()))
+                .postsNoList(entity.getPosts().stream().map(Post::getNo).collect(Collectors.toList()))
+                .reviewsNoList(entity.getReviews().stream().map(Review::getNo).collect(Collectors.toList()))
+                .alertsNoList(entity.getAlerts().stream().map(Alert::getNo).collect(Collectors.toList()))
+                .couponNoList(entity.getCouponUsers().stream().map(CouponUser::getNo).collect(Collectors.toList()))
+                .build();
     }
 }
 

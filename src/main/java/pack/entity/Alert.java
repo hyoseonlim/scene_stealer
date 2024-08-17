@@ -1,5 +1,6 @@
 package pack.entity;
 
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -40,7 +41,8 @@ public class Alert {
     public static AlertDto toDto (Alert entity) {
     	return AlertDto.builder()
     			.no(entity.getNo())
-    			.user(entity.getUser())
+    			.userNo(entity.getUser().getNo())
+//    			.user(User.toDto(entity.getUser()))
     			.category(entity.getCategory())
     			.content(entity.getContent())
     			.date(entity.getDate())

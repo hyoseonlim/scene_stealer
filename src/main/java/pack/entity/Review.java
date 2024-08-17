@@ -1,7 +1,10 @@
 package pack.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -44,8 +47,12 @@ public class Review {
     public static ReviewDto toDto (Review entity) {
     	return ReviewDto.builder()
     			.no(entity.getNo())
-    			.user(entity.getUser())
-    			.product(entity.getProduct())
+    			.userNo(entity.getUser().getNo())
+    			.userNickname(entity.getUser().getNickname())
+    			.productNo(entity.getProduct().getNo())
+    			.productName(entity.getProduct().getName())
+//    			.user(User.toDto(entity.getUser()))
+//    			.product(Product.toDto(entity.getProduct()))
     			.contents(entity.getContents())
     			.pic(entity.getPic())
     			.score(entity.getScore())

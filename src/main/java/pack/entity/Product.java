@@ -1,19 +1,27 @@
 package pack.entity;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.ArrayList;
 
 import jakarta.persistence.*;
 import lombok.*;
+import pack.dto.OrderProductDto;
 import pack.dto.ProductDto;
+import pack.dto.ReviewDto;
 
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "products")
 public class Product {
+	
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer no;
@@ -31,6 +39,7 @@ public class Product {
     private String pic;  // URL or file path
 
     private Integer stock;
+    private Integer count;
     private Integer discountRate;
     private java.math.BigDecimal score;
 
@@ -42,7 +51,8 @@ public class Product {
     @Builder.Default
     private List<OrderProduct> orderProducts = new ArrayList<>();
     
-    
+    @OneToMany(mappedBy = "product")
+    private List<Post> post;
     
     public static ProductDto toDto(Product entity) {
     	return ProductDto.builder()
@@ -54,9 +64,13 @@ public class Product {
     			.category(entity.getCategory())
     			.pic(entity.getPic())
     			.stock(entity.getStock())
+    			.count(entity.getCount())
     			.discountRate(entity.getDiscountRate())
     			.score(entity.getScore())
+    			.reviewNoList(entity.getReviews().stream().map(Review::getNo).collect(Collectors.toList()))
+    			.orderProductNoList(entity.getOrderProducts().stream().map(OrderProduct::getNo).collect(Collectors.toList()))
+//    			.reviews(entity.getReviews().stream().map(Review::toDto).collect(Collectors.toList()))
+//    			.orderProducts(entity.getOrderProducts().stream().map(OrderProduct::toDto).collect(Collectors.toList()))
     			.build();
     }
 }
-

@@ -1,5 +1,6 @@
 package pack.entity;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -42,15 +43,15 @@ public class Order {
     @Builder.Default
     private List<OrderProduct> orderProducts = new ArrayList<>();
 
-
 		public static OrderDto toDto (Order entity) {
 	    	return OrderDto.builder()
 	    			.no(entity.getNo())
-	    			.user(entity.getUser())
+	    			.userNo(entity.getUser().getNo())
+//	    			.user(User.toDto(entity.getUser()))
 	    			.state(entity.getState())
 	    			.date(entity.getDate())
 	    			.price(entity.getPrice())
-	    			.orderProducts(entity.getOrderProducts())
+	    			.orderProducts(entity.getOrderProducts().stream().map(OrderProduct::toDto).collect(Collectors.toList()))
 	    			.build();
 	    }
 }

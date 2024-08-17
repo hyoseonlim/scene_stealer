@@ -25,7 +25,7 @@ bin/
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
-
+ 
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
@@ -35,3 +35,12 @@ out/
 
 ### VS Code ###
 .vscode/
+
+/.metadata/
+/.mylyn/
+/.plugins/
+/.lock
+/.log
+/version.ini
+
+**/application.properties
