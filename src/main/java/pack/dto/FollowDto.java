@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import pack.entity.Character;
 import pack.entity.Follow;
 import pack.entity.User;
 
@@ -21,12 +22,16 @@ public class FollowDto {
     private List<Integer> followees;
     private List<Integer> followers;
     
+    private Integer followeeNo, followerNo;
+    
 
    public static Follow toEntity(FollowDto dto) {
 	   return Follow.builder()
 			   .no(dto.getNo())
-			   .followee(UserDto.toEntity(dto.getFollowee()))
-			   .follower(UserDto.toEntity(dto.getFollower()))
+			   .followee(User.builder().no(dto.getFolloweeNo()).build())
+			   .follower(User.builder().no(dto.getFollowerNo()).build())
+//			   .followee(UserDto.toEntity(dto.getFollowee()))
+//			   .follower(UserDto.toEntity(dto.getFollower()))
 			   .build();
    }
     

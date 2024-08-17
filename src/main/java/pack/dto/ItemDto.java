@@ -21,7 +21,7 @@ public class ItemDto {
 	  private String pic;  // URL or file path
 	  private StyleDto style;
 	  private ProductDto product;
-	  private Integer styleNo, productNo;
+	  private Integer styleNo, productNo, characterNo;
 	  
 	  public static Item toEntity(ItemDto dto) {
 			return Item.builder()

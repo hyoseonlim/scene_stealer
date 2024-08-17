@@ -1,7 +1,6 @@
 package pack.controller;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,13 +48,7 @@ public class MainController {
 	public SubDto subData(@PathVariable("no") int no) {
 		return mmd.subShowData(no);
 	}
-	
-	@GetMapping("/dazz6/test")
-	public List<CharacterLikeDto> test () {
-		return clrps.findAll().stream().map(CharacterLike::toDto).collect(Collectors.toList());
 		
-	}
-	
 	@GetMapping("/main/like/{no}/{userNo}")
 	public boolean isLike(@PathVariable("no") int cno, @PathVariable("userNo") int uno) {
 		return mmd.isLike(cno, uno);

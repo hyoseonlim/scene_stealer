@@ -41,6 +41,7 @@ public class Item {
     			.no(entity.getNo())
     			.pic(entity.getPic())
     			.styleNo(entity.getStyle().getNo())
+    			.characterNo(entity.getStyle().getCharacter().getNo())
 //    			.style(Style.toDto(entity.getStyle()))
     			.productNo(entity.getProduct().getNo())
 //    			.product(Product.toDto(entity.getProduct()))
