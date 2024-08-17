@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import pack.dto.CharacterLikeDto;
 import pack.dto.FollowDto;
+import pack.dto.PostDto;
 import pack.dto.UserDto;
 import pack.model.PostsModel;
 
@@ -57,5 +58,8 @@ public class PostsController {
 		return pm.insertFollow(dto);
 	}
 	
-	
+	@GetMapping("/posts/followPostList/{no}")
+	public List<PostDto> followPostList(@PathVariable("no") int userNo) {
+		return pm.followPostList(userNo);
+	}
 }

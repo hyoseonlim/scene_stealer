@@ -1,6 +1,7 @@
 package pack.entity;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -77,6 +78,8 @@ public class Post {
     			.productNo(entity.getProduct().getNo())
     			.userNickname(entity.getUser().getNickname())
     			.userNo(entity.getUser().getNo())
+    			.userPic(entity.getUser().getPic())
+    			.commentsList(entity.getComments().stream().map(Comment::getNo).collect(Collectors.toList()))
 //    			.product(Product.toDto(entity.getProduct()))
     			.build();
     }

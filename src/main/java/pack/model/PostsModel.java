@@ -12,8 +12,10 @@ import org.springframework.stereotype.Repository;
 import jakarta.transaction.Transactional;
 import pack.dto.CharacterLikeDto;
 import pack.dto.FollowDto;
+import pack.dto.PostDto;
 import pack.dto.UserDto;
 import pack.entity.Follow;
+import pack.entity.Post;
 import pack.entity.User;
 import pack.repository.CommentLikeRepository;
 import pack.repository.CommentsRepository;
@@ -48,40 +50,44 @@ public class PostsModel {
 	}
 
 	public Map<String, List<Integer>> followInfo(int no) {
-		List<Integer> followerList = frps.findByFolloweeNo(no).stream().map(f -> f.getFollower().getNo()).collect(Collectors.toList());
-		List<Integer> followeeList = frps.findByFollowerNo(no).stream().map(f -> f.getFollowee().getNo()).collect(Collectors.toList());
+		List<Integer> followerList = frps.findByFolloweeNo(no).stream().map(f -> f.getFollower().getNo())
+				.collect(Collectors.toList());
+		List<Integer> followeeList = frps.findByFollowerNo(no).stream().map(f -> f.getFollowee().getNo())
+				.collect(Collectors.toList());
 		Map<String, List<Integer>> result = new HashMap<String, List<Integer>>();
 		result.put("followerList", followerList);
 		result.put("followeeList", followeeList);
 		return result;
 	}
-	
+
 	public List<UserDto> followeeInfo(int no) {
-		return frps.findByFollowerNo(no).stream().map(Follow::getFollowee).map(User::toDto).collect(Collectors.toList());
+		return frps.findByFollowerNo(no).stream().map(Follow::getFollowee).map(User::toDto)
+				.collect(Collectors.toList());
 	}
-	
+
 	public List<UserDto> followerInfo(int no) {
-		return frps.findByFolloweeNo(no).stream().map(Follow::getFollower).map(User::toDto).collect(Collectors.toList());
+		return frps.findByFolloweeNo(no).stream().map(Follow::getFollower).map(User::toDto)
+				.collect(Collectors.toList());
 	}
-	
+
 	public boolean followCheck(int no, int fno) {
 		return frps.findByFollowerNoAndFolloweeNo(no, fno).size() > 0 ? true : false;
 	}
-	
+
 	@Transactional
 	public boolean deleteFollow(int no, int fno) {
 		boolean b = false;
 		try {
-			if(frps.deleteByFolloweeNoAndFollowerNo(fno, no) > 0) {				
+			if (frps.deleteByFolloweeNoAndFollowerNo(fno, no) > 0) {
 				b = true;
 			}
 		} catch (Exception e) {
 			System.out.println("deleteFollow ERROR : " + e.getMessage());
 		}
 		return b;
-		
+
 	}
-	
+
 	@Transactional
 	public boolean insertFollow(FollowDto dto) {
 		try {
@@ -93,5 +99,18 @@ public class PostsModel {
 		}
 	}
 
- 
+	public List<PostDto> followPostList(int userNo) {
+		List<Integer> followeeList = frps.findByFollowerNo(userNo).stream().map(f -> f.getFollowee().getNo())
+				.collect(Collectors.toList());
+
+		List<PostDto> postList = new ArrayList<>();
+
+		for (Integer i : followeeList) {
+			List<PostDto> posts = prps.findByUserNo(i).stream().map(Post::toDto).collect(Collectors.toList());
+			postList.addAll(posts);
+		}
+
+		return postList;
+	}
+
 }
