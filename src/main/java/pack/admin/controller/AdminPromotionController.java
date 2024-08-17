@@ -3,6 +3,7 @@ package pack.admin.controller;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pack.dto.AlertDto;
 import pack.dto.CouponDto;
 import pack.dto.CouponUserDto;
+import pack.entity.User;
 import pack.repository.AlertsRepository;
 import pack.repository.CouponUserRepository;
 import pack.repository.CouponsRepository;
@@ -32,7 +34,8 @@ public class AdminPromotionController {
 	@Autowired
 	private AlertsRepository alertsRepo;
 	
-	@PostMapping("/admin/coupon/") // 쿠폰 추가
+	// 쿠폰 추가 (총 3개 테이블 처리)
+	@PostMapping("/admin/coupon/")
 	public Map<String, Object> insert(@RequestBody CouponDto couponDto) {
 		// 1. 쿠폰 테이블 (쿠폰명, 할인율, 유효기간)
 		couponsRepo.save(CouponDto.toEntity(couponDto));
@@ -41,7 +44,8 @@ public class AdminPromotionController {
 		CouponUserDto cuDto = new CouponUserDto();
 		cuDto.setCouponNo(couponsRepo.findTopByOrderByNoDesc().getNo()); // 쿠폰 PK (JPARepository 네이밍 규칙에 따라 생성한 메소드 사용)
 		
-		List<Integer> userNoList = usersRepo.findAllNos();
+		List<User> userList = usersRepo.findAll();
+		List<Integer> userNoList = userList.stream().map(User::getNo).collect(Collectors.toList());
 		for(int i=0; i<userNoList.size(); i++) { // 전체 유저 수 만큼 반복 (동일 쿠폰을 유저만 바꿔 추가)
 			cuDto.setUserNo(userNoList.get(i));
 			couponUserRepo.save(CouponUserDto.toEntity(cuDto));
