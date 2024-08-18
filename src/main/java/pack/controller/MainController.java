@@ -1,6 +1,8 @@
 package pack.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,12 +57,17 @@ public class MainController {
 	}
 	
 	@DeleteMapping("/main/scrap/{no}/{userNo}")
-	public boolean deleteScrap(@PathVariable("no") int cno, @PathVariable("userNo") int uno) {
-		return mmd.deleteScrap(cno, uno);
+	public Map<String, Boolean> deleteScrap(@PathVariable("no") int cno, @PathVariable("userNo") int uno) {
+		
+		Map<String, Boolean> result = new HashMap<String, Boolean>();
+		result.put("result", mmd.deleteScrap(cno, uno));
+		return result;
 	}
 	
 	@PostMapping("/main/scrap")
-	public boolean insertScrap(@RequestBody CharacterLikeDto dto) {
-		return mmd.insertScrap(dto);
+	public Map<String, Boolean> insertScrap(@RequestBody CharacterLikeDto dto) {
+		Map<String, Boolean> result = new HashMap<String, Boolean>();
+		result.put("result", mmd.insertScrap(dto));
+		return result;
 	}
 }

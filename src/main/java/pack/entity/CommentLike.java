@@ -26,8 +26,10 @@ public class CommentLike {
 	    public static CommentLikeDto toDto(CommentLike entity) {
 	    	return CommentLikeDto.builder()
 	    			.no(entity.getNo())
-	    			.comment(Comment.toDto(entity.getComment()))
-	    			.user(User.toDto(entity.getUser()))
+	    			.commentNo(entity.getComment().getNo())
+	    			.userNo(entity.getUser().getNo())
+//	    			.comment(Comment.toDto(entity.getComment()))
+//	    			.user(User.toDto(entity.getUser()))
 	    			.build();
 	    }
 

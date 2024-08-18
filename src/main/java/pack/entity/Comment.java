@@ -1,6 +1,7 @@
 package pack.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import java.util.*;
+
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -46,12 +48,17 @@ public class Comment {
     @Column(name = "date")
     private java.util.Date date;
     
+    @OneToMany(mappedBy = "comment")
+    @Builder.Default
+    private List<CommentLike> commentLikes = new ArrayList<>();
+    
     public static CommentDto toDto(Comment entity) {
     	return CommentDto.builder()
     			.no(entity.getNo())
     			.postNo(entity.getPost().getNo())
     			.userNo(entity.getUser().getNo())
     			.parentCommentNo(entity.getParentCommentNo())
+    			.userNickname(entity.getUser().getNickname())
 //    			.post(Post.toDto(entity.getPost()))
 //    			.user(User.toDto(entity.getUser()))
 //    			.parentComment(Comment.toDto(entity.getParentComment()))

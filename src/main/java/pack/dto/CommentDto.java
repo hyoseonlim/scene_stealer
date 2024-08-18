@@ -19,7 +19,7 @@ public class CommentDto {
 	private UserDto user;
 //	private CommentDto parentComment;
 	private java.util.Date date;
-	private String content;
+	private String content, userNickname;
 	private Integer postNo, userNo, parentCommentNo;
 
 	public static Comment toEntity(CommentDto dto) {
@@ -27,7 +27,7 @@ public class CommentDto {
 				.no(dto.getNo())
 				.post(PostDto.toEntity(dto.getPost()))
 				.user(UserDto.toEntity(dto.getUser()))
-				.parentCommentNo(dto.getParentCommentNo())
+//				.parentCommentNo(dto.getParentCommentNo())
 				.content(dto.getContent())
 				.date(dto.getDate())
 				.build();
