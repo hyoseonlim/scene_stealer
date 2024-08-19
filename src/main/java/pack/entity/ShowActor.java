@@ -1,7 +1,5 @@
 package pack.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import jakarta.persistence.*;
 import lombok.*;
 import pack.dto.ShowActorDto;
@@ -28,8 +26,10 @@ public class ShowActor {
     public static ShowActorDto toDto(ShowActor entity) {
         return ShowActorDto.builder()
                 .no(entity.getNo())
-                .show(Show.toDto(entity.getShow()))
-                .actor(Actor.toDto(entity.getActor()))
+                .showNo(entity.getShow().getNo())
+                .actorNo(entity.getActor().getNo())
+//                .show(Show.toDto(entity.getShow()))
+//                .actor(Actor.toDto(entity.getActor()))
                 .build();
     }
 }
