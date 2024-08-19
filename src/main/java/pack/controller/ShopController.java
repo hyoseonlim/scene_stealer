@@ -45,10 +45,7 @@ public class ShopController {
 	    	return smodel.list2(no); 
 	    }
 	    
-	   // 리뷰 읽기(product_no에서 연결해서 review 보기)
-	    @GetMapping("/list/review/{no}")
-		public ProductDto getReviewList(@PathVariable("no") Integer no) {
-			return smodel.list2(no);
-			
-		}
+	  // 최신순, 판매순, 가격 높은 순 , 가격 낮은 순
+	    
+	    
 }
