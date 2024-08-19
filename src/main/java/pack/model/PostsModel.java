@@ -196,5 +196,29 @@ public class PostsModel {
 	public boolean checkCommentLike(int commentNo, int userNo) {
 		return clrps.findByCommentNoAndUserNo(commentNo, userNo).size() == 0 ? false : true;
 	}
+	
+	@Transactional
+	public boolean deletePosts(int postNo) {
+		boolean b = false;
+		try {
+			if (prps.deleteByNo(postNo) > 0) {
+				b = true;
+			}
+		} catch (Exception e) {
+			System.out.println("deletePosts ERROR : " + e.getMessage());
+		}
+		return b;
+	}
+
+	@Transactional
+	public boolean insertPosts(PostDto dto) {
+		try {
+			prps.save(PostDto.toEntity(dto));
+			return true;
+		} catch (Exception e) {
+			System.out.println("insertPosts ERROR : " + e.getMessage());
+			return false;
+		}
+	}
 
 }

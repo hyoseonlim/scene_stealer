@@ -13,4 +13,6 @@ public interface PostsRepository extends JpaRepository<Post, Integer>{
 	
 	public List<Post> findByUserNo(int no);
 	
+	public int deleteByNo(int no);
+	
 }

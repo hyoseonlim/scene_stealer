@@ -137,4 +137,18 @@ public class PostsController {
 		result.put("result", pm.checkCommentLike(commentNo, userNo));
 		return result;
 	}
+	
+	@DeleteMapping("/posts/detail/{postNo}")
+	public Map<String, Boolean> deletePosts(@PathVariable("postNo") int postNo) {
+		Map<String, Boolean> result = new HashMap<String, Boolean>();
+		result.put("result", pm.deletePosts(postNo));
+		return result;
+	}
+
+	@PostMapping("/posts/detail")
+	public Map<String, Boolean> insertPosts(@RequestBody PostDto dto) {
+		Map<String, Boolean> result = new HashMap<String, Boolean>();
+		result.put("result", pm.insertPosts(dto));
+		return result;
+	}
 }
