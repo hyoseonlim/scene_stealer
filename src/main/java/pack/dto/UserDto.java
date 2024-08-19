@@ -37,6 +37,7 @@ public class UserDto {
     private List<Integer> reviewsNoList;
     private List<Integer> alertsNoList;
 
+    
     public static User toEntity(UserDto dto) {
         return User.builder()
         		.no(dto.getNo())

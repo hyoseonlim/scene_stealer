@@ -26,9 +26,10 @@ public class OrderDto {
 	  private Integer price;
 	  
 	  private Integer userNo;
-	  
+	 private String userId;
 	  
 	  private List<OrderProductDto> orderProducts;
+	  
 
 		public static Order toEntity(OrderDto dto) {
 			return Order.builder()

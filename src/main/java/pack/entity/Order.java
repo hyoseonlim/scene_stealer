@@ -15,9 +15,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import pack.dto.OrderDto;
 
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -47,6 +49,7 @@ public class Order {
 	    	return OrderDto.builder()
 	    			.no(entity.getNo())
 	    			.userNo(entity.getUser().getNo())
+	    			.userId(entity.getUser().getId())
 //	    			.user(User.toDto(entity.getUser()))
 	    			.state(entity.getState())
 	    			.date(entity.getDate())
