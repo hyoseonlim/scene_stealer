@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import pack.dto.CharacterLikeDto;
+import pack.dto.CommentDto;
 import pack.dto.CommentLikeDto;
 import pack.dto.FollowDto;
 import pack.dto.PostDetailDto;
@@ -149,6 +150,20 @@ public class PostsController {
 	public Map<String, Boolean> insertPosts(@RequestBody PostDto dto) {
 		Map<String, Boolean> result = new HashMap<String, Boolean>();
 		result.put("result", pm.insertPosts(dto));
+		return result;
+	}
+	
+	@DeleteMapping("/posts/comment/{commentNo}")
+	public Map<String, Boolean> deleteComment(@PathVariable("commentNo") int commentNo) {
+		Map<String, Boolean> result = new HashMap<String, Boolean>();
+		result.put("result", pm.deleteComment(commentNo));
+		return result;
+	}
+
+	@PostMapping("/posts/comment")
+	public Map<String, Boolean> insertComment(@RequestBody CommentDto dto) {
+		Map<String, Boolean> result = new HashMap<String, Boolean>();
+		result.put("result", pm.insertComment(dto));
 		return result;
 	}
 }

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import jakarta.transaction.Transactional;
+import pack.dto.CommentDto;
 import pack.dto.CommentLikeDto;
 import pack.dto.FollowDto;
 import pack.dto.PostDetailDto;
@@ -217,6 +218,30 @@ public class PostsModel {
 			return true;
 		} catch (Exception e) {
 			System.out.println("insertPosts ERROR : " + e.getMessage());
+			return false;
+		}
+	}
+	
+	@Transactional
+	public boolean deleteComment(int commentNo) {
+		boolean b = false;
+		try {
+			if (crps.deleteByNo(commentNo) > 0) {
+				b = true;
+			}
+		} catch (Exception e) {
+			System.out.println("deleteComment ERROR : " + e.getMessage());
+		}
+		return b;
+	}
+
+	@Transactional
+	public boolean insertComment(CommentDto dto) {
+		try {
+			crps.save(CommentDto.toEntity(dto));
+			return true;
+		} catch (Exception e) {
+			System.out.println("insertComment ERROR : " + e.getMessage());
 			return false;
 		}
 	}
