@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import pack.dto.ProductDto;
+import pack.dto.ShopDto;
+import pack.dto.SubDto;
 import pack.entity.Product;
 import pack.model.ShopModel;
 import pack.repository.ProductsRepository;
@@ -45,7 +47,11 @@ public class ShopController {
 	    	return smodel.list2(no); 
 	    }
 	    
-	  // 최신순, 판매순, 가격 높은 순 , 가격 낮은 순
+	  // 상품별 리뷰보기(제품, 리뷰 일 대 다)
+	    @GetMapping("/list/review/{no}")
+		public ShopDto reviewData(@PathVariable("no") Integer no) {
+			return smodel.reviewshow(no);
+		}
 	    
 	    
 }
