@@ -15,8 +15,8 @@ public class ShopModel {
 	@Autowired
 	private ProductsRepository productsRepository;
 	
-	public List<Product> list(){//전체 자료 읽기
-		List<Product> list = productsRepository.findAll();
+	public List<ProductDto> list(){//전체 자료 읽기
+		List<ProductDto> list = productsRepository.findAll().stream().map(Product::toDto).toList();
 		
 		return list;
 	}

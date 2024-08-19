@@ -24,8 +24,8 @@ public class ShopController {
 	
 	//----Rest 요청
 	@GetMapping("/list")
-	public ArrayList<Product> getList() {
-		ArrayList<Product> list = (ArrayList<Product>)smodel.list();
+	public List<ProductDto> getList() {
+		List<ProductDto> list = smodel.list();
 		//model.addAttribute("list",list);
 		return list;
 	}
