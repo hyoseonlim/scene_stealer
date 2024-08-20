@@ -54,14 +54,16 @@ public class PostsModel {
 
 	@Autowired
 	private FollowsRepository frps;
-	
+
 	@Autowired
 	private ReportedPostsRepository rprps;
 
+	// 유저 정보 하나 가져오기
 	public UserDto userInfo(int no) {
 		return User.toDto(urps.findById(no).get());
 	}
 
+	// 유저 정보 수정하기
 	@Transactional
 	public boolean userInfoUpdate(int userNo, UserDto dto) {
 		try {
@@ -80,6 +82,7 @@ public class PostsModel {
 		}
 	}
 
+	// 한 유저에 대한 팔로잉, 팔로워 정보 가져오기
 	public Map<String, List<Integer>> followInfo(int no) {
 		List<Integer> followerList = frps.findByFolloweeNo(no).stream().map(f -> f.getFollower().getNo())
 				.collect(Collectors.toList());
@@ -91,20 +94,24 @@ public class PostsModel {
 		return result;
 	}
 
+	// 팔로잉 정보 가져오기
 	public List<UserDto> followeeInfo(int no) {
 		return frps.findByFollowerNo(no).stream().map(Follow::getFollowee).map(User::toDto)
 				.collect(Collectors.toList());
 	}
 
+	// 팔로워 정보 가져오기
 	public List<UserDto> followerInfo(int no) {
 		return frps.findByFolloweeNo(no).stream().map(Follow::getFollower).map(User::toDto)
 				.collect(Collectors.toList());
 	}
 
+	// 팔로우 여부 체크하기
 	public boolean followCheck(int no, int fno) {
 		return frps.findByFollowerNoAndFolloweeNo(no, fno).size() > 0 ? true : false;
 	}
 
+	// 팔로우 취소하기
 	@Transactional
 	public boolean deleteFollow(int no, int fno) {
 		boolean b = false;
@@ -119,6 +126,7 @@ public class PostsModel {
 
 	}
 
+	// 팔로우하기
 	@Transactional
 	public boolean insertFollow(FollowDto dto) {
 		try {
@@ -130,6 +138,7 @@ public class PostsModel {
 		}
 	}
 
+	// 팔로잉 글 모아보기
 	public List<PostDto> followPostList(int userNo) {
 		List<Integer> followeeList = frps.findByFollowerNo(userNo).stream().map(f -> f.getFollowee().getNo())
 				.collect(Collectors.toList());
@@ -144,10 +153,12 @@ public class PostsModel {
 		return postList;
 	}
 
+	// 특정 유저 작성 글 보기
 	public List<PostDto> postListByUser(int no) {
 		return prps.findByUserNo(no).stream().map(Post::toDto).collect(Collectors.toList());
 	}
 
+	// 게시글 세부 보기
 	public PostDetailDto postDetail(int postNo) {
 
 		PostDto postInfo = Post.toDto(prps.findById(postNo).get());
@@ -159,6 +170,7 @@ public class PostsModel {
 
 	}
 
+	// 게시글 좋아요 취소하기
 	@Transactional
 	public boolean deletePostLike(int postNo, int userNo) {
 		boolean b = false;
@@ -173,6 +185,7 @@ public class PostsModel {
 
 	}
 
+	// 게시글 좋아요
 	@Transactional
 	public boolean insertPostLike(PostLikeDto dto) {
 		try {
@@ -184,6 +197,7 @@ public class PostsModel {
 		}
 	}
 
+	// 댓글 좋아요 취소하기
 	@Transactional
 	public boolean deleteCommentLike(int commentNo, int userNo) {
 		boolean b = false;
@@ -197,6 +211,7 @@ public class PostsModel {
 		return b;
 	}
 
+	// 댓글 좋아요
 	@Transactional
 	public boolean insertCommentLike(CommentLikeDto dto) {
 		try {
@@ -208,22 +223,27 @@ public class PostsModel {
 		}
 	}
 
+	// 게시글 좋아요 수 가져오기
 	public List<PostLikeDto> getPostLike(int no) {
 		return plrps.findByPostNo(no).stream().map(PostLike::toDto).collect(Collectors.toList());
 	}
 
+	// 댓글 좋아요 수 가져오기
 	public List<CommentLikeDto> getCommentLike(int no) {
 		return clrps.findByCommentNo(no).stream().map(CommentLike::toDto).collect(Collectors.toList());
 	}
 
+	// 게시글 좋아요 여부 확인하기
 	public boolean checkPostLike(int postNo, int userNo) {
 		return plrps.findByPostNoAndUserNo(postNo, userNo).size() == 0 ? false : true;
 	}
 
+	// 댓글 좋아요 여부 확인하기
 	public boolean checkCommentLike(int commentNo, int userNo) {
 		return clrps.findByCommentNoAndUserNo(commentNo, userNo).size() == 0 ? false : true;
 	}
 
+	// 게시글 삭제하기
 	@Transactional
 	public boolean deletePosts(int postNo) {
 		boolean b = false;
@@ -237,6 +257,7 @@ public class PostsModel {
 		return b;
 	}
 
+	// 게시글 등록하기
 	@Transactional
 	public boolean insertPosts(PostDto dto) {
 		try {
@@ -248,6 +269,7 @@ public class PostsModel {
 		}
 	}
 
+	// 게시글 수정하기
 	@Transactional
 	public boolean updatePosts(int postNo, PostDto dto) {
 		try {
@@ -266,6 +288,7 @@ public class PostsModel {
 		}
 	}
 
+	// 댓글 삭제하기
 	@Transactional
 	public boolean deleteComment(int commentNo) {
 		boolean b = false;
@@ -279,6 +302,7 @@ public class PostsModel {
 		return b;
 	}
 
+	// 댓글 등록하기
 	@Transactional
 	public boolean insertComment(CommentDto dto) {
 		try {
@@ -289,7 +313,8 @@ public class PostsModel {
 			return false;
 		}
 	}
-	
+
+	// 게시글 신고하기
 	@Transactional
 	public boolean reportedPost(ReportedPostDto dto) {
 		try {
@@ -299,6 +324,19 @@ public class PostsModel {
 			System.out.println("reportedPost ERROR : " + e.getMessage());
 			return false;
 		}
+	}
+
+	// 게시글 여러 개 삭제하기 (오버라이딩)
+	@Transactional
+	public boolean deletePosts(List<Integer> postIds) {
+		boolean b = false;
+		try {
+			prps.deleteAllById(postIds);
+			b = true;
+		} catch (Exception e) {
+			System.out.println("deletePosts ERROR : " + e.getMessage());
+		}
+		return b;
 	}
 
 }
