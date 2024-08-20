@@ -27,6 +27,8 @@ public class OrderDto {
 	  
 	  private Integer userNo;
 	 private String userId;
+	 
+	 private List<Integer> productNoList;
 	  
 	  private List<OrderProductDto> orderProducts;
 	  

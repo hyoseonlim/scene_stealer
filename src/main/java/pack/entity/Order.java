@@ -30,7 +30,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer no;
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "user_no")
     private User user;
 
@@ -54,6 +54,7 @@ public class Order {
 	    			.state(entity.getState())
 	    			.date(entity.getDate())
 	    			.price(entity.getPrice())
+	    			.productNoList(entity.getOrderProducts().stream().map(OrderProduct::getNo).collect(Collectors.toList()))
 	    			.orderProducts(entity.getOrderProducts().stream().map(OrderProduct::toDto).collect(Collectors.toList()))
 	    			.build();
 	    }

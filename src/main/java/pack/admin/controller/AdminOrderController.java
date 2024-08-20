@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import pack.admin.model.AdminOrderModel;
 import pack.dto.OrderDto;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,4 +28,15 @@ public class AdminOrderController {
         String status = requestBody.get("status");
         return adminOrderModel.updateOrderStatus(orderNo, status);
     }
+    @GetMapping("/detail/{orderNo}")
+    public Map<String, Object> getOrderDetail(@PathVariable("orderNo") Integer orderNo) {
+    	OrderDto orderDto = adminOrderModel.getData(orderNo);
+    	Map<Integer, String> productInfo = adminOrderModel.getProductInfo(orderDto.getProductNoList());
+    	Map<String, Object> result = new HashMap<String, Object>();
+    	result.put("order", orderDto);
+    	result.put("product", productInfo);
+    	return result;
+    }
+
+   
 }
