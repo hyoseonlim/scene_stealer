@@ -18,6 +18,9 @@ public interface ShowsRepository extends JpaRepository<Show, Integer>{
     @Query("SELECT a FROM Show a WHERE a.title LIKE %:term%")
     List<Show> findByTitleContaining(@Param("term") String term);
 	
+    @Query("SELECT s FROM Show s WHERE s.no IN :showNos")
+    List<Show> findByShowNos(@Param("showNos") List<Integer> showNos);
+    
 //	@Query("SELECT c FROM Character c JOIN c.show s JOIN c.styles st JOIN st.items i WHERE s.no = :showNo")
 //	public List<Character> findSubData(int showNo);
 }

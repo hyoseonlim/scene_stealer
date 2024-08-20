@@ -51,7 +51,7 @@ public class Product {
     @Builder.Default
     private List<OrderProduct> orderProducts = new ArrayList<>();
     
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product" )
     private List<Post> post;
     
     public static ProductDto toDto(Product entity) {

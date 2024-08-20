@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import pack.dto.ProductDto;
+import pack.dto.ShopDto;
+import pack.dto.SubDto;
 import pack.entity.Product;
 import pack.model.ShopModel;
 import pack.repository.ProductsRepository;
@@ -24,8 +26,8 @@ public class ShopController {
 	
 	//----Rest 요청
 	@GetMapping("/list")
-	public ArrayList<Product> getList() {
-		ArrayList<Product> list = (ArrayList<Product>)smodel.list();
+	public List<ProductDto> getList() {
+		List<ProductDto> list = smodel.list();
 		//model.addAttribute("list",list);
 		return list;
 	}
@@ -45,10 +47,11 @@ public class ShopController {
 	    	return smodel.list2(no); 
 	    }
 	    
-	   // 리뷰 읽기(product_no에서 연결해서 review 보기)
+	  // 상품별 리뷰보기(제품, 리뷰 일 대 다)
 	    @GetMapping("/list/review/{no}")
-		public ProductDto getReviewList(@PathVariable("no") Integer no) {
-			return smodel.list2(no);
-			
+		public ShopDto reviewData(@PathVariable("no") Integer no) {
+			return smodel.reviewshow(no);
 		}
+	    
+	    
 }

@@ -10,4 +10,9 @@ import pack.entity.Post;
 public interface PostsRepository extends JpaRepository<Post, Integer>{
 
 	public List<Post> findTop3ByOrderByNoDesc();
+	
+	public List<Post> findByUserNo(int no);
+	
+	public int deleteByNo(int no);
+	
 }

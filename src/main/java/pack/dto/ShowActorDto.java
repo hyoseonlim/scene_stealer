@@ -16,6 +16,8 @@ public class ShowActorDto {
     private Integer no;
     private ShowDto show;
     private ActorDto actor;
+    
+    private Integer showNo, actorNo;
 
     public static ShowActor toEntity(ShowActorDto dto) {
         return ShowActor.builder()

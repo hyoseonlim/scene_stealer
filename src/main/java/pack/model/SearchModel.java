@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import pack.dto.ActorDto;
+import pack.dto.ProductDto;
+import pack.dto.ShowDto;
 import pack.entity.Actor;
 import pack.entity.Product;
 import pack.entity.Show;
@@ -41,16 +43,28 @@ public class SearchModel {
         }
     }
     
-    private List<Actor> searchActors(String term) {
-        return actorsRepository.findByNameContaining(term);
+    private List<ActorDto> searchActors(String term) {
+        return actorsRepository.findByNameContaining(term).stream().map(Actor::toDto).toList();
     }
     
-    private List<Show> searchShows(String term) {
-        return showsRepository.findByTitleContaining(term);
+    private List<ShowDto> searchShows(String term) {
+        return showsRepository.findByTitleContaining(term).stream().map(Show::toDto).toList();
     }
 
-    private List<Product> searchProducts(String term) {
-    	return productsRepository.findByNameContaining(term);
+    private List<ProductDto> searchProducts(String term) {
+    	return productsRepository.findByNameContaining(term).stream().map(Product::toDto).toList();
+    }
+    
+    
+    // 작품 번호 리스트를 받아서 작품의 정보를 조회...
+    public List<ShowDto> getShowsByNos(List<Integer> showNos) {
+        return showsRepository.findByShowNos(showNos).stream().map(Show::toDto).toList();
+    }
+    
+    public List<Show> getShowsByActorNo(int actorNo) {
+        List<Integer> showNos = actorsRepository.findShowNosByActorNo(actorNo);
+        System.out.println("Show Nos: " + showNos);  // 디버깅용 로그
+        return showsRepository.findByShowNos(showNos);
     }
     
     
@@ -63,7 +77,7 @@ public class SearchModel {
 //    }
     
     // 이름으로 배우를 찾는 메서드 추가
-    public Optional<Actor> findActorByName(String name) {
-        return actorsRepository.findByName(name);
-    }
+//    public Optional<Actor> findActorByName(String name) {
+//        return actorsRepository.findByName(name);
+//    }
 }

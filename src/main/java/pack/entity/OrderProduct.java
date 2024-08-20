@@ -35,16 +35,15 @@ public class OrderProduct {
 	    private Integer price;
 	    private Integer quantity;
 	    
-		public static OrderProductDto toDto (OrderProduct entity) {
-	    	return OrderProductDto.builder()
-	    			.no(entity.getNo())
-	    			.orderNo(entity.getOrder().getNo())
-	    			.productNo(entity.getProduct().getNo())
-//	    			.order(Order.toDto(entity.getOrder()))
-//	    			.product(Product.toDto(entity.getProduct()))
-	    			.price(entity.getPrice())
-	    			.quantity(entity.getQuantity())
-	    			.build();
+	    public static OrderProductDto toDto(OrderProduct entity) {
+	        // 방어 코드 추가: product와 order가 null일 수 있는 가능성 고려
+	        return OrderProductDto.builder()
+	                .no(entity.getNo())
+	                .orderNo(entity.getOrder() != null ? entity.getOrder().getNo() : null)
+	                .productNo(entity.getProduct() != null ? entity.getProduct().getNo() : null)
+	                .price(entity.getPrice())
+	                .quantity(entity.getQuantity())
+	                .build();
 	    }
 
 }

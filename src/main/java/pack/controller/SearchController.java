@@ -44,6 +44,15 @@ public class SearchController {
         
         return result;
     }
+    
+    // 특정 배우의 쇼를 가져오는 API
+    @GetMapping("/user/actor/{actorNo}/shows")
+    public Map<String, Object> getShowsByActorNo(@PathVariable("actorNo") int actorNo) {
+        List<Show> shows = model.getShowsByActorNo(actorNo);
+        Map<String, Object> result = new HashMap<>();
+        result.put("shows", shows.stream().map(Show::toDto).toList());
+        return result;
+    }
 	
 	
     // 이름으로 배우를 찾는 API 추가

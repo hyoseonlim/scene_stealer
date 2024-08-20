@@ -1,6 +1,9 @@
 package pack.entity;
 
 import java.util.*;
+import java.util.stream.Collectors;
+
+import org.hibernate.annotations.CreationTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -15,6 +18,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,6 +43,8 @@ public class Post {
 
     private String content;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
     @Column(name = "date")
     private java.util.Date date;
 
@@ -65,19 +72,20 @@ public class Post {
     private List<PostLike> postLikes = new ArrayList<>();
     
     public static PostDto toDto(Post entity) {
-    	return PostDto.builder()
-    			.no(entity.getNo())
-//    			.user(User.toDto(entity.getUser()))
-    			.content(entity.getContent())
-    			.date(entity.getDate())
-    			.pic(entity.getPic())
-    			.likesCount(entity.getLikesCount())
-    			.commentsCount(entity.getCommentsCount())
-    			.reportsCount(entity.getReportsCount())
-    			.productNo(entity.getProduct().getNo())
-    			.userNickname(entity.getUser().getNickname())
-    			.userNo(entity.getUser().getNo())
-//    			.product(Product.toDto(entity.getProduct()))
-    			.build();
+        return PostDto.builder()
+            .no(entity.getNo())
+            .content(entity.getContent())
+            .date(entity.getDate())
+            .pic(entity.getPic())
+            .likesCount(entity.getLikesCount())
+            .commentsCount(entity.getCommentsCount())
+            .reportsCount(entity.getReportsCount())
+            .productNo(entity.getProduct() != null ? entity.getProduct().getNo() : null)
+            .userNickname(entity.getUser() != null ? entity.getUser().getNickname() : null)
+            .userNo(entity.getUser() != null ? entity.getUser().getNo() : null)
+            .userPic(entity.getUser() != null ? entity.getUser().getPic() : null)
+            .commentsList(entity.getComments().stream().map(Comment::getNo).collect(Collectors.toList()))
+            .build();
     }
+
 }

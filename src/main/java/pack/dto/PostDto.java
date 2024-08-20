@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import pack.entity.Post;
+import pack.entity.Product;
+import pack.entity.User;
 
 @Getter
 @Builder
@@ -36,18 +38,20 @@ public class PostDto {
 	private List<ReportedPostDto> reportedPosts = new ArrayList<>();
 	
 	private Integer productNo, userNo;
-	private String userNickname;
+	private String userNickname, userPic;
+	private List<Integer> commentsList;
 
 	public static Post toEntity(PostDto dto) {
 		return Post.builder()
 				.no(dto.getNo())
-				.user(UserDto.toEntity(dto.getUser()))
+				.user(User.builder().no(dto.getUserNo()).build())
 				.content(dto.getContent())
-				.date(dto.getDate()).pic(dto.getPic())
+				.date(dto.getDate())
+				.pic(dto.getPic())
 				.likesCount(dto.getLikesCount())
 				.commentsCount(dto.getCommentsCount())
 				.reportsCount(dto.getReportsCount())
-				.product(ProductDto.toEntity(dto.getProduct()))
+				.product(Product.builder().no(dto.getProductNo()).build())
 				.build();
 	}
 }

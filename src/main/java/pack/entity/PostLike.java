@@ -20,7 +20,7 @@ import pack.dto.PostLikeDto;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "post_likes")
+@Table(name = "post_like")
 public class PostLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,8 +36,10 @@ public class PostLike {
     public static PostLikeDto toDto(PostLike entity) {
     	return PostLikeDto.builder()
     			 .no(entity.getNo())
-				  .post(Post.toDto(entity.getPost()))
-				  .user(User.toDto(entity.getUser()))
+    			 .postNo(entity.getPost().getNo())
+    			 .userNo(entity.getUser().getNo())
+//				  .post(Post.toDto(entity.getPost()))
+//				  .user(User.toDto(entity.getUser()))
 				  .build();
     }
 }
