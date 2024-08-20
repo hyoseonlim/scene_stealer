@@ -17,5 +17,6 @@ public class ScrapDto {
 	
 	private String actor;
 	private String character;
+	private String pic;
 
 }

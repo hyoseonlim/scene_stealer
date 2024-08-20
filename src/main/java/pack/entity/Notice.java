@@ -28,8 +28,6 @@ public class Notice {
     private String category;
     private String title;
     private String contents;
-
-    @Column(name = "date")
     private LocalDateTime date;
     
     public static NoticeDto toDto (Notice entity) {

@@ -7,6 +7,7 @@ import pack.dto.NoticeDto;
 import pack.entity.Notice;
 import pack.repository.NoticesRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +41,7 @@ public class AdminHelpController {
 	// 공지 추가
 	@PostMapping("/admin/help/notice")
 	public Map<String, Object> insert(@RequestBody NoticeDto dto) { // @RequestBody: 요청 본문에 담긴 값을 자바객체로 변환
+		dto.setDate(LocalDateTime.now());
 		repository.save(NoticeDto.toEntity(dto));
 		/*
 		Map<String, Object> map = new HashMap<String, Object>();
