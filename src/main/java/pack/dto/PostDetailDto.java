@@ -17,7 +17,7 @@ import lombok.Setter;
 public class PostDetailDto {
 
 	private PostDto posts;
-	private String userPic, userNickname;
+	private String userPic, userNickname, userBio;
 	private List<CommentDto> comments;
 
 }

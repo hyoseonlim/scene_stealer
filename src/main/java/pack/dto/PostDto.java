@@ -31,6 +31,7 @@ public class PostDto {
 	private Integer likesCount;
 	private Integer commentsCount;
 	private Integer reportsCount;
+	
 
 	private ProductDto product;
 	private List<CommentDto> comments = new ArrayList<>();
@@ -40,6 +41,7 @@ public class PostDto {
 	private Integer productNo, userNo;
 	private String userNickname, userPic;
 	private List<Integer> commentsList;
+	private List<Integer> reportedPostsList;
 
 	public static Post toEntity(PostDto dto) {
 		return Post.builder()
