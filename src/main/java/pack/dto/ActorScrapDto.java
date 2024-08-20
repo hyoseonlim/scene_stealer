@@ -13,7 +13,7 @@ import pack.entity.User;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ScrapDto {
+public class ActorScrapDto {
 	
 	private String actor;
 	private String character;

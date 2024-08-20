@@ -11,22 +11,28 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import pack.admin.scrap.ActorScrap;
-import pack.dto.ScrapDto;
+import pack.admin.scrap.Scrap;
+import pack.dto.ActorScrapDto;
+import pack.dto.ShowDto;
 
 @RestController
 public class AdminMainController {
 	
 	@Autowired
-	private ActorScrap scrap;
+	private Scrap scrap;
 	
-	@GetMapping("/admin/scrap/{keyword}")
-	public ArrayList<ScrapDto> ScrapData(@PathVariable("keyword") String keyword) {
+	@GetMapping("/admin/scrap/show/{keyword}")
+	public ShowDto ScrapShow(@PathVariable("keyword") String keyword) {
+		return scrap.scrapShow(keyword);
+	}
+	
+	@GetMapping("/admin/scrap/actors/{keyword}")
+	public ArrayList<ActorScrapDto> ScrapActors(@PathVariable("keyword") String keyword) {
 		return scrap.scrapActors(keyword);
 	}
 	
 	@PostMapping("/admin/fashion")
-	public String insertMainDatas(@RequestBody List<ScrapDto> datas) {
+	public String insertMainDatas(@RequestBody List<ActorScrapDto> datas) {
 		// AdminMainModel에서 작품/배우/배역 CRUD
 		return "";
 	}
