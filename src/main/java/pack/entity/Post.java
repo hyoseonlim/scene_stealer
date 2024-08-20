@@ -24,9 +24,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import pack.dto.PostDto;
 
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -80,6 +82,7 @@ public class Post {
             .likesCount(entity.getLikesCount())
             .commentsCount(entity.getCommentsCount())
             .reportsCount(entity.getReportsCount())
+            .reportedPostsList(entity.getReportedPosts().stream().map(ReportedPost::getNo).collect(Collectors.toList()))
             .productNo(entity.getProduct() != null ? entity.getProduct().getNo() : null)
             .userNickname(entity.getUser() != null ? entity.getUser().getNickname() : null)
             .userNo(entity.getUser() != null ? entity.getUser().getNo() : null)

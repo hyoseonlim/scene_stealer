@@ -16,18 +16,22 @@ import pack.dto.FollowDto;
 import pack.dto.PostDetailDto;
 import pack.dto.PostDto;
 import pack.dto.PostLikeDto;
+import pack.dto.ReportedPostDto;
 import pack.dto.UserDto;
 import pack.entity.Comment;
 import pack.entity.CommentLike;
 import pack.entity.Follow;
 import pack.entity.Post;
 import pack.entity.PostLike;
+import pack.entity.Product;
+import pack.entity.ReportedPost;
 import pack.entity.User;
 import pack.repository.CommentLikeRepository;
 import pack.repository.CommentsRepository;
 import pack.repository.FollowsRepository;
 import pack.repository.PostLikeRepository;
 import pack.repository.PostsRepository;
+import pack.repository.ReportedPostsRepository;
 import pack.repository.UsersRepository;
 
 @Repository
@@ -50,9 +54,30 @@ public class PostsModel {
 
 	@Autowired
 	private FollowsRepository frps;
+	
+	@Autowired
+	private ReportedPostsRepository rprps;
 
 	public UserDto userInfo(int no) {
 		return User.toDto(urps.findById(no).get());
+	}
+
+	@Transactional
+	public boolean userInfoUpdate(int userNo, UserDto dto) {
+		try {
+			User user = urps.findById(userNo).get();
+
+			if (dto.getNickname() != null && !dto.getNickname().isEmpty()) {
+				user.setNickname(dto.getNickname());
+			}
+			user.setBio(dto.getBio());
+
+			urps.save(user);
+			return true;
+		} catch (Exception e) {
+			System.out.println("updatePosts ERROR : " + e.getMessage());
+			return false;
+		}
 	}
 
 	public Map<String, List<Integer>> followInfo(int no) {
@@ -129,6 +154,7 @@ public class PostsModel {
 		UserDto userInfo = User.toDto(urps.findById(postInfo.getUserNo()).get());
 
 		return PostDetailDto.builder().posts(postInfo).userPic(userInfo.getPic()).userNickname(userInfo.getNickname())
+				.userBio(userInfo.getBio())
 				.comments(crps.findByPostNo(postNo).stream().map(Comment::toDto).collect(Collectors.toList())).build();
 
 	}
@@ -193,11 +219,11 @@ public class PostsModel {
 	public boolean checkPostLike(int postNo, int userNo) {
 		return plrps.findByPostNoAndUserNo(postNo, userNo).size() == 0 ? false : true;
 	}
-	
+
 	public boolean checkCommentLike(int commentNo, int userNo) {
 		return clrps.findByCommentNoAndUserNo(commentNo, userNo).size() == 0 ? false : true;
 	}
-	
+
 	@Transactional
 	public boolean deletePosts(int postNo) {
 		boolean b = false;
@@ -221,7 +247,25 @@ public class PostsModel {
 			return false;
 		}
 	}
-	
+
+	@Transactional
+	public boolean updatePosts(int postNo, PostDto dto) {
+		try {
+			Post post = prps.findById(postNo).get();
+
+			if (dto.getContent() != null && !dto.getContent().isEmpty()) {
+				post.setContent(dto.getContent());
+			}
+			post.setProduct(Product.builder().no(dto.getProductNo()).build());
+
+			prps.save(post);
+			return true;
+		} catch (Exception e) {
+			System.out.println("updatePosts ERROR : " + e.getMessage());
+			return false;
+		}
+	}
+
 	@Transactional
 	public boolean deleteComment(int commentNo) {
 		boolean b = false;
@@ -242,6 +286,17 @@ public class PostsModel {
 			return true;
 		} catch (Exception e) {
 			System.out.println("insertComment ERROR : " + e.getMessage());
+			return false;
+		}
+	}
+	
+	@Transactional
+	public boolean reportedPost(ReportedPostDto dto) {
+		try {
+			rprps.save(ReportedPostDto.toEntity(dto));
+			return true;
+		} catch (Exception e) {
+			System.out.println("reportedPost ERROR : " + e.getMessage());
 			return false;
 		}
 	}

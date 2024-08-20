@@ -10,6 +10,7 @@ import pack.dto.UserDto;
 
 @Getter
 @Builder
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
