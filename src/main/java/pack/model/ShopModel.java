@@ -2,6 +2,7 @@ package pack.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -39,15 +40,17 @@ public class ShopModel {
 	           
 	}
 	
-	// 리뷰
-//	public List<ReviewDto> ProductReview(Integer no) {
-//		return reviewsRepository.findById(no).stream().map(Review::toDto).toList();
-//	}
 	
 	// 리뷰 연결
 	public ShopDto reviewshow(Integer no) {
 		ProductDto dto =  productsRepository.findById(no).stream().map(Product::toDto).toList().get(0);
 		List<ReviewDto> rlist = new ArrayList<>();
+		
+		for (Integer i : dto.getReviewNoList()) {
+			ReviewDto rdto = new ReviewDto();
+			rdto = Review.toDto(reviewsRepository.findById(i).get());
+			rlist.add(rdto);
+		}
 		
 		 return ShopDto.builder()
 				 .product(dto)
@@ -55,8 +58,22 @@ public class ShopModel {
                  .build();
 	}
 	
-	
-	
+	// 내가 쓴 리뷰만 모아보기
+	public ShopDto myreviewshow(Integer no) {
+		List<ProductDto> dto =  productsRepository.findByNo(no).stream().map(Product::toDto).toList();
+		List<ReviewDto> rlist = new ArrayList<>();
+		
+		for (Integer i : dto.getReviewNoList()) {
+			ReviewDto rdto = new ReviewDto();
+			rdto = Review.toDto(reviewsRepository.findById(i).get());
+			rlist.add(rdto);
+		}
+		
+		 return ShopDto.builder()
+				 .product(dto)
+				 .reviews(rlist)
+                 .build();
+	}
 	
 	
 }

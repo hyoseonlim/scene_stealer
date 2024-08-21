@@ -16,4 +16,6 @@ import lombok.Setter;
 public class ShopDto {
 	private ProductDto product;
 	private List<ReviewDto> reviews; // 상품별 리뷰 나열하기
+	private List<OrderProductDto> orderProducts;// 
+	
 }
