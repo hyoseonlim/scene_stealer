@@ -1,24 +1,20 @@
 package pack.websocket;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 @Controller
 public class ChatController {
 
-    @MessageMapping("/chat.sendMessage")
-    @SendTo("/topic/public") 
-    public ChatMessage sendMessage(@Payload ChatMessage chatMessage) {
-        return chatMessage;
-    }
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
-    @MessageMapping("/chat.addUser")
-    @SendTo("/topic/public")
-    public ChatMessage addUser(@Payload ChatMessage chatMessage, SimpMessageHeaderAccessor headerAccessor) {
-        headerAccessor.getSessionAttributes().put("username", chatMessage.getSender());
-        return chatMessage;
+    // 사용자가 관리자에게 메시지를 보낼 때
+    @MessageMapping("/chat/message")
+    public void message(ChatDto dto) {
+        // 관리자의 ID로 메시지를 전송 (예: 관리자의 userNo가 100이라고 가정)
+        messagingTemplate.convertAndSend("/sub/chat/room/100", dto);
     }
 }

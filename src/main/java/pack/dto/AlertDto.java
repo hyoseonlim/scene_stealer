@@ -27,6 +27,8 @@ public class AlertDto {
 
 	private Boolean isRead;
 	
+	private String path;
+	
 	public static Alert toEntity(AlertDto dto) {
 		return Alert.builder()
 				.no(dto.getNo())
@@ -35,6 +37,7 @@ public class AlertDto {
     			.content(dto.getContent())
     			.date(dto.getDate())
     			.isRead(dto.getIsRead())
+    			.path(dto.getPath())
     			.build();
 	}
 }
