@@ -59,21 +59,21 @@ public class ShopModel {
 	}
 	
 	// 내가 쓴 리뷰만 모아보기
-	public ShopDto myreviewshow(Integer no) {
-		List<ProductDto> dto =  productsRepository.findByNo(no).stream().map(Product::toDto).toList();
-		List<ReviewDto> rlist = new ArrayList<>();
-		
-		for (Integer i : dto.getReviewNoList()) {
-			ReviewDto rdto = new ReviewDto();
-			rdto = Review.toDto(reviewsRepository.findById(i).get());
-			rlist.add(rdto);
-		}
-		
-		 return ShopDto.builder()
-				 .product(dto)
-				 .reviews(rlist)
-                 .build();
-	}
+//	public ShopDto myreviewshow(Integer no) {
+//		List<ProductDto> dto =  productsRepository.findByNo(no).stream().map(Product::toDto).toList();
+//		List<ReviewDto> rlist = new ArrayList<>();
+//		
+//		for (Integer i : dto.getReviewNoList()) {
+//			ReviewDto rdto = new ReviewDto();
+//			rdto = Review.toDto(reviewsRepository.findById(i).get());
+//			rlist.add(rdto);
+//		}
+//		
+//		 return ShopDto.builder()
+//				 .product(dto)
+//				 .reviews(rlist)
+//                 .build();
+//	}
 	
 	
 }

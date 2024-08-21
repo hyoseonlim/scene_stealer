@@ -55,9 +55,9 @@ public class ShopController {
 	    
 	    
 	    // 내가 쓴 리뷰 보기
-	    @GetMapping("/mypage/myreview/{user}")
-	    public ShopDto myreviewOnly(@PathVariable("user") Integer user) {
-			return smodel.myreviewshow(user);
-		} 
+//	    @GetMapping("/mypage/myreview/{user}")
+//	    public ShopDto myreviewOnly(@PathVariable("user") Integer user) {
+//			return smodel.myreviewshow(user);
+//		} 
 	    
 }
