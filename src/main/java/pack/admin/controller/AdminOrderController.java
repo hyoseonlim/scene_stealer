@@ -37,6 +37,20 @@ public class AdminOrderController {
     	result.put("product", productInfo);
     	return result;
     }
+    // DELETE 요청을 처리하여 특정 상품 번호(no)의 상품을 삭제
+    @DeleteMapping("/{no}")
+    public Map<String, Object> deleteProduct(@PathVariable("no") Integer no) {
+        Map<String, Object> response = new HashMap<>();  // 응답 데이터를 담을 맵 객체 생성
+        String result = adminOrderModel.deleteOrder(no);  // 상품 삭제 로직을 실행하고 결과 메시지를 반환
+        if ("주문 삭제 성공".equals(result)) {
+            response.put("isSuccess", true);  // 성공 상태와 메시지를 응답에 추가
+            response.put("message", result);
+        } else {
+            response.put("isSuccess", false);  // 실패 상태와 메시지를 응답에 추가
+            response.put("message", result);
+        }
+        return response;  // 응답을 반환
+    }
 
    
 }
