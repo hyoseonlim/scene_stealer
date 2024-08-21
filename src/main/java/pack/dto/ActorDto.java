@@ -1,5 +1,6 @@
 package pack.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,7 +30,8 @@ public class ActorDto {
                .no(dto.getNo())
                .name(dto.getName())
                .pic(dto.getPic())
-               .characters(dto.getCharacters().stream().map(CharacterDto::toEntity).collect(Collectors.toList()))
+               // null인 상태에서 stream()을 호출 시 발생하는 에러 방지
+               //.characters(dto.getCharacters() == null ? new ArrayList<>() : dto.getCharacters().stream().map(CharacterDto::toEntity).collect(Collectors.toList()))
                .build();
     }
 }

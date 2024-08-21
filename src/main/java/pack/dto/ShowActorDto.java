@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pack.entity.Actor;
+import pack.entity.Show;
 import pack.entity.ShowActor;
 
 @Getter
@@ -22,8 +24,8 @@ public class ShowActorDto {
     public static ShowActor toEntity(ShowActorDto dto) {
         return ShowActor.builder()
                 .no(dto.getNo())
-                .show(ShowDto.toEntity(dto.getShow()))
-                .actor(ActorDto.toEntity(dto.getActor()))
+                .show(Show.builder().no(dto.getShowNo()).build())
+                .actor(Actor.builder().no(dto.getActorNo()).build())
                 .build();
     }
 }

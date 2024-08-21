@@ -40,8 +40,8 @@ public class CharacterDto {
                 .name(dto.getName())
                 .likesCount(dto.getLikesCount())
                 .pic(dto.getPic())
-                .actor(ActorDto.toEntity(dto.getActor()))
-                .show(ShowDto.toEntity(dto.getShow())) 
+                .actor(Actor.builder().no(dto.getActorNo()).build())
+                .show(Show.builder().no(dto.getShowNo()).build()) 
                 .characterLikes(dto.getCharacterLikes().stream().map(CharacterLikeDto::toEntity).collect(Collectors.toList()))
                 .styles(dto.getStyles().stream().map(StyleDto::toEntity).collect(Collectors.toList()))
                 .build();
