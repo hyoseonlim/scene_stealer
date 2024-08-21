@@ -17,11 +17,11 @@ public class ShowActor {
     
     @ManyToOne
     @JoinColumn(name = "show_no")
-    private Show show;
+    private Show show;		// 작품을 찾기 위해
 
     @ManyToOne
     @JoinColumn(name = "actor_no")
-    private Actor actor;
+    private Actor actor;	// 배우를 찾기 위해
 
     public static ShowActorDto toDto(ShowActor entity) {
         return ShowActorDto.builder()

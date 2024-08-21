@@ -2,6 +2,7 @@ package pack.model;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -27,57 +28,48 @@ public class SearchModel {
     @Autowired
     private ProductsRepository productsRepository;
     
-    public List<?> search(String category, String term) {
+    
+    // 자동완성 ============================================================
+    public List<?> autocomplete(String category, String term) {
         switch (category.toLowerCase()) {
             case "actor":
-            	System.out.println("actor : " + searchActors(term));
                 return searchActors(term);
             case "show":
-            	System.out.println("show : " + searchShows(term));
                 return searchShows(term);
             case "product":
-            	System.out.println("product : " + searchProducts(term));
-            	return searchProducts(term);
+                return searchProducts(term);
             default:
                 throw new IllegalArgumentException("Unknown category: " + category);
         }
     }
     
-    private List<ActorDto> searchActors(String term) {
+    public List<ActorDto> searchActors(String term) {
         return actorsRepository.findByNameContaining(term).stream().map(Actor::toDto).toList();
     }
     
-    private List<ShowDto> searchShows(String term) {
+    public List<ShowDto> searchShows(String term) {
         return showsRepository.findByTitleContaining(term).stream().map(Show::toDto).toList();
     }
 
-    private List<ProductDto> searchProducts(String term) {
-    	return productsRepository.findByNameContaining(term).stream().map(Product::toDto).toList();
+    public List<ProductDto> searchProducts(String term) {
+        return productsRepository.findByNameContaining(term).stream().map(Product::toDto).toList();
     }
     
-    
-    // 작품 번호 리스트를 받아서 작품의 정보를 조회...
-    public List<ShowDto> getShowsByNos(List<Integer> showNos) {
-        return showsRepository.findByShowNos(showNos).stream().map(Show::toDto).toList();
+    public List<ShowDto> findShowsByActorName(String name) {
+        // 1. 이름으로 배우를 검색하여 ID 목록을 가져옴
+        List<Actor> actors = actorsRepository.findByNameContaining(name);
+        List<Integer> actorNos = actors.stream().map(Actor::getNo).collect(Collectors.toList());
+
+        // 2. 각 배우 ID로 쇼 ID 목록을 가져옴
+        List<Integer> showNos = actorNos.stream()
+            .flatMap(actorNo -> actorsRepository.findShowsByActorNo(actorNo).stream())
+            .distinct()
+            .collect(Collectors.toList());
+        
+        // 3. 쇼 ID 목록을 사용하여 쇼 객체를 가져옴
+        List<Show> shows = showsRepository.findByShowNos(showNos);
+
+        // 4. 쇼 객체를 DTO로 변환하여 반환
+        return shows.stream().map(Show::toDto).collect(Collectors.toList());
     }
-    
-    public List<Show> getShowsByActorNo(int actorNo) {
-        List<Integer> showNos = actorsRepository.findShowNosByActorNo(actorNo);
-        System.out.println("Show Nos: " + showNos);  // 디버깅용 로그
-        return showsRepository.findByShowNos(showNos);
-    }
-    
-    
-//    public Optional<Actor> getActorData(int id) {
-//        return actorsRepository.findById(id);
-//    }
-//    
-//    public Optional<Show> getShowData(int id) {
-//        return showsRepository.findById(id);
-//    }
-    
-    // 이름으로 배우를 찾는 메서드 추가
-//    public Optional<Actor> findActorByName(String name) {
-//        return actorsRepository.findByName(name);
-//    }
 }

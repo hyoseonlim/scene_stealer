@@ -42,14 +42,20 @@ public class Show {
     private List<ShowActor> showActor = new ArrayList<>();
     
     public static ShowDto toDto(Show entity) {
+        List<String> actorNames = entity.getShowActor().stream()
+                                        .map(s -> s.getActor().getName())
+                                        .collect(Collectors.toList());
+
+        // 디버깅 로그 추가
+        System.out.println("Actor Names: " + actorNames);
+        
         return ShowDto.builder()
                 .no(entity.getNo())
                 .title(entity.getTitle())
                 .pic(entity.getPic())
                 .characterNo(entity.getCharacters().stream().map(Character::getNo).collect(Collectors.toList()))
                 .showActorsNo(entity.getShowActor().stream().map(s -> s.getActor().getNo()).collect(Collectors.toList()))
-//                .showActors(entity.getShowActor().stream().map(ShowActor::toDto).collect(Collectors.toList()))
-//                .characters(entity.getCharacters().stream().map(Character::toDto).collect(Collectors.toList()))
+                .actorNames(actorNames)
                 .build();
     }
 }

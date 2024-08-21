@@ -17,5 +17,5 @@ public interface ActorsRepository extends JpaRepository<Actor, Integer>{
     List<Object[]> findActorsWithShows(@Param("term") String term);
  
     @Query("SELECT sa.show.no FROM ShowActor sa WHERE sa.actor.no = :actorNo")
-    List<Integer> findShowNosByActorNo(@Param("actorNo") Integer actorNo);
+    List<Integer> findShowsByActorNo(@Param("actorNo") Integer actorNo);
 }
