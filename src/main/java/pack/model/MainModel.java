@@ -74,7 +74,7 @@ public class MainModel {
 	    List<CharacterDto> clist = new ArrayList<>();
 	    List<StyleDto> slist = new ArrayList<>();
 	    List<ItemDto> ilist = new ArrayList<>(); 
-
+	    
 	    for (Integer c : dto.getCharacterNo()) {
 	        crps.findById(c).map(Character::toDto)
 	        .ifPresent(cdto -> {

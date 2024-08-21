@@ -24,6 +24,9 @@ public interface ProductsRepository extends JpaRepository<Product, Integer> {
     // 카테고리로 제품 찾기
     List<Product> findByCategory(String category);
     
+    @Query("SELECT p FROM Product p WHERE p.name LIKE %:name%")
+    List<Product> findByNameContaining(@Param("name") String name);
+    
     // 이름으로 제품 찾기 (부분 문자열)
     @Query("SELECT p FROM Product p WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%'))")
     Page<Product> findByNameContainingIgnoreCase(@Param("name") String name, Pageable pageable);
