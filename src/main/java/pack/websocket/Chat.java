@@ -1,9 +1,6 @@
 package pack.websocket;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Set;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,9 +13,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import pack.entity.Actor;
-import pack.entity.Character;
-import pack.entity.ShowActor;
 import pack.entity.User;
 
 @Getter

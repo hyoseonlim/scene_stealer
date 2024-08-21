@@ -25,7 +25,6 @@ public class ChatDto {
 
 	private Integer no;
 
-	// 채팅방 번호 느낌으로
 	private UserDto userNo;
 
 	private boolean sendCheck;
