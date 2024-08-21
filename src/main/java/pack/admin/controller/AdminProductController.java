@@ -2,6 +2,10 @@ package pack.admin.controller;
 
 // 필요한 클래스들을 import
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,10 +27,34 @@ public class AdminProductController {
     private AdminProductModel adminProductModel;
 
     
+//    @GetMapping
+//    public ResponseEntity<Page<ProductDto>> getAllProducts(Pageable pageable) {
+//        Page<ProductDto> productPage = adminProductModel.listAll(pageable);
+//        return ResponseEntity.ok(productPage);
+//    }
+    
     @GetMapping
-    public List<ProductDto> getAllProducts() {
-        return adminProductModel.list();  // 상품 목록을 반환
+    public ResponseEntity<Page<ProductDto>> getAllProducts(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "searchTerm", defaultValue = "") String searchTerm,
+            @RequestParam(value = "searchField", defaultValue = "name") String searchField) {
+
+        Pageable pageable = PageRequest.of(page, size); // 페이지 요청 생성
+
+        Page<ProductDto> productPage;
+
+        if (searchTerm.isEmpty()) {
+            // 검색어가 없을 경우 전체 목록을 가져옴
+            productPage = adminProductModel.listAll(pageable);
+        } else {
+            // 검색어가 있을 경우, 검색 조건에 따라 상품을 필터링하여 가져옴
+            productPage = adminProductModel.searchProducts(pageable, searchTerm, searchField);
+        }
+
+        return ResponseEntity.ok(productPage);
     }
+
 
     //  특정 상품 번호(no)에 해당하는 상품을 조회
     @GetMapping("/{no}")

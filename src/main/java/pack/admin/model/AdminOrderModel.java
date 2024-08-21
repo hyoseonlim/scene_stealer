@@ -64,16 +64,7 @@ public class AdminOrderModel {
             throw e;
         }
     }
-    // 상품 삭제
-    public String deleteOrder(Integer no) {
-        Order deletorder = ordersRepository.findByNo(no);
-        if (deletorder != null) {
-            ordersRepository.deleteById(no);
-            return "주문 삭제 성공";
-        } else {
-            return "해당 주문을 찾을 수 없습니다.";
-        }
-    }
+   
 
  
 }
