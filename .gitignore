@@ -43,4 +43,11 @@ out/
 /.log
 /version.ini
 
-**/application.properties
+/application.properties
+
+
+### macOS ###
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
