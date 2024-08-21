@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import jakarta.transaction.Transactional;
@@ -16,6 +18,7 @@ import pack.dto.FollowDto;
 import pack.dto.PostDetailDto;
 import pack.dto.PostDto;
 import pack.dto.PostLikeDto;
+import pack.dto.ProductDto;
 import pack.dto.ReportedPostDto;
 import pack.dto.UserDto;
 import pack.entity.Comment;
@@ -159,15 +162,25 @@ public class PostsModel {
 	}
 
 	// 게시글 세부 보기
-	public PostDetailDto postDetail(int postNo) {
+	public PostDetailDto postDetail(int postNo, Pageable pageable) {
 
 		PostDto postInfo = Post.toDto(prps.findById(postNo).get());
 		UserDto userInfo = User.toDto(urps.findById(postInfo.getUserNo()).get());
 
-		return PostDetailDto.builder().posts(postInfo).userPic(userInfo.getPic()).userNickname(userInfo.getNickname())
-				.userBio(userInfo.getBio())
-				.comments(crps.findByPostNo(postNo).stream().map(Comment::toDto).collect(Collectors.toList())).build();
+		Page<Comment> commentsPage = crps.findByPostNo(postNo, pageable);
 
+        return PostDetailDto.builder()
+                .posts(postInfo)
+                .userPic(userInfo.getPic())
+                .userNickname(userInfo.getNickname())
+                .userBio(userInfo.getBio())
+                .comments(commentsPage.getContent().stream()
+                            .map(Comment::toDto)
+                            .collect(Collectors.toList()))
+                .totalPages(commentsPage.getTotalPages()) // 전체 페이지 수
+                .currentPage(commentsPage.getNumber()) // 현재 페이지 번호
+                .totalElements(commentsPage.getTotalElements()) // 총 댓글 수
+                .build();
 	}
 
 	// 게시글 좋아요 취소하기

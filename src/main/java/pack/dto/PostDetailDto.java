@@ -19,5 +19,8 @@ public class PostDetailDto {
 	private PostDto posts;
 	private String userPic, userNickname, userBio;
 	private List<CommentDto> comments;
+	
+	private int totalPages, currentPage;
+	private Long totalElements;
 
 }
