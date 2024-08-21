@@ -3,9 +3,6 @@ package pack.entity;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -45,10 +42,14 @@ public class Show {
         List<String> actorNames = entity.getShowActor().stream()
                                         .map(s -> s.getActor().getName())
                                         .collect(Collectors.toList());
+        List<String> actorPics = entity.getShowActor().stream()
+                                       .map(s -> s.getActor().getPic())
+                                       .collect(Collectors.toList());
 
         // 디버깅 로그 추가
         System.out.println("Actor Names: " + actorNames);
-        
+        System.out.println("Actor Pics: " + actorPics);
+
         return ShowDto.builder()
                 .no(entity.getNo())
                 .title(entity.getTitle())
@@ -56,7 +57,7 @@ public class Show {
                 .characterNo(entity.getCharacters().stream().map(Character::getNo).collect(Collectors.toList()))
                 .showActorsNo(entity.getShowActor().stream().map(s -> s.getActor().getNo()).collect(Collectors.toList()))
                 .actorNames(actorNames)
+                .actorPics(actorPics) // actorPics 추가
                 .build();
     }
 }
-

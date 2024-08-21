@@ -26,7 +26,8 @@ public class ShowDto {
     private List<Integer> showActorsNo;
     private List<Integer> characterNo;
     private List<String> actorNames; // 배우 이름 필드 추가
-
+    private List<String> actorPics; // actorPics 필드 추가
+    
     public static Show toEntity(ShowDto dto) {
         return Show.builder()
                 .no(dto.getNo())
