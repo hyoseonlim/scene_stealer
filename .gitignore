@@ -43,7 +43,8 @@ out/
 /.log
 /version.ini
 
-/application.properties
+src/main/resources/application.properties
+
 
 
 ### macOS ###
