@@ -15,7 +15,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ShopDto {
 	private ProductDto product;
+	private ReviewDto myreviews;//
 	private List<ReviewDto> reviews; // 상품별 리뷰 나열하기
-	private List<OrderProductDto> orderProducts;// 
+	private List<ProductDto> mybuyProducts;// 내가 구매한 리뷰 내열하기
 	
 }

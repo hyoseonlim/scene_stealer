@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pack.dto.ProductDto;
 import pack.dto.ShopDto;
 import pack.dto.SubDto;
+import pack.dto.UserDto;
 import pack.entity.Product;
 import pack.model.ShopModel;
 import pack.repository.ProductsRepository;
@@ -55,9 +56,9 @@ public class ShopController {
 	    
 	    
 	    // 내가 쓴 리뷰 보기
-//	    @GetMapping("/mypage/myreview/{user}")
-//	    public ShopDto myreviewOnly(@PathVariable("user") Integer user) {
-//			return smodel.myreviewshow(user);
-//		} 
+	    @GetMapping("/mypage/review/{userNo}")
+	    public ShopDto myreviewOnly(@PathVariable("userNo") int userNo) {
+			return smodel.mybuyreviews(userNo);
+		} 
 	    
 }
