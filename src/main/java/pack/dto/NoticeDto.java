@@ -20,8 +20,6 @@ public class NoticeDto {
 	 private String category;
 	 private String title;
 	 private String contents;
-	 private int totalPages, currentPage;
-	 private Long totalElements;
 	 
 	 private LocalDateTime date;
 	 

@@ -20,14 +20,7 @@ public class UserModel {
 	
 	public Page<NoticeDto> getNoticeList(Pageable pageable) {
 		Page<Notice> noticePage = nrps.findAll(pageable);
-		
-		 return noticePage.map(notice -> {
-	            NoticeDto dto = notice.toDto(notice);
-	            dto.setTotalPages(noticePage.getTotalPages());
-	            dto.setCurrentPage(noticePage.getNumber());
-	            dto.setTotalElements(noticePage.getTotalElements());
-	            return dto;
-	        });
+		return noticePage.map(Notice::toDto);
 	}
 	
 	public NoticeDto getNoticeInfo(int noticeNo) {

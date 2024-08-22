@@ -53,7 +53,6 @@ public class MyPageController {
 		response.put("currentPage", noticePage.getNumber());
 		response.put("totalElements", noticePage.getTotalElements());
 		return ResponseEntity.ok(response);
-
 	}
 
 }

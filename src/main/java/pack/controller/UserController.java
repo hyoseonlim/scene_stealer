@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import pack.dto.AlertDto;
 import pack.dto.NoticeDto;
 import pack.model.UserModel;
 
@@ -22,15 +23,9 @@ public class UserController {
 	private UserModel um;
 	
 	@GetMapping("/user/notice")
-	public ResponseEntity<Map<String, Object>> getNoticeList(Pageable pageable) {
-		
+	public ResponseEntity<Page<NoticeDto>> getNoticeList(Pageable pageable) {
 		Page<NoticeDto> noticePage = um.getNoticeList(pageable);
-		Map<String, Object> response = new HashMap<String, Object>();
-        response.put("content", noticePage.getContent());
-        response.put("totalPages", noticePage.getTotalPages());
-        response.put("currentPage", noticePage.getNumber());
-        response.put("totalElements", noticePage.getTotalElements());
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(noticePage);
 	}
 	
 	@GetMapping("/user/notice/{noticeNo}")
