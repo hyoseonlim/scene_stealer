@@ -1,5 +1,7 @@
 package pack.admin.model;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -27,6 +29,15 @@ public class AdminMainModel {
 		
 		@Autowired
 		CharactersRepository charactersRepo;
+		
+		public List<ShowDto> searchShows() {
+	        return showsRepo.findAll().stream().map(Show::toDto).toList();
+	    }
+		
+		// 작품명 자동완성
+		public List<ShowDto> searchShows(String term) {
+	        return showsRepo.findByTitleContaining(term).stream().map(Show::toDto).toList();
+	    }
 		
 		// 작품 추가
 		public int insertShow(ShowDto dto) {
