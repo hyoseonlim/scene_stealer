@@ -2,6 +2,7 @@ package pack.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import pack.dto.CouponDto;
 import pack.dto.CouponUserDto;
 
 @Getter

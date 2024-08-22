@@ -18,6 +18,7 @@ public class Coupon {
 	private String name;
 	private Integer discountRate;
 	private java.sql.Date expiryDate;
+	
 
 	public static CouponDto toDto(Coupon entity) {
 		return CouponDto.builder()

@@ -28,6 +28,9 @@ public class ReviewDto {
 	 private Integer userNo, productNo;
 	 private String userNickname, productName;
 	 
+	 private int totalPages, currentPage;
+	 private Long totalElements;
+	 
 	 public static Review toEntity(ReviewDto dto) {
 			return Review.builder()
 					.no(dto.getNo())

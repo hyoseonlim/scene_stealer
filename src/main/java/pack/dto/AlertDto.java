@@ -29,6 +29,9 @@ public class AlertDto {
 	
 	private String path;
 	
+	private int totalPages, currentPage;
+	private Long totalElements;
+	
 	public static Alert toEntity(AlertDto dto) {
 		return Alert.builder()
 				.no(dto.getNo())

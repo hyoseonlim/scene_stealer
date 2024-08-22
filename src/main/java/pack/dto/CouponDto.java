@@ -17,6 +17,9 @@ public class CouponDto {
 	private String name;
 	private Integer discountRate;
 	private java.sql.Date expiryDate;
+	
+	private int totalPages, currentPage;
+	 private Long totalElements;
 
 	public static Coupon toEntity(CouponDto dto) {
 		return Coupon.builder()
