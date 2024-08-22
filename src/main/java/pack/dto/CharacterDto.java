@@ -42,8 +42,8 @@ public class CharacterDto {
                 .pic(dto.getPic())
                 .actor(Actor.builder().no(dto.getActorNo()).build())
                 .show(Show.builder().no(dto.getShowNo()).build()) 
-                .characterLikes(dto.getCharacterLikes().stream().map(CharacterLikeDto::toEntity).collect(Collectors.toList()))
-                .styles(dto.getStyles().stream().map(StyleDto::toEntity).collect(Collectors.toList()))
+                //.characterLikes(dto.getCharacterLikes().stream().map(CharacterLikeDto::toEntity).collect(Collectors.toList()))
+                //.styles(dto.getStyles().stream().map(StyleDto::toEntity).collect(Collectors.toList()))
                 .build();
     }
 }

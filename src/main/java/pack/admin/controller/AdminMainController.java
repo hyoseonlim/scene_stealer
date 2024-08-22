@@ -27,13 +27,13 @@ public class AdminMainController {
 	@Autowired
 	private AdminMainModel dao;
 	
-	// 등록된 작품 전체 (입력값이 없을 때)
+	// 자동완성 - 입력값이 없을 때) 등록된 작품 전체
 	@GetMapping("/admin/show/autocomplete")
     public List<ShowDto> autocompleteall() {
         return dao.searchShows();
     }
 	
-	// 등록된 작품 자동완성 (입력값이 있을 때)
+	// 자동완성 - 입력값이 있을 때) 등록된 작품 중 일부
     @GetMapping("/admin/show/autocomplete/{term}")
     public List<ShowDto> autocomplete(@PathVariable("term") String term) {
         return dao.searchShows(term);
@@ -51,10 +51,9 @@ public class AdminMainController {
 		return scrap.scrapActors(keyword);
 	}
 	
-	// 작품, 배우, 배역 INSERT
-	// 4개 테이블 처리: Show, Actor, ShowActor, Character
+	// 작품, 배우, 배역 INSERT) 4개 테이블 처리: Show, Actor, ShowActor, Character
 	@PostMapping("/admin/fashion")
-	public void insertShowActorsCharacters(@RequestBody FashionRequest fashionRequest) {
+	public int insertShowActorsCharacters(@RequestBody FashionRequest fashionRequest) {
 		List<ActorScrapDto> actors = fashionRequest.getActors();
 	    ShowDto show = fashionRequest.getShow();
 	    
@@ -72,6 +71,7 @@ public class AdminMainController {
 	    	characterDto.setName(actorandcharacter.getCharacter());
 	    	characterDto.setPic(actorandcharacter.getPic());
 	    	dao.insertCharacter(characterDto);
-	    }  
+	    }
+	    return show_no;
 	}
 }
