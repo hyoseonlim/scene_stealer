@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import pack.dto.OrderProductDto;
 import pack.dto.ProductDto;
+import pack.dto.ReviewDto;
 import pack.dto.ShopDto;
 import pack.dto.SubDto;
 import pack.dto.UserDto;
@@ -16,7 +18,6 @@ import pack.entity.Product;
 import pack.model.ShopModel;
 import pack.repository.ProductsRepository;
 
-//@Controller
 @RestController
 public class ShopController {
 	@Autowired
@@ -59,6 +60,17 @@ public class ShopController {
 	    @GetMapping("/mypage/review/{userNo}")
 	    public ShopDto myreviewOnly(@PathVariable("userNo") int userNo) {
 			return smodel.mybuyreviews(userNo);
-		} 
+		}
 	    
+	    // 주문 내역 보기
+	    @GetMapping("/order/orderlist/{orderId}/{productId}")
+	    public OrderProductDto myorder(@PathVariable("orderId") Integer orderId,@PathVariable("productId") Integer productId ) {
+	    	return smodel.createOrderProduct(orderId, productId);
+	    }
+	    
+	    // 리뷰 디테일 보기
+	    @GetMapping("/mypage/review/detail/{reviewNo}")
+	    public ReviewDto getReviewDetail(@PathVariable("reviewNo") int reviewNo) {
+	    	return smodel.getReviewDetail(reviewNo);
+	    }
 }
