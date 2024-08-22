@@ -2,16 +2,15 @@ package pack.admin.model;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import pack.dto.ProductDto;
 import pack.entity.Product;
 import pack.repository.ProductsRepository;
 
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Repository
 public class AdminProductModel {
@@ -19,12 +18,6 @@ public class AdminProductModel {
     @Autowired
     private ProductsRepository productReposi;
 
-// // 페이징된 상품 리스트 조회 메서드
-//    public Page<ProductDto> listAll(Pageable pageable) {
-//        Page<Product> products = productReposi.findAll(pageable); // 페이징 처리된 상품 목록을 가져옴
-//        return products.map(Product::toDto); // 각 상품을 ProductDto로 변환하여 반환
-//    }
-    
     // 페이징된 상품 리스트 조회 메서드
     public Page<ProductDto> listAll(Pageable pageable) {
         Page<Product> products = productReposi.findAll(pageable);
@@ -32,15 +25,19 @@ public class AdminProductModel {
     }
 
     // 검색 기능을 추가한 메서드
-    public Page<ProductDto> searchProducts(Pageable pageable, String searchTerm, String searchField) {
+    public Page<ProductDto> searchProducts(Pageable pageable, String searchTerm, String searchField, String startDate, String endDate) {
         Page<Product> products;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
         switch (searchField) {
             case "name":
                 products = productReposi.findByNameContainingIgnoreCase(searchTerm, pageable);
                 break;
-//            case "date":
-//                products = productReposi.findByDateContainingIgnoreCase(searchTerm, pageable);
-//                break;
+            case "date":
+                LocalDateTime start = LocalDateTime.parse(startDate + " 00:00:00", formatter);
+                LocalDateTime end = LocalDateTime.parse(endDate + " 23:59:59", formatter);
+                products = productReposi.findByDateBetween(start, end, pageable);
+                break;
             case "category":
                 products = productReposi.findByCategoryContainingIgnoreCase(searchTerm, pageable);
                 break;
@@ -50,7 +47,7 @@ public class AdminProductModel {
         }
         return products.map(Product::toDto);
     }
-    
+
     // 특정 no에 해당하는 상품 조회
     public ProductDto getData(Integer no) {
         Product product = productReposi.findByNo(no);

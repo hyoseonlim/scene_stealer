@@ -35,31 +35,26 @@ public class AdminOrderController {
 //    }
 
 	@GetMapping
-	public Page<Order> getOrders(@RequestParam(value = "page", defaultValue = "0") int page,
-			@RequestParam(value = "size", defaultValue = "10") int size,
-			@RequestParam(value = "searchTerm", defaultValue = "") String searchTerm,
-			@RequestParam(value = "searchField", defaultValue = "userId") String searchField,
-			@RequestParam(value = "startDate", required = false) String startDate,
-			@RequestParam(value = "endDate", required = false) String endDate) {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date start = null;
-		Date end = null;
+    public Page<OrderDto> getOrders(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "searchTerm", defaultValue = "") String searchTerm,
+            @RequestParam(value = "searchField", defaultValue = "userId") String searchField,
+            @RequestParam(value = "startDate", required = false) String startDate,
+            @RequestParam(value = "endDate", required = false) String endDate) {
 
-		try {
-			if (startDate != null && !startDate.isEmpty()) {
-				start = sdf.parse(startDate);
-			}
-			if (endDate != null && !endDate.isEmpty()) {
-				end = sdf.parse(endDate);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+        Pageable pageable = PageRequest.of(page, size);
 
-		Pageable pageable = PageRequest.of(page, size);
-		return ordersRepository.findOrders(searchTerm, searchField, start, end, pageable);
-	}
+        Page<OrderDto> orderPage;
 
+        if (searchField == null) {
+            orderPage = adminOrderModel.listAll(pageable);
+        } else {
+            orderPage = adminOrderModel.searchOrders(pageable, searchTerm, searchField, startDate, endDate);
+        }
+
+        return orderPage;
+    }
 	// 주문 상태를 업데이트하는 엔드포인트
 	@PutMapping("/{orderNo}/status")
 	public String updateOrderStatus(@PathVariable("orderNo") Integer orderNo,
@@ -77,5 +72,6 @@ public class AdminOrderController {
 		result.put("product", productInfo);
 		return result;
 	}
+	
 
 }

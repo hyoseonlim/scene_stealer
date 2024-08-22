@@ -2,7 +2,8 @@ package pack.admin.model;
 
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +13,6 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.query.Param;
 
 import jakarta.transaction.Transactional;
 import pack.dto.OrderDto;
@@ -42,27 +42,51 @@ public class AdminOrderModel {
         Page<Order> products = ordersRepository.findAll(pageable);
         return products.map(Order::toDto);
     }
+    public Page<OrderDto> searchOrders(Pageable pageable, String searchTerm, String searchField, String startDate, String endDate) {
+        Page<Order> orders;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        switch (searchField) {
+            case "userId":
+                orders = ordersRepository.findByUserIdContainingIgnoreCase(searchTerm, pageable);
+                break;
+            case "state":
+                orders = ordersRepository.findByStateContainingIgnoreCase(searchTerm, pageable);
+                break;
+            case "date":
+                LocalDateTime start = LocalDateTime.parse(startDate + " 00:00:00", formatter);
+                LocalDateTime end = LocalDateTime.parse(endDate + " 23:59:59", formatter);
+                orders = ordersRepository.findByDateBetween(start, end, pageable);
+                break;
+            default:
+                orders = ordersRepository.findAll(pageable);
+                break;
+        }
+
+        return orders.map(Order::toDto);
+    }	
 
  // 검색 기능을 추가한 메서드
-//    public Page<OrderDto> searchOrders(Pageable pageable, String searchTerm, String searchField) {
-//        Page<Order> orders;
-//        switch (searchField) {
-//            case "userId":
-//                orders = ordersRepository.findByUserIdContainingIgnoreCase(searchTerm, pageable);
+    public Page<OrderDto> searchOrders(Pageable pageable, String searchTerm, String searchField) {
+        Page<Order> orders;
+        switch (searchField) {
+            case "userId":
+                orders = ordersRepository.findByUserIdContainingIgnoreCase(searchTerm, pageable);
+                break;
+            case "state":
+                orders = ordersRepository.findByStateContainingIgnoreCase(searchTerm, pageable);
+                break;
+//            case "date":
+//                orders = ordersRepository.findByDateContainingIgnoreCase(searchTerm, pageable);
 //                break;
-//            case "state":
-//                orders = ordersRepository.findByStateContainingIgnoreCase(searchTerm, pageable);
-//                break;
-////            case "date":
-////                orders = ordersRepository.findByDateBetween(Date startDate, Date endDate, Pageable pageable);
-////                break;
-//            default:
-//                orders = ordersRepository.findAll(pageable);
-//                break;
-//        }
-//
-//        return orders.map(Order::toDto);
-//    }	
+            default:
+            	System.out.println("가나다라마바사\n\n\n\n\n\n\n\n\n\n\n");
+                orders = ordersRepository.findAll(pageable);
+                break;
+        }
+
+        return orders.map(Order::toDto);
+    }	
     public OrderDto getData(Integer no) {
     	OrderDto order = Order.toDto(ordersRepository.findByNo(no));
     	return order;
