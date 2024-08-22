@@ -30,4 +30,5 @@ public class CouponUserDto {
             .isUsed(dto.getIsUsed())
             .build();
     }
+   
 }
