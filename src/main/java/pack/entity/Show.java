@@ -39,16 +39,16 @@ public class Show {
     private List<ShowActor> showActor = new ArrayList<>();
     
     public static ShowDto toDto(Show entity) {
-        List<String> actorNames = entity.getShowActor().stream()
-                                        .map(s -> s.getActor().getName())
-                                        .collect(Collectors.toList());
-        List<String> actorPics = entity.getShowActor().stream()
-                                       .map(s -> s.getActor().getPic())
-                                       .collect(Collectors.toList());
-
-        // 디버깅 로그 추가
-        System.out.println("Actor Names: " + actorNames);
-        System.out.println("Actor Pics: " + actorPics);
+//        List<String> actorNames = entity.getShowActor().stream()
+//                                        .map(s -> s.getActor().getName())
+//                                        .collect(Collectors.toList());
+//        List<String> actorPics = entity.getShowActor().stream()
+//                                       .map(s -> s.getActor().getPic())
+//                                       .collect(Collectors.toList());
+//
+//        // 디버깅 로그 추가
+//        System.out.println("Actor Names: " + actorNames);
+//        System.out.println("Actor Pics: " + actorPics);
 
         return ShowDto.builder()
                 .no(entity.getNo())
@@ -56,8 +56,8 @@ public class Show {
                 .pic(entity.getPic())
                 .characterNo(entity.getCharacters().stream().map(Character::getNo).collect(Collectors.toList()))
                 .showActorsNo(entity.getShowActor().stream().map(s -> s.getActor().getNo()).collect(Collectors.toList()))
-                .actorNames(actorNames)
-                .actorPics(actorPics) // actorPics 추가
+//                .actorNames(actorNames)
+//                .actorPics(actorPics) // actorPics 추가
                 .build();
     }
 }
