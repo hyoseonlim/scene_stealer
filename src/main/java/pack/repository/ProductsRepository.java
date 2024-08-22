@@ -33,9 +33,10 @@ public interface ProductsRepository extends JpaRepository<Product, Integer> {
 
     // 날짜로 제품 찾기 (날짜 형식에 맞게 쿼리 수정)
     // 아래 쿼리는 문자열 형식으로 날짜를 비교하는 방법을 보여줍니다. 실제 사용 시 날짜를 직접 비교하는 것이 좋습니다.
-    @Query("SELECT p FROM Product p WHERE p.date LIKE %:date%")
-    Page<Product> findByDateContainingIgnoreCase(@Param("date") String date, Pageable pageable);
+    //@Query("SELECT p FROM Product p WHERE p.date LIKE %:date%")
+    //Page<Product> findByDateContainingIgnoreCase(@Param("date") String date, Pageable pageable);
 
+    
     // 카테고리로 제품 찾기 (부분 문자열)
     @Query("SELECT p FROM Product p WHERE LOWER(p.category) LIKE LOWER(CONCAT('%', :category, '%'))")
     Page<Product> findByCategoryContainingIgnoreCase(@Param("category") String category, Pageable pageable);

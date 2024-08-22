@@ -2,6 +2,7 @@ package pack.admin.model;
 
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,8 +10,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
+
 import jakarta.transaction.Transactional;
 import pack.dto.OrderDto;
+import pack.dto.ProductDto;
 import pack.entity.Order;
 import pack.entity.Product;
 import pack.repository.OrdersRepository;
@@ -25,14 +31,38 @@ public class AdminOrderModel {
     @Autowired
     private ProductsRepository productsRepository;
 
-    // 모든 주문을 가져오는 메서드
-    public List<OrderDto> getAllOrders() {
-        return ordersRepository.findAll().stream()
-                .map(Order::toDto)
-                .collect(Collectors.toList());
+//    // 모든 주문을 가져오는 메서드
+//    public List<OrderDto> getAllOrders() {
+//        return ordersRepository.findAll().stream()
+//                .map(Order::toDto)
+//                .collect(Collectors.toList());
+//    }
+//    
+    public Page<OrderDto> listAll(Pageable pageable) {
+        Page<Order> products = ordersRepository.findAll(pageable);
+        return products.map(Order::toDto);
     }
-    
 
+ // 검색 기능을 추가한 메서드
+//    public Page<OrderDto> searchOrders(Pageable pageable, String searchTerm, String searchField) {
+//        Page<Order> orders;
+//        switch (searchField) {
+//            case "userId":
+//                orders = ordersRepository.findByUserIdContainingIgnoreCase(searchTerm, pageable);
+//                break;
+//            case "state":
+//                orders = ordersRepository.findByStateContainingIgnoreCase(searchTerm, pageable);
+//                break;
+////            case "date":
+////                orders = ordersRepository.findByDateBetween(Date startDate, Date endDate, Pageable pageable);
+////                break;
+//            default:
+//                orders = ordersRepository.findAll(pageable);
+//                break;
+//        }
+//
+//        return orders.map(Order::toDto);
+//    }	
     public OrderDto getData(Integer no) {
     	OrderDto order = Order.toDto(ordersRepository.findByNo(no));
     	return order;
