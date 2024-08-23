@@ -1,6 +1,6 @@
-// 커뮤니티 관리 (전체 글 & 신고된 글 관리)
 package pack.admin.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,7 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import pack.admin.model.AdminCommunityModel;
 import pack.dto.PostDto;
+import pack.dto.ReportedPostDto;
+import pack.dto.ReportedPosts_a;
 import pack.entity.Post;
+import pack.entity.ReportedPost;
 
 @RestController
 @RequestMapping("/admin")
@@ -20,13 +23,29 @@ public class AdminCommunityController {
     @Autowired
     private AdminCommunityModel adminCommunityModel;
 
-    // 전체 글 조회 엔드포인트
+    // 전체 글 조회 
     @GetMapping("/posts")
-    public List<PostDto> getList() { 
-        // DB에서 모든 글을 조회하고, Post 엔티티를 PostDto로 변환하여 반환
+    public List<PostDto> getAllPosts() { 
         List<Post> posts = adminCommunityModel.getAllPosts();
         return posts.stream()
                     .map(Post::toDto) // Post 엔티티를 PostDto로 변환
                     .collect(Collectors.toList());
+    }
+
+    // 전체 신고 글 조회 
+    @GetMapping("/posts/reported")
+    public ArrayList<ReportedPosts_a> getReportedPosts() { 
+        List<ReportedPost> reportedPosts = adminCommunityModel.getAllReporte();
+        ArrayList<ReportedPosts_a> reportedPosts_a = new ArrayList<ReportedPosts_a>();
+       for(ReportedPost entity: reportedPosts) {
+    	   ReportedPosts_a dto = new ReportedPosts_a();
+    	   dto.setNo(entity.getNo());			// entity.getNo
+    	   dto.setUserId(entity.getUser().getId());
+    	   dto.setCategory(entity.getCategory());    //신고 사유 getCat
+    	   dto.setContent(entity.getPost().getContent());	// 글 내용
+    	   dto.setReportsCount(entity.getPost().getReportsCount());
+    	   reportedPosts_a.add(dto);// 신고 횟수
+       }
+       return reportedPosts_a;
     }
 }
