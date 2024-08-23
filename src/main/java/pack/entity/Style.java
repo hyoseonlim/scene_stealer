@@ -39,18 +39,11 @@ public class Style {
 	@JoinColumn(name = "character_no")
 	private Character character;
 
-	@OneToMany(mappedBy = "style")
-	@Builder.Default
-	private List<Item> item = new ArrayList<>();
-
 	public static StyleDto toDto(Style entity) {
 		return StyleDto.builder()
 				.no(entity.getNo())
 				.pic(entity.getPic())
 				.characterNo(entity.getCharacter().getNo())
-				.itemNoList(entity.getItem().stream().map(Item::getNo).collect(Collectors.toList()))
-//				.character(Character.toDto(entity.getCharacter()))
-//				.item(entity.getItem().stream().map(Item::toDto).collect(Collectors.toList()))
 				.build();
 	}
 }

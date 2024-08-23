@@ -69,33 +69,35 @@ public class MainModel {
 	}
 
 	public SubDto subShowData(int no) {
-	    ShowDto dto = srps.findById(no).stream().map(Show::toDto).toList().get(0);
+//	    ShowDto dto = srps.findById(no).stream().map(Show::toDto).toList().get(0);
+//	    
+//	    List<CharacterDto> clist = new ArrayList<>();
+//	    List<StyleDto> slist = new ArrayList<>();
+//	    List<ItemDto> ilist = new ArrayList<>(); 
+//	    
+//	    for (Integer c : dto.getCharacterNo()) {
+//	        crps.findById(c).map(Character::toDto)
+//	        .ifPresent(cdto -> {
+//	            clist.add(cdto);
+//	            for (Integer s : cdto.getStyleNo()) {
+//	                strps.findById(s).map(Style::toDto).ifPresent(sdto -> {
+//	                	slist.add(sdto);
+//	                	for(Integer i : sdto.getItemNoList()) {
+//	                		irps.findById(i).map(Item::toDto).ifPresent(ilist::add);
+//	                	};
+//	                });
+//	            }
+//	        });
+//	    }
+//
+//	    return SubDto.builder()
+//	                 .show(dto)
+//	                 .characters(clist)
+//	                 .styles(slist)
+//	                 .items(ilist)
+//	                 .build();
 	    
-	    List<CharacterDto> clist = new ArrayList<>();
-	    List<StyleDto> slist = new ArrayList<>();
-	    List<ItemDto> ilist = new ArrayList<>(); 
-	    
-	    for (Integer c : dto.getCharacterNo()) {
-	        crps.findById(c).map(Character::toDto)
-	        .ifPresent(cdto -> {
-	            clist.add(cdto);
-	            for (Integer s : cdto.getStyleNo()) {
-	                strps.findById(s).map(Style::toDto).ifPresent(sdto -> {
-	                	slist.add(sdto);
-	                	for(Integer i : sdto.getItemNoList()) {
-	                		irps.findById(i).map(Item::toDto).ifPresent(ilist::add);
-	                	};
-	                });
-	            }
-	        });
-	    }
-
-	    return SubDto.builder()
-	                 .show(dto)
-	                 .characters(clist)
-	                 .styles(slist)
-	                 .items(ilist)
-	                 .build();
+	    return null;
 	}
 
 	public boolean isLike(int uno, int cno) {

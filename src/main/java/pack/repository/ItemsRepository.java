@@ -8,5 +8,5 @@ import pack.entity.Item;
 
 public interface ItemsRepository extends JpaRepository<Item, Integer>{
 
-	public List<Item> findByStyleNo(int no);
+//	public List<Item> findByStyleNo(int no);
 }

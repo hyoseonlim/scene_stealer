@@ -27,7 +27,6 @@ public class ItemDto {
 			return Item.builder()
 					.no(dto.getNo())
 	    			.pic(dto.getPic())
-	    			.style(StyleDto.toEntity(dto.getStyle()))
 	    			.product(ProductDto.toEntity(dto.getProduct()))
 	    			.build();
 		}

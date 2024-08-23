@@ -19,16 +19,13 @@ public class StyleDto {
 	private Integer no;
 	private String pic;
 	private CharacterDto character;
-	private List<ItemDto> item;
 	
 	private Integer characterNo;
-	private List<Integer> itemNoList;
 	
 	public static Style toEntity (StyleDto dto) {
 		return Style.builder()
 				.no(dto.getNo())
 				.pic(dto.getPic())
-				.item(dto.getItem().stream().map(ItemDto::toEntity).collect(Collectors.toList()))
 				.character(CharacterDto.toEntity(dto.getCharacter()))
 				.build();
 	}
