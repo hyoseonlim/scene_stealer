@@ -55,28 +55,36 @@ public class AdminMainController {
 		return scrap.scrapActors(keyword);
 	}
 	
-	// 작품, 배우, 배역 INSERT) 4개 테이블 처리: Show, Actor, ShowActor, Character
-	@PostMapping("/admin/fashion")
-	public int insertShowActorsCharacters(@RequestBody FashionRequest fashionRequest) {
-		List<ActorInfoDto> actors = fashionRequest.getActors();
-	    ShowDto show = fashionRequest.getShow();
-	    
-	    // 작품 추가
-	    int show_no = dao.insertShow(show); // 작품 추가 후 PK 반환
-	    
-	    // 배우, 배역 추가
-	    for(ActorInfoDto actorandcharacter : actors) {
-	    	int actor_no =  dao.insertActor(actorandcharacter.getActor()); // 배우 추가 후 PK 반환
-	    	dao.insertShowActor(show_no, actor_no); // 작품-배우 관계 추가
-	    	
-	    	CharacterDto characterDto = new CharacterDto();
-	    	characterDto.setShowNo(show_no);
-	    	characterDto.setActorNo(actor_no);
-	    	characterDto.setName(actorandcharacter.getCharacter());
-	    	characterDto.setPic(actorandcharacter.getPic());
-	    	dao.insertCharacter(characterDto);
-	    }
-	    return show_no;
+	// 작품 추가
+	@PostMapping("/admin/show")
+	public int insertShow(@RequestBody ShowDto showdto) {
+	    return dao.insertShow(showdto); // 작품 추가 후 PK 반환
+	}
+	
+	// 배우 존재 여부 확인
+	
+	// 배우 & 배역 추가
+	@PostMapping("/admin/show/{no}/character")
+	public int insertActorAndCharacter(@RequestBody ActorInfoDto dto, @PathVariable("no") int no) {
+		// 배우
+		int actor_no =  dao.insertActor(dto.getActor()); // 배우 추가 후 PK 반환
+		// 작품-배우
+		dao.insertShowActor(no, actor_no);
+		// 배역
+		CharacterDto characterDto = new CharacterDto();
+    	characterDto.setShowNo(no);
+    	characterDto.setActorNo(actor_no);
+    	characterDto.setName(dto.getCharacter());
+    	characterDto.setPic(dto.getPic());
+	    return dao.insertCharacter(characterDto); // 추가된 해당 배역의 PK 반환
+	}
+	
+	// 배역 추가
+	@PostMapping("/admin/show/{showNo}/actor/{actorNo}/character")
+	public int insertCharacter(@RequestBody ActorInfoDto dto, @PathVariable("showNo") int showNo, @PathVariable("actorNo") int actorNo) {
+		// 작품-배우 추가
+		// 배역 추가
+	    return 0;
 	}
 	
 	// 작품의 배우, 배역 목록 조회
@@ -92,4 +100,32 @@ public class AdminMainController {
 	public List<StyleDto> getStylesInfo(@PathVariable("no") int no) { // 캐릭터 PK
 		return dao.searchStyles(no);
 	}
+	
+	
+	
+	/*
+	// 작품, 배우, 배역 INSERT) 4개 테이블 처리: Show, Actor, ShowActor, Character
+		@PostMapping("/admin/fashion")
+		public int insertShowActorsCharacters(@RequestBody FashionRequest fashionRequest) {
+			List<ActorInfoDto> actors = fashionRequest.getActors();
+		    ShowDto show = fashionRequest.getShow();
+		    
+		    // 작품 추가
+		    int show_no = dao.insertShow(show); // 작품 추가 후 PK 반환
+		    
+		    // 배우, 배역 추가
+		    for(ActorInfoDto actorandcharacter : actors) {
+		    	int actor_no =  dao.insertActor(actorandcharacter.getActor()); // 배우 추가 후 PK 반환
+		    	dao.insertShowActor(show_no, actor_no); // 작품-배우 관계 추가
+		    	
+		    	CharacterDto characterDto = new CharacterDto();
+		    	characterDto.setShowNo(show_no);
+		    	characterDto.setActorNo(actor_no);
+		    	characterDto.setName(actorandcharacter.getCharacter());
+		    	characterDto.setPic(actorandcharacter.getPic());
+		    	dao.insertCharacter(characterDto); // 배역 추가
+		    }
+		    return show_no;
+		}
+		*/
 }

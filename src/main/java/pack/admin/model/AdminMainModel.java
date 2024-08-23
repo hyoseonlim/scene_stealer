@@ -71,8 +71,8 @@ public class AdminMainModel {
 		}
 		
 		// 배역 추가
-		public void insertCharacter(CharacterDto dto) {
-			charactersRepo.save(CharacterDto.toEntity(dto));
+		public int insertCharacter(CharacterDto dto) {
+			return charactersRepo.save(CharacterDto.toEntity(dto)).getNo();
 		}
 		
 		// Show-PK로 작품 조회
