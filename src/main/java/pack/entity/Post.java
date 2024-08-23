@@ -77,9 +77,9 @@ public class Post {
         return PostDto.builder()
             .no(entity.getNo())
             .content(entity.getContent())
-            
             .date(entity.getDate())
             .pic(entity.getPic())
+            // userId 받아오기
             .userId(entity.getUser().getId())
             .likesCount(entity.getLikesCount())
             .commentsCount(entity.getCommentsCount())
