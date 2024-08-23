@@ -58,14 +58,16 @@ public class PostsController {
 
 	// 팔로잉 정보 가져오기
 	@GetMapping("/posts/user/follow/followee/{no}")
-	public List<UserDto> followeeInfo(@PathVariable("no") int no) {
-		return pm.followeeInfo(no);
+	public ResponseEntity<Page<UserDto>> followeeInfo(@PathVariable("no") int no, Pageable pageable) {
+		Page<UserDto> followPage = pm.followeeInfo(no, pageable);
+		return ResponseEntity.ok(followPage);
 	}
 
 	// 팔로워 정보 가져오기
 	@GetMapping("/posts/user/follow/follower/{no}")
-	public List<UserDto> followerInfo(@PathVariable("no") int no) {
-		return pm.followerInfo(no);
+	public ResponseEntity<Page<UserDto>> followerInfo(@PathVariable("no") int no, Pageable pageable) {
+		Page<UserDto> followPage = pm.followerInfo(no, pageable);
+		return ResponseEntity.ok(followPage);
 	}
 
 	// 팔로우 여부 체크하기
@@ -92,14 +94,16 @@ public class PostsController {
 
 	// 팔로우한 사람 글 목록 가져오기
 	@GetMapping("/posts/followPostList/{no}")
-	public List<PostDto> followPostList(@PathVariable("no") int userNo) {
-		return pm.followPostList(userNo);
+	public ResponseEntity<Page<PostDto>> followPostList(@PathVariable("no") int userNo, Pageable pageable) {
+		Page<PostDto> postPage = pm.followPostList(userNo, pageable);
+		return ResponseEntity.ok(postPage);
 	}
 
 	// 특정 유저 글 목록 가져오기
 	@GetMapping("/posts/list/{no}")
-	public List<PostDto> postListByUser(@PathVariable("no") int no) {
-		return pm.postListByUser(no);
+	public ResponseEntity<Page<PostDto>> postListByUser(@PathVariable("no") int no, Pageable pageable) {
+		Page<PostDto> postPage = pm.postListByUser(no, pageable);
+		return ResponseEntity.ok(postPage);
 	}
 
 	// 게시글 상세 보기

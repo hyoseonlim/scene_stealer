@@ -26,8 +26,9 @@ public class MyPageController {
 	private MyPageModel mm;
 
 	@GetMapping("/myScrapPage/{no}")
-	public List<CharacterDto> myScrapPage(@PathVariable("no") int no) {
-		return mm.myScrapPage(no);
+	public ResponseEntity<Page<CharacterDto>> myScrapPage(@PathVariable("no") int no, Pageable pageable) {
+		Page<CharacterDto> scrapPage = mm.myScrapPage(no, pageable);
+	    return ResponseEntity.ok(scrapPage);
 	}
 
 	@GetMapping("/alert/{no}")

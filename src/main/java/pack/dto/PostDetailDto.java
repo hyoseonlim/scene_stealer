@@ -17,7 +17,7 @@ import lombok.Setter;
 public class PostDetailDto {
 
 	private PostDto posts;
-	private String userPic, userNickname, userBio;
+	private String userPic, userNickname, userBio, userId;
 	private List<CommentDto> comments;
 	
 	private int totalPages, currentPage;

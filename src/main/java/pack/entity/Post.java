@@ -80,6 +80,7 @@ public class Post {
             
             .date(entity.getDate())
             .pic(entity.getPic())
+            .userId(entity.getUser().getId())
             .likesCount(entity.getLikesCount())
             .commentsCount(entity.getCommentsCount())
             .reportsCount(entity.getReportsCount())

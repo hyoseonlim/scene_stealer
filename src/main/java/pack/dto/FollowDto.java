@@ -23,15 +23,15 @@ public class FollowDto {
     private List<Integer> followers;
     
     private Integer followeeNo, followerNo;
-    
+
+    private int totalPages, currentPage;
+    private Long totalElements;
 
    public static Follow toEntity(FollowDto dto) {
 	   return Follow.builder()
 			   .no(dto.getNo())
 			   .followee(User.builder().no(dto.getFolloweeNo()).build())
 			   .follower(User.builder().no(dto.getFollowerNo()).build())
-//			   .followee(UserDto.toEntity(dto.getFollowee()))
-//			   .follower(UserDto.toEntity(dto.getFollower()))
 			   .build();
    }
     

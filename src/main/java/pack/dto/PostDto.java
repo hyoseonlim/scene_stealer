@@ -39,9 +39,12 @@ public class PostDto {
 	private List<ReportedPostDto> reportedPosts = new ArrayList<>();
 	
 	private Integer productNo, userNo;
-	private String userNickname, userPic;
+	private String userNickname, userPic, userId;
 	private List<Integer> commentsList;
 	private List<Integer> reportedPostsList;
+	
+	private int totalPages, currentPage;
+	private Long totalElements;
 
 	public static Post toEntity(PostDto dto) {
 		return Post.builder()

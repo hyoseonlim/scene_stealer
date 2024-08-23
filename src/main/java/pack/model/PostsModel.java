@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
@@ -98,15 +99,21 @@ public class PostsModel {
 	}
 
 	// 팔로잉 정보 가져오기
-	public List<UserDto> followeeInfo(int no) {
-		return frps.findByFollowerNo(no).stream().map(Follow::getFollowee).map(User::toDto)
-				.collect(Collectors.toList());
+	public Page<UserDto> followeeInfo(int no, Pageable pageable) {
+		List<Integer> followList = frps.findByFollowerNo(no).stream().map((res) -> res.getFollowee().getNo()).collect(Collectors.toList());
+		Page<User> followPage = urps.findByNoIn(followList, pageable);
+		List<UserDto> followDtoList = followPage.stream().map(User::toDto).collect(Collectors.toList());
+		return new PageImpl<>(followDtoList, pageable, followPage.getTotalElements());
+		
 	}
 
 	// 팔로워 정보 가져오기
-	public List<UserDto> followerInfo(int no) {
-		return frps.findByFolloweeNo(no).stream().map(Follow::getFollower).map(User::toDto)
-				.collect(Collectors.toList());
+	public Page<UserDto> followerInfo(int no, Pageable pageable) {
+		
+		List<Integer> followList = frps.findByFolloweeNo(no).stream().map((res) -> res.getFollower().getNo()).collect(Collectors.toList());
+		Page<User> followPage = urps.findByNoIn(followList, pageable);
+		List<UserDto> followDtoList = followPage.stream().map(User::toDto).collect(Collectors.toList());
+		return new PageImpl<>(followDtoList, pageable, followPage.getTotalElements());
 	}
 
 	// 팔로우 여부 체크하기
@@ -142,23 +149,20 @@ public class PostsModel {
 	}
 
 	// 팔로잉 글 모아보기
-	public List<PostDto> followPostList(int userNo) {
-		List<Integer> followeeList = frps.findByFollowerNo(userNo).stream().map(f -> f.getFollowee().getNo())
-				.collect(Collectors.toList());
+	public Page<PostDto> followPostList(int userNo, Pageable pageable) {
+		List<Integer> followeeList = frps.findByFollowerNo(userNo).stream().map(f -> f.getFollowee().getNo()).collect(Collectors.toList());
 
-		List<PostDto> postList = new ArrayList<>();
-
-		for (Integer i : followeeList) {
-			List<PostDto> posts = prps.findByUserNo(i).stream().map(Post::toDto).collect(Collectors.toList());
-			postList.addAll(posts);
-		}
-
-		return postList;
+		Page<Post> postPage = prps.findByUserNoIn(followeeList, pageable);
+		
+		List<PostDto> postList = postPage.stream().map(Post::toDto).collect(Collectors.toList());
+		
+		return new PageImpl<>(postList, pageable, postPage.getTotalElements());
 	}
 
 	// 특정 유저 작성 글 보기
-	public List<PostDto> postListByUser(int no) {
-		return prps.findByUserNo(no).stream().map(Post::toDto).collect(Collectors.toList());
+	public Page<PostDto> postListByUser(int no, Pageable pageable) {
+		Page<Post> postPage = prps.findByUserNo(no, pageable);
+		return postPage.map(Post::toDto);
 	}
 
 	// 게시글 세부 보기
@@ -174,6 +178,7 @@ public class PostsModel {
                 .userPic(userInfo.getPic())
                 .userNickname(userInfo.getNickname())
                 .userBio(userInfo.getBio())
+                .userId(userInfo.getId())
                 .comments(commentsPage.getContent().stream()
                             .map(Comment::toDto)
                             .collect(Collectors.toList()))

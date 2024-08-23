@@ -21,13 +21,14 @@ public class CharacterLikeDto {
 	
 	private Integer characterNo, userNo;
 	
+	private int totalPages, currentPage;
+	private Long totalElements;
+	
     public static CharacterLike toEntity(CharacterLikeDto dto) {
     	return CharacterLike.builder()
     			.no(dto.getNo())
     			.character(Character.builder().no(dto.getCharacterNo()).build())
                 .user(User.builder().no(dto.getUserNo()).build())
-//    			.character(CharacterDto.toEntity(dto.getCharacter()))
-//    			.user(UserDto.toEntity(dto.getUser()))
     			.build();
     }
 	

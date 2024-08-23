@@ -51,15 +51,12 @@ public class MyPageModel {
 	@Autowired
 	private UsersRepository urps;
 
-	public List<CharacterDto> myScrapPage(int no) {
+	public Page<CharacterDto> myScrapPage(int no, Pageable pageable) {
 
-		List<CharacterLikeDto> likeList = clrps.findByUserNo(no).stream().map(CharacterLike::toDto)
-				.collect(Collectors.toList());
-		List<CharacterDto> likeCharacterList = new ArrayList<CharacterDto>();
-		for (CharacterLikeDto cl : likeList) {
-			crps.findById(cl.getCharacterNo()).map(Character::toDto).ifPresent(likeCharacterList::add);
-		}
-		return likeCharacterList;
+		List<Integer> characterNoList = clrps.findByUserNo(no).stream().map((res) -> res.getCharacter().getNo()).collect(Collectors.toList());
+		Page<Character> characterPage = crps.findByNoIn(characterNoList, pageable);
+		List<CharacterDto> characterDtoList = characterPage.stream().map(Character::toDto).collect(Collectors.toList());
+		return new PageImpl<>(characterDtoList, pageable, characterPage.getTotalElements());
 	}
 
 	public Page<AlertDto> myAlert(int userNo, Pageable pageable) {
