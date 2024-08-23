@@ -36,6 +36,10 @@ public class UserDto {
     private List<Integer> postsNoList;
     private List<Integer> reviewsNoList;
     private List<Integer> alertsNoList;
+    
+    // 페이징
+    private int totalPages, currentPage; 
+    private Long totalElements;
 
     
     public static User toEntity(UserDto dto) {

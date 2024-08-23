@@ -27,6 +27,9 @@ public interface ProductsRepository extends JpaRepository<Product, Integer> {
     
     @Query("SELECT p FROM Product p WHERE p.name LIKE %:name%")
     List<Product> findByNameContaining(@Param("name") String name);
+
+    @Query("SELECT p FROM Product p WHERE p.name LIKE %:name%")
+    Page<Product> findByNameContaining(@Param("name") String name, Pageable pageable);
     
     // 이름으로 제품 찾기 (부분 문자열)
     @Query("SELECT p FROM Product p WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%'))")
