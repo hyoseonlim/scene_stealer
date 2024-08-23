@@ -77,6 +77,7 @@ public class Post {
         return PostDto.builder()
             .no(entity.getNo())
             .content(entity.getContent())
+            
             .date(entity.getDate())
             .pic(entity.getPic())
             .likesCount(entity.getLikesCount())
