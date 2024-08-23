@@ -1,6 +1,10 @@
 package pack.model;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -67,11 +71,33 @@ public class SearchModel {
             .toList();
     }
 
-    // 페이징된 검색 메서드
-    public Page<Actor> searchActors(String term, Pageable pageable) {
-        return actorsRepository.findByNameContaining(term, pageable);
+    public Page<ActorDto> searchActors(String term, Pageable pageable) {
+        Page<Object[]> actorsPage = actorsRepository.findActorsWithShows(term, pageable);
+
+        return actorsPage.map(objects -> {
+            Actor actor = (Actor) objects[0];
+            Show show = (Show) objects[1];
+
+            // Null check for show
+            List<String> showDetails = new ArrayList<>();
+            
+            if (show != null) {
+                showDetails.add(show.getTitle() != null ? show.getTitle() : "Unknown Title");
+                showDetails.add(show.getPic() != null ? show.getPic() : ""); // Handling null picture URL
+            } else {
+                showDetails.add("Unknown Title");
+                showDetails.add(""); // No picture URL
+            }
+
+            return new ActorDto(actor.getName(), actor.getNo(), showDetails);
+        });
     }
 
+//    public Page<ActorDto> searchActors(String term, Pageable pageable) {
+//    	Page<Actor> actorsPage = actorsRepository.findByNameContaining(term, pageable);
+//    	return actorsPage.map(Actor::toDto);
+//    }
+    
     public Page<ShowDto> searchShows(String term, Pageable pageable) {
         Page<Show> showsPage = showsRepository.findByTitleContaining(term, pageable);
         return showsPage.map(Show::toDto);

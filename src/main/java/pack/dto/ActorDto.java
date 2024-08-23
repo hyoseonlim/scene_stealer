@@ -24,7 +24,14 @@ public class ActorDto {
     private List<CharacterDto> characters;
     private List<Integer> characterNo;
     private List<Integer> showActorNo;
-
+    private List<String> showDetails;
+    
+    public ActorDto(String name, Integer no, List<String> showDetails) {
+        this.name = name;
+        this.no = no;
+        this.showDetails = showDetails;
+    }
+    
     public static Actor toEntity(ActorDto dto) {
         return Actor.builder()
                .no(dto.getNo())
