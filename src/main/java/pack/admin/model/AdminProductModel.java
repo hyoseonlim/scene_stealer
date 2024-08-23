@@ -60,18 +60,7 @@ public class AdminProductModel {
         if (productReposi.existsByName(dto.getName())) {
             return "이미 등록된 상품 이름입니다.";
         }
-
-        Product product = new Product();
-        product.setName(dto.getName());
-        product.setPrice(dto.getPrice());
-        product.setContents(dto.getContents());
-        product.setDate(dto.getDate());
-        product.setCategory(dto.getCategory());
-        product.setPic(dto.getPic());
-        product.setStock(dto.getStock());
-        product.setDiscountRate(dto.getDiscountRate());
-        product.setScore(dto.getScore());
-        productReposi.save(product);
+        productReposi.save(ProductDto.toEntity(dto));
         return "상품 추가 성공";
     }
 

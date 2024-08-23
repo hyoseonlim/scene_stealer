@@ -1,34 +1,43 @@
 package pack.admin.model;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import pack.dto.ActorDto;
+import pack.dto.ActorInfoDto;
 import pack.dto.CharacterDto;
 import pack.dto.ShowActorDto;
 import pack.dto.ShowDto;
+import pack.dto.StyleDto;
 import pack.entity.Actor;
 import pack.entity.Show;
+import pack.entity.Character;
+import pack.entity.Style;
 import pack.repository.ActorsRepository;
 import pack.repository.CharactersRepository;
+import pack.repository.ItemsRepository;
 import pack.repository.ShowActorRepository;
 import pack.repository.ShowsRepository;
+import pack.repository.StylesRepository;
 
 @Repository
 public class AdminMainModel {
 		@Autowired
 		ShowsRepository showsRepo;
-		
 		@Autowired
 		ActorsRepository actorsRepo;
-		
 		@Autowired
 		ShowActorRepository showActorRepo;
-		
 		@Autowired
 		CharactersRepository charactersRepo;
+		@Autowired
+		StylesRepository stylesRepo;
+		@Autowired
+		ItemsRepository itemsRepo;
 		
 		public List<ShowDto> searchShows() {
 	        return showsRepo.findAll().stream().map(Show::toDto).toList();
@@ -41,19 +50,15 @@ public class AdminMainModel {
 		
 		// 작품 추가
 		public int insertShow(ShowDto dto) {
-			 // 엔티티를 저장하고, 저장된 엔티티를 반환받음
 	        Show showentity = showsRepo.save(ShowDto.toEntity(dto));
-	        // 자동 생성된 ID를 반환
-	        return showentity.getNo();
+	        return showentity.getNo(); // 자동 생성된 ID를 반환
 		}
 		
 		// 배우 추가
 		public int insertActor(String actorName) {
 			ActorDto actordto = new ActorDto();
 			actordto.setName(actorName);
-			// 엔티티를 저장하고, 저장된 엔티티를 반환받음
 	        Actor actorentity = actorsRepo.save(ActorDto.toEntity(actordto));
-	        // 자동 생성된 ID를 반환
 	        return actorentity.getNo();
 		}
 		
@@ -68,6 +73,38 @@ public class AdminMainModel {
 		// 배역 추가
 		public void insertCharacter(CharacterDto dto) {
 			charactersRepo.save(CharacterDto.toEntity(dto));
+		}
+		
+		// Show-PK로 작품 조회
+		public ShowDto searchShow(int no) {
+			Optional<Show> optionalShow = showsRepo.findById(no);
+			if (optionalShow.isPresent()) {
+			    return Show.toDto(optionalShow.get());
+			} else {
+				System.out.println("Optional<Show> 가 존재하지 않습니다.");
+				return null;
+			}
+		}
+		
+		// Show-PK로 배우, 배역 목록 조회
+		public ArrayList<ActorInfoDto> searchActors(int no){
+			ArrayList<ActorInfoDto> actorsInfo = new ArrayList<ActorInfoDto>();
+			List<Character> characters = charactersRepo.findByShowNo(no);
+			for(int i=0; i<characters.size(); i++) {
+				ActorInfoDto actorInfo = new ActorInfoDto();
+				Character character = characters.get(i);
+				actorInfo.setNo(character.getNo()); // 배역번호
+				actorInfo.setActor(character.getActor().getName()); // 배우명
+				actorInfo.setCharacter(character.getName()); // 배역명
+				actorInfo.setPic(character.getPic()); // 배역 사진
+				actorsInfo.add(actorInfo);
+			}
+			return actorsInfo;
+		}
+		
+		// Character-PK로 스타일 목록 조회
+		public List<StyleDto> searchStyles(int no){
+			return stylesRepo.findByCharacterNo(no).stream().map(Style::toDto).toList();
 		}
 		
 }

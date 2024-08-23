@@ -72,7 +72,7 @@ public class AdminProductController {
                 pic.transferTo(dest);
                 dto.setPic("/images/" + pic.getOriginalFilename());
             }
-
+            dto.setCount(0);
             String result = adminProductModel.insert(dto);
             response.put("isSuccess", "상품 추가 성공".equals(result));
             response.put("message", result);

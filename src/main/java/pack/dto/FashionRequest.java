@@ -14,6 +14,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FashionRequest {
-    private List<ActorScrapDto> actors;
+    private List<ActorInfoDto> actors;
     private ShowDto show;
 }

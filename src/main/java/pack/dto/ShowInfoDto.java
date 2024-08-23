@@ -1,22 +1,20 @@
+// 작품 정보 조회 시 사용
 package pack.dto;
+
+import java.util.ArrayList;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pack.entity.Product;
-import pack.entity.User;
 
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ActorScrapDto {
-	
-	private String actor;
-	private String character;
-	private String pic;
-
+public class ShowInfoDto {
+	private ShowDto show;
+	private ArrayList<ActorInfoDto> actorsInfo;
 }

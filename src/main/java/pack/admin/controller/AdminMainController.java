@@ -2,7 +2,9 @@
 package pack.admin.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,10 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import pack.admin.model.AdminMainModel;
 import pack.admin.scrap.Scrap;
-import pack.dto.ActorScrapDto;
+import pack.dto.ActorInfoDto;
 import pack.dto.CharacterDto;
 import pack.dto.FashionRequest;
 import pack.dto.ShowDto;
+import pack.dto.ShowInfoDto;
+import pack.dto.StyleDto;
 
 @RestController
 public class AdminMainController {
@@ -47,21 +51,21 @@ public class AdminMainController {
 	
 	// 웹스크래핑)  검색한 작품의 배우, 배역 정보 조회
 	@GetMapping("/admin/scrap/actors/{keyword}")
-	public ArrayList<ActorScrapDto> ScrapActors(@PathVariable("keyword") String keyword) {
+	public ArrayList<ActorInfoDto> ScrapActors(@PathVariable("keyword") String keyword) {
 		return scrap.scrapActors(keyword);
 	}
 	
 	// 작품, 배우, 배역 INSERT) 4개 테이블 처리: Show, Actor, ShowActor, Character
 	@PostMapping("/admin/fashion")
 	public int insertShowActorsCharacters(@RequestBody FashionRequest fashionRequest) {
-		List<ActorScrapDto> actors = fashionRequest.getActors();
+		List<ActorInfoDto> actors = fashionRequest.getActors();
 	    ShowDto show = fashionRequest.getShow();
 	    
 	    // 작품 추가
 	    int show_no = dao.insertShow(show); // 작품 추가 후 PK 반환
 	    
 	    // 배우, 배역 추가
-	    for(ActorScrapDto actorandcharacter : actors) {
+	    for(ActorInfoDto actorandcharacter : actors) {
 	    	int actor_no =  dao.insertActor(actorandcharacter.getActor()); // 배우 추가 후 PK 반환
 	    	dao.insertShowActor(show_no, actor_no); // 작품-배우 관계 추가
 	    	
@@ -73,5 +77,19 @@ public class AdminMainController {
 	    	dao.insertCharacter(characterDto);
 	    }
 	    return show_no;
+	}
+	
+	// 작품의 배우, 배역 목록 조회
+	@GetMapping("/admin/fashion/show/{no}")
+	public ShowInfoDto getShowInfo(@PathVariable("no") int no) { // 작품 PK
+		ShowInfoDto showInfo = new ShowInfoDto(); // 작품 정보와 배우, 배역 목록 정보를 담는 객체
+		showInfo.setShow(dao.searchShow(no));
+		showInfo.setActorsInfo(dao.searchActors(no));
+		return showInfo;
+	}
+
+	@GetMapping("/admin/fashion/character/{no}") // 캐릭터의 
+	public List<StyleDto> getStylesInfo(@PathVariable("no") int no) { // 캐릭터 PK
+		return dao.searchStyles(no);
 	}
 }
