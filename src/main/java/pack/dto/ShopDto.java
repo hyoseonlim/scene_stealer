@@ -17,6 +17,12 @@ public class ShopDto {
 	private ProductDto product;
 	private ReviewDto myreviews;//
 	private List<ReviewDto> reviews; // 상품별 리뷰 나열하기
-	private List<ProductDto> mybuyProducts;// 내가 구매한 리뷰 나열하기
+	private List<ProductDto> mybuyProducts;
 	
+	private OrderDto myorder;
+	private List<OrderProductDto> orderproducts;
+	private List<OrderDto> orders;
+	
+//	private List<Integer> orderProductNoList;
+//	private List<Integer> productNoList;
 }

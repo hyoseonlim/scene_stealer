@@ -107,8 +107,6 @@ public class ShopModel {
 	// 주문과 상품을 연결
     public OrderProductDto createOrderProduct(Integer orderId, Integer productId) {
         // Order 및 Product 엔티티 조회
-		//OrderDto order = Order.toDto(ordersRepository.findById(orderId).get());
-        //ProductDto product =  Product.toDto(productsRepository.findById(productId).get());
     	Order order = ordersRepository.findById(orderId).get();
     	Product product = productsRepository.findById(productId).get();
     	
@@ -118,25 +116,50 @@ public class ShopModel {
                   .product(product)
                   .build();
 
-       // return opRepository.save(orderProduct);
         OrderProduct savedOrderProduct = opRepository.save(orderProduct);
 
-        // OrderProduct를 OrderProductDto로 변환하여 반환
         return OrderProduct.toDto(savedOrderProduct);
     }
+
     
     // 리뷰 디테일
     public ReviewDto getReviewDetail(int reviewNo) {
     	return Review.toDto(reviewsRepository.findById(reviewNo).get());
     }
 
-	
-	
-	
-	
-	
-	
-	
-	
+    /*
+    public ShopDto orderData(int no) {
+    	 // 주문 정보를 가져옴
+    	OrderDto dto = ordersRepository.findById(no).stream().map(Order::toDto).toList().get(0);
+    	
+    	List<OrderProductDto> oplist = new ArrayList<>();
+    	List<ProductDto> plist = new ArrayList<>();
+    	
+    	// 주문번호에 따라 여러 상품들이 나옴
+    	// 한 유저가 주문하고 또 주문가능하니까 체크
+    	//Map<Integer, String> getOrderInfo = new HashMap<Integer, String>(); 
+    	
+    	for(Integer op: dto.getProductNoList()){
+    		opRepository.findById(op).map(OrderProduct::toDto)
+    		.ifPresent(opdto -> {
+    			oplist.add(opdto);
+    			for(Integer p : opdto.getProductNo()){
+    				productsRepository.findById(p).map(Product::toDto)
+    				.ifPresent(pdto -> {
+    					plist.add(pdto);
+    				});
+    			}
+    		});
+    		return ShopDto.builder()
+    				.myorder(dto)
+    				.orderproducts(oplist)
+    				.mybuyProducts(plist)
+    				.build();	
+    }
+    
+    }
+    */
+    
+    
 }
 
