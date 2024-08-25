@@ -1,6 +1,8 @@
 package pack.repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -27,5 +29,8 @@ public interface OrdersRepository extends JpaRepository<Order, Integer> {
     @Query("SELECT o FROM Order o WHERE o.date BETWEEN :startDate AND :endDate ORDER BY o.no DESC")
     Page<Order> findByDateBetween(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, Pageable pageable);
     
+    public List<Order> findByUserNo(Integer no);
+    
+    public Page<Order> findByNoIn(List<Integer> list, Pageable pageable);
     
 }

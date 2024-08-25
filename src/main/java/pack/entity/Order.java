@@ -54,7 +54,7 @@ public class Order {
 	    			.state(entity.getState())
 	    			.date(entity.getDate())
 	    			.price(entity.getPrice())
-	    			.productNoList(entity.getOrderProducts().stream().map(OrderProduct::getNo).collect(Collectors.toList()))
+	    			.productNoList(entity.getOrderProducts().stream().map((x) -> x.getProduct().getNo()).collect(Collectors.toList()))
 	    			.orderProducts(entity.getOrderProducts().stream().map(OrderProduct::toDto).collect(Collectors.toList()))
 	    			.build();
 	    }

@@ -49,4 +49,6 @@ public interface ProductsRepository extends JpaRepository<Product, Integer> {
  // 날짜로 제품 찾기 (내림차순 정렬 포함)
     @Query("SELECT p FROM Product p WHERE p.date BETWEEN :startDate AND :endDate ORDER BY p.no DESC")
     Page<Product> findByDateBetween(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, Pageable pageable);
+    
+    List<Product> findByNoIn(List<Integer> list);
 }

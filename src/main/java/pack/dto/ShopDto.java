@@ -23,6 +23,17 @@ public class ShopDto {
 	private List<OrderProductDto> orderproducts;
 	private List<OrderDto> orders;
 	
+	/* 주문 내역 출력을 위해 추가한 부분 */
+	private List<OrderDto> orderList;
+	private List<ProductDto> productList;
+	
+	/* 주문 상세 출력을 위해 추가한 부분 */
+	private OrderDto orderInfo;
+	private List<OrderProductDto> orderProductList;
+	
+	private int totalPages, currentPage;
+	private Long totalElements;
+	
 //	private List<Integer> orderProductNoList;
 //	private List<Integer> productNoList;
 }
