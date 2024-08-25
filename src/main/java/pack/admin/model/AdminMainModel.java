@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import pack.dto.ActorDto;
 import pack.dto.ActorInfoDto;
 import pack.dto.CharacterDto;
+import pack.dto.ItemDto_a;
 import pack.dto.ShowActorDto;
 import pack.dto.ShowDto;
 import pack.dto.StyleDto;
@@ -17,12 +18,14 @@ import pack.entity.Actor;
 import pack.entity.Show;
 import pack.entity.Character;
 import pack.entity.Style;
+import pack.entity.StyleItem;
 import pack.repository.ActorsRepository;
 import pack.repository.CharactersRepository;
 import pack.repository.ItemsRepository;
 import pack.repository.ShowActorRepository;
 import pack.repository.ShowsRepository;
 import pack.repository.StylesRepository;
+import pack.repository.StyleItemRepository;
 
 @Repository
 public class AdminMainModel {
@@ -38,7 +41,10 @@ public class AdminMainModel {
 		StylesRepository stylesRepo;
 		@Autowired
 		ItemsRepository itemsRepo;
+		@Autowired
+		StyleItemRepository styleItemRepo;
 		
+		// 전체 작품 목록
 		public List<ShowDto> searchShows() {
 	        return showsRepo.findAll().stream().map(Show::toDto).toList();
 	    }
@@ -52,6 +58,12 @@ public class AdminMainModel {
 		public int insertShow(ShowDto dto) {
 	        Show showentity = showsRepo.save(ShowDto.toEntity(dto));
 	        return showentity.getNo(); // 자동 생성된 ID를 반환
+		}
+		
+		// 배우 이름으로 존재 여부 판단 (있으면 해당 배우 번호, 없으면 0을 반환)
+		public int checkActor(String actorName) {
+			Optional<Actor> actor = actorsRepo.findByName(actorName);
+			return actor.isPresent() ? actor.get().getNo() : 0;
 		}
 		
 		// 배우 추가
@@ -105,6 +117,19 @@ public class AdminMainModel {
 		// Character-PK로 스타일 목록 조회
 		public List<StyleDto> searchStyles(int no){
 			return stylesRepo.findByCharacterNo(no).stream().map(Style::toDto).toList();
+		}
+		
+		// 아이템 전체 목록
+		public ArrayList<ItemDto_a> searchItems(int character_no){
+			ArrayList<ItemDto_a> list = new ArrayList<ItemDto_a>();
+			for(StyleItem si : styleItemRepo.findByCharacterNo(character_no)) {
+				ItemDto_a item = new ItemDto_a();
+				item.setNo(si.getItem().getNo());
+				item.setPic(si.getItem().getPic());
+				item.setStyle(si.getStyle().getNo());
+				list.add(item);
+			}
+			return list;
 		}
 		
 }

@@ -4,7 +4,6 @@ package pack.admin.controller;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +17,8 @@ import pack.admin.model.AdminMainModel;
 import pack.admin.scrap.Scrap;
 import pack.dto.ActorInfoDto;
 import pack.dto.CharacterDto;
-import pack.dto.FashionRequest;
+import pack.dto.ItemDto;
+import pack.dto.ItemDto_a;
 import pack.dto.ShowDto;
 import pack.dto.ShowInfoDto;
 import pack.dto.StyleDto;
@@ -61,15 +61,16 @@ public class AdminMainController {
 	    return dao.insertShow(showdto); // 작품 추가 후 PK 반환
 	}
 	
-	// 배우 존재 여부 확인
-	
 	// 배우 & 배역 추가
 	@PostMapping("/admin/show/{no}/character")
 	public int insertActorAndCharacter(@RequestBody ActorInfoDto dto, @PathVariable("no") int no) {
 		// 배우
-		int actor_no =  dao.insertActor(dto.getActor()); // 배우 추가 후 PK 반환
+		int actor_no = dao.checkActor(dto.getActor()); // 존재여부 확인 (있으면 해당 배우 PK를 바로 받고, 없으면 0)
+		if(actor_no == 0) actor_no = dao.insertActor(dto.getActor()); // 없으면 배우 추가 후 PK 받기
+		
 		// 작품-배우
 		dao.insertShowActor(no, actor_no);
+		
 		// 배역
 		CharacterDto characterDto = new CharacterDto();
     	characterDto.setShowNo(no);
@@ -77,14 +78,6 @@ public class AdminMainController {
     	characterDto.setName(dto.getCharacter());
     	characterDto.setPic(dto.getPic());
 	    return dao.insertCharacter(characterDto); // 추가된 해당 배역의 PK 반환
-	}
-	
-	// 배역 추가
-	@PostMapping("/admin/show/{showNo}/actor/{actorNo}/character")
-	public int insertCharacter(@RequestBody ActorInfoDto dto, @PathVariable("showNo") int showNo, @PathVariable("actorNo") int actorNo) {
-		// 작품-배우 추가
-		// 배역 추가
-	    return 0;
 	}
 	
 	// 작품의 배우, 배역 목록 조회
@@ -96,36 +89,16 @@ public class AdminMainController {
 		return showInfo;
 	}
 
-	@GetMapping("/admin/fashion/character/{no}") // 캐릭터의 
-	public List<StyleDto> getStylesInfo(@PathVariable("no") int no) { // 캐릭터 PK
+	// 배역의 스타일 목록 조회
+	@GetMapping("/admin/fashion/character/{no}") // 캐릭터 PK
+	public List<StyleDto> getStylesInfo(@PathVariable("no") int no) {
 		return dao.searchStyles(no);
 	}
 	
+	// 배역의 전체 아이템 목록 조회
+	@GetMapping("/admin/fashion/character/style/{no}") // 캐릭터 PK
+	public ArrayList<ItemDto_a> getItemsInfo(@PathVariable("no") int no) {
+		return dao.searchItems(no);
+	}
 	
-	
-	/*
-	// 작품, 배우, 배역 INSERT) 4개 테이블 처리: Show, Actor, ShowActor, Character
-		@PostMapping("/admin/fashion")
-		public int insertShowActorsCharacters(@RequestBody FashionRequest fashionRequest) {
-			List<ActorInfoDto> actors = fashionRequest.getActors();
-		    ShowDto show = fashionRequest.getShow();
-		    
-		    // 작품 추가
-		    int show_no = dao.insertShow(show); // 작품 추가 후 PK 반환
-		    
-		    // 배우, 배역 추가
-		    for(ActorInfoDto actorandcharacter : actors) {
-		    	int actor_no =  dao.insertActor(actorandcharacter.getActor()); // 배우 추가 후 PK 반환
-		    	dao.insertShowActor(show_no, actor_no); // 작품-배우 관계 추가
-		    	
-		    	CharacterDto characterDto = new CharacterDto();
-		    	characterDto.setShowNo(show_no);
-		    	characterDto.setActorNo(actor_no);
-		    	characterDto.setName(actorandcharacter.getCharacter());
-		    	characterDto.setPic(actorandcharacter.getPic());
-		    	dao.insertCharacter(characterDto); // 배역 추가
-		    }
-		    return show_no;
-		}
-		*/
 }

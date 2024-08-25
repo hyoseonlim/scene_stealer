@@ -1,7 +1,5 @@
-// 작품, 배우, 배역 동시 추가 요청 시 여러 객체를 감싸기 위한 용도
 package pack.dto;
 
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,7 +11,9 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FashionRequest {
-    private List<ActorInfoDto> actors;
-    private ShowDto show;
+public class ItemDto_a {
+	private int no; // 아이템 PK
+	private int style; // 스타일 PK
+	private int product; // 상품 PK
+	private String pic; // 아이템 사진
 }

@@ -12,14 +12,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.annotation.PostConstruct;
 import pack.admin.model.AdminMainModel;
 import pack.admin.model.AdminPromotionModel;
 import pack.dto.AlertDto_a;
 import pack.dto.CouponDto;
 import pack.dto.CouponUserDto_a;
-import pack.dto.ProductDto;
-import pack.dto.ShowDto;
 import pack.entity.Coupon;
 import pack.entity.User;
 import pack.repository.AlertsRepository;
@@ -86,7 +83,6 @@ public class AdminPromotionController {
 		default: return List.of(); // locCategory가 예상한 값이 아닐 경우 빈 리스트를 반환
         }
 	}
-	
 	
 	// 광고 알림 추가 (테이블 처리: alerts)
 	@PostMapping("/admin/advertise")
