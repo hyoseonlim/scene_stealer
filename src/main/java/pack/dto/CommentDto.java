@@ -29,7 +29,7 @@ public class CommentDto {
 	    if (dto.getParentCommentNo() != null) {
 	        parentCommentEntity = Comment.builder().no(dto.getParentCommentNo()).build();
 	    }
-
+	    
 	    return Comment.builder()
 	            .no(dto.getNo())
 	            .post(Post.builder().no(dto.getPostNo()).build())

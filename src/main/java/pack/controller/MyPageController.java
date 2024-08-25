@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import pack.dto.AlertDto;
@@ -41,6 +43,14 @@ public class MyPageController {
 	public Map<String, Boolean> deleteAlert(@PathVariable("alertNo") int alertNo) {
 		Map<String, Boolean> result = new HashMap<String, Boolean>();
 		result.put("result", mm.deleteAlert(alertNo));
+		return result;
+	}
+	
+	@PostMapping("/alert/{category}/{value}/{userNo}")
+	public Map<String, Boolean> insertAlert(@PathVariable("category") String category, @PathVariable("value") String value, @PathVariable("userNo") int userNo, @RequestBody AlertDto dto) {
+		Map<String, Boolean> result = new HashMap<String, Boolean>();
+			result.put("result", mm.insertAlert(category, value, userNo, dto));			
+		
 		return result;
 	}
 

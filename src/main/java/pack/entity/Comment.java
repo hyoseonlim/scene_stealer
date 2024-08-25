@@ -67,9 +67,9 @@ public class Comment {
 
     	    if (entity.getParentComment() != null) {
     	        dtoBuilder.parentCommentNo(entity.getParentComment().getNo());
-    	        if (entity.getParentComment().getUser() != null) {
-    	            dtoBuilder.userNickname(entity.getParentComment().getUser().getNickname());
-    	        }
+//    	        if (entity.getParentComment().getUser() != null) {
+//    	            dtoBuilder.userNickname(entity.getParentComment().getUser().getNickname());
+//    	        }
     	    }
 
     	    return dtoBuilder.build();

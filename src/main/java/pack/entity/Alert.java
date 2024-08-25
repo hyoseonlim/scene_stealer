@@ -1,6 +1,8 @@
 package pack.entity;
 
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,6 +11,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,6 +37,8 @@ public class Alert {
     private String category;
     private String content;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
     @Column(name = "date")
     private java.util.Date date;
 

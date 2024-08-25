@@ -35,7 +35,7 @@ public class AlertDto {
 	public static Alert toEntity(AlertDto dto) {
 		return Alert.builder()
 				.no(dto.getNo())
-    			.user(UserDto.toEntity(dto.getUser()))
+    			.user(User.builder().no(dto.getUserNo()).build())
     			.category(dto.getCategory())
     			.content(dto.getContent())
     			.date(dto.getDate())
