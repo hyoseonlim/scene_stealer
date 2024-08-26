@@ -24,5 +24,8 @@ public interface UsersRepository extends JpaRepository<User, Integer> {
 
 	@Query("SELECT u FROM User u WHERE u.id LIKE %:id%")
 	Page<User> findByIdContaining(@Param("id") String id, Pageable pageable);
+	
+	// 로그인
+	User findByIdAndPwd(String id, String pwd);
 
 }
