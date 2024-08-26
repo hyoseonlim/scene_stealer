@@ -36,4 +36,6 @@ public class ShopDto {
 	
 //	private List<Integer> orderProductNoList;
 //	private List<Integer> productNoList;
+	
+	
 }

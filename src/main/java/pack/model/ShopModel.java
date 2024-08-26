@@ -117,9 +117,7 @@ public class ShopModel {
 
 		// OrderProduct 엔티티 생성 및 저장
 		OrderProduct orderProduct = OrderProduct.builder().order(order).product(product).build();
-
 		OrderProduct savedOrderProduct = opRepository.save(orderProduct);
-
 		return OrderProduct.toDto(savedOrderProduct);
 	}
 
@@ -159,5 +157,8 @@ public class ShopModel {
 				.productList(productList)
 				.build();
 	}
+	
+	// 장바구니 담기
 
+	
 }

@@ -55,7 +55,7 @@ public class ShopController {
         return ResponseEntity.ok(productDtoPage);
     }
 	 
-	// 제품 상세보기 (no별 제품보기)
+		// 제품 상세보기 (no별 제품보기)
 	    @GetMapping("/list/product/{no}")
 	    public ProductDto getProductDetail(@PathVariable("no") Integer no) {
 	    	return smodel.list2(no); 
@@ -95,10 +95,16 @@ public class ShopController {
 	    }
 	    
 	    
-	    
 	    // 리뷰 디테일 보기
 	    @GetMapping("/mypage/review/detail/{reviewNo}")
 	    public ReviewDto getReviewDetail(@PathVariable("reviewNo") int reviewNo) {
 	    	return smodel.getReviewDetail(reviewNo);
 	    }
+	    
+	    // 장바구니 담기 @PostMapping
+	    // 장바구니 조회 @GetMapping
+	    // 장바구니 품목 선택 삭제 @DeleteMapping
+	    // 장바구니 물건 전체 구매 @PostMapping
+	    
+	    
 }
