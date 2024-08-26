@@ -1,8 +1,10 @@
 // 메인(작품, 배역, 배우, 스타일, 아이템) CRUD
 package pack.admin.controller;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,14 +12,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import pack.admin.model.AdminMainModel;
 import pack.admin.scrap.Scrap;
 import pack.dto.ActorInfoDto;
 import pack.dto.CharacterDto;
-import pack.dto.ItemDto;
 import pack.dto.ItemDto_a;
 import pack.dto.ShowDto;
 import pack.dto.ShowInfoDto;
@@ -90,13 +92,32 @@ public class AdminMainController {
 	}
 
 	// 배역의 스타일 목록 조회
-	@GetMapping("/admin/fashion/character/{no}") // 캐릭터 PK
+	@GetMapping("/admin/fashion/character/{no}/style") // 캐릭터 PK
 	public List<StyleDto> getStylesInfo(@PathVariable("no") int no) {
 		return dao.searchStyles(no);
 	}
 	
+	// 배역의 스타일 추가
+	@PostMapping("/admin/fashion/character/{no}/style") // 캐릭터 PK
+	public int addStyle(@PathVariable("no") int no, @RequestPart("file") MultipartFile pic) {
+	    String staticDirectory = System.getProperty("user.dir") + "/src/main/resources/static/images/";
+	    Path uploadPath = Paths.get(staticDirectory, pic.getOriginalFilename());
+	    try {
+	        pic.transferTo(uploadPath); // 파일을 지정된 경로에 저장
+	        StyleDto styleDto = new StyleDto();
+	        styleDto.setPic("/images/" + pic.getOriginalFilename());
+	        styleDto.setCharacterNo(no);
+	        dao.insertStyle(styleDto);
+	        return no;
+	    } catch (Exception e) {
+	        System.out.println("에러: " + e);
+	        return 0;
+	    }
+	}
+
+	
 	// 배역의 전체 아이템 목록 조회
-	@GetMapping("/admin/fashion/character/style/{no}") // 캐릭터 PK
+	@GetMapping("/admin/fashion/character/{no}/item") // 캐릭터 PK
 	public ArrayList<ItemDto_a> getItemsInfo(@PathVariable("no") int no) {
 		return dao.searchItems(no);
 	}

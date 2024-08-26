@@ -132,4 +132,11 @@ public class AdminMainModel {
 			return list;
 		}
 		
+		// 배역 추가
+		public int insertStyle(StyleDto dto) {
+			Optional<Character> character = charactersRepo.findById(dto.getCharacterNo());
+			if(character.isPresent()) dto.setCharacter(Character.toDto(character.get()));
+			return stylesRepo.save(StyleDto.toEntity(dto)).getNo();
+		}
+		
 }
