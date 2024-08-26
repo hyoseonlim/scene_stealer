@@ -127,6 +127,7 @@ public class AdminMainModel {
 				item.setNo(si.getItem().getNo());
 				item.setPic(si.getItem().getPic());
 				item.setStyle(si.getStyle().getNo());
+				item.setProduct(si.getItem().getProduct().getNo());
 				list.add(item);
 			}
 			return list;
