@@ -70,4 +70,5 @@ public class MainController {
 		result.put("result", mmd.insertScrap(dto));
 		return result;
 	}
+	
 }

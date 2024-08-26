@@ -26,6 +26,7 @@ import pack.entity.CharacterLike;
 import pack.entity.Coupon;
 import pack.entity.CouponUser;
 import pack.entity.Notice;
+import pack.entity.User;
 import pack.repository.AlertsRepository;
 import pack.repository.CharacterLikesRepository;
 import pack.repository.CharactersRepository;
@@ -80,6 +81,20 @@ public class MyPageModel {
 		}
 		return b;
 	}
+	
+	@Transactional
+	public boolean updateAlert(int alertNo) {
+		try {
+			Alert alert = arps.findById(alertNo).get();
+			alert.setIsRead(true);
+			arps.save(alert);
+			return true;
+		} catch (Exception e) {
+			System.out.println("updateAlert ERROR : " + e.getMessage());
+			return false;
+		}
+	}
+
 
 	@Transactional
 	public boolean insertAlert(String category, String value, int userNo, AlertDto dto) {

@@ -29,6 +29,7 @@ import pack.entity.PostLike;
 import pack.entity.Product;
 import pack.entity.ReportedPost;
 import pack.entity.User;
+import pack.repository.AdminsRepository;
 import pack.repository.CommentLikeRepository;
 import pack.repository.CommentsRepository;
 import pack.repository.FollowsRepository;
@@ -60,6 +61,9 @@ public class PostsModel {
 
 	@Autowired
 	private ReportedPostsRepository rprps;
+	
+	@Autowired
+	private AdminsRepository arps;
 
 	// 유저 정보 하나 가져오기
 	public UserDto userInfo(int no) {
@@ -151,8 +155,7 @@ public class PostsModel {
 
 	// 팔로잉 글 모아보기
 	public Page<PostDto> followPostList(int userNo, Pageable pageable) {
-		List<Integer> followeeList = frps.findByFollowerNo(userNo).stream().map(f -> f.getFollowee().getNo())
-				.collect(Collectors.toList());
+		List<Integer> followeeList = frps.findByFollowerNo(userNo).stream().map(f -> f.getFollowee().getNo()).collect(Collectors.toList());
 
 		Page<Post> postPage = prps.findByUserNoIn(followeeList, pageable);
 
@@ -162,8 +165,8 @@ public class PostsModel {
 	}
 
 	// 특정 유저 작성 글 보기
-	public Page<PostDto> postListByUser(int no, Pageable pageable) {
-		Page<Post> postPage = prps.findByUserNo(no, pageable);
+	public Page<PostDto> postListByUser(int userNo, Pageable pageable) {
+		Page<Post> postPage = prps.findByUserNo(userNo, pageable);
 		return postPage.map(Post::toDto);
 	}
 
@@ -175,7 +178,10 @@ public class PostsModel {
 
 		Page<Comment> commentsPage = crps.findByPostNo(postNo, pageable);
 
-		return PostDetailDto.builder().posts(postInfo).userPic(userInfo.getPic()).userNickname(userInfo.getNickname())
+		return PostDetailDto.builder()
+				.posts(postInfo)
+				.userPic(userInfo.getPic())
+				.userNickname(userInfo.getNickname())
 				.userBio(userInfo.getBio()).userId(userInfo.getId())
 				.comments(commentsPage.getContent().stream().map(Comment::toDto).collect(Collectors.toList()))
 				.totalPages(commentsPage.getTotalPages()) // 전체 페이지 수
@@ -333,6 +339,9 @@ public class PostsModel {
 	public boolean reportedPost(ReportedPostDto dto) {
 		try {
 			rprps.save(ReportedPostDto.toEntity(dto));
+			Post post = prps.findById(dto.getPostNo()).get();
+			post.setReportsCount(post.getReportsCount() + 1);
+			prps.save(post);
 			return true;
 		} catch (Exception e) {
 			System.out.println("reportedPost ERROR : " + e.getMessage());
@@ -352,5 +361,6 @@ public class PostsModel {
 		}
 		return b;
 	}
+	
 
 }

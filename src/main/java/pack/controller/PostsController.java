@@ -238,5 +238,5 @@ public class PostsController {
 		result.put("result", pm.reportedPost(dto));
 		return result;
 	}
-
+	
 }
