@@ -16,14 +16,14 @@ public interface ShowsRepository extends JpaRepository<Show, Integer>{
 
 	@Query("SELECT s FROM Show AS s JOIN Character AS c ON s.no = c.show.no GROUP BY s.title ORDER BY SUM(c.likesCount) DESC")
 	public List<Show> findShowAll();
-	
+//	
     @Query("SELECT a FROM Show a WHERE a.title LIKE %:term%")
     List<Show> findByTitleContaining(@Param("term") String term);
-
+//
     // 제목에 검색어를 포함하는 쇼를 페이징 처리하여 반환
     @Query("SELECT s FROM Show s WHERE s.title LIKE %:term%")
     Page<Show> findByTitleContaining(@Param("term") String term, Pageable pageable);
-	
+//	
     @Query("SELECT s FROM Show s WHERE s.no IN :showNos")
     List<Show> findByShowNos(@Param("showNos") List<Integer> showNos);
     

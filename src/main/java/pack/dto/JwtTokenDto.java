@@ -7,10 +7,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-@Builder
-@Getter
-@Setter
-@AllArgsConstructor
 public class JwtTokenDto {
 	private String grantType;	// JWT에 대한 인증 타입
 	private String accessToken;	// 인증된 사용자가 특정 리소스에 접근할 때 사용되는 토큰
