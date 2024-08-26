@@ -55,12 +55,20 @@ public class ShopModel {
 	@Autowired
 	private OrderProductRepository opRepository;
 
-	public List<ProductDto> list() {// 전체 자료 읽기
-		List<ProductDto> list = productsRepository.findAll().stream().map(Product::toDto).toList();
-		return list;
-	}
+//	public List<ProductDto> list() {// 전체 자료 읽기
+//		List<ProductDto> list = productsRepository.findAll().stream().map(Product::toDto).toList();
+//		return list;
+//	}
+	
+//    // 전체 자료 읽기 (페이징된 상품 리스트 조회)
+    public Page<ProductDto> list(Pageable pageable) {
+        Page<Product> products = productsRepository.findAll(pageable);
+        return products.map(Product::toDto);
+    }
+	
 
-	public ProductDto list2(Integer no) { // 제품 no별 상품 읽기
+    // 제품 no별 상품 읽기
+	public ProductDto list2(Integer no) { 
 		return Product.toDto(productsRepository.findById(no).get());
 
 	}

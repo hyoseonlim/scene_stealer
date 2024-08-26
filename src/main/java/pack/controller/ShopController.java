@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -36,21 +37,23 @@ public class ShopController {
 	private PostsModel pmodel;
 	
 	//----Rest 요청
-	@GetMapping("/list")
-	public List<ProductDto> getList() {
-		List<ProductDto> list = smodel.list();
-		//model.addAttribute("list",list);
-		return list;
-	}
+    @GetMapping("/list")
+    public ResponseEntity<Page<ProductDto>> getList(Pageable pageable) {
+        Page<ProductDto> list = smodel.list(pageable);  // Pageable 객체로 데이터를 가져옴
+        return ResponseEntity.ok(list);
+    }
 	
 	//카테고리별 나열
-	 @GetMapping("/list/category/{category}")
-	   public List<ProductDto> getProductsByCategory(@PathVariable("category") String category) {
-	        List<Product> products = productsRepository.findByCategory(category);
-	        return products.stream()
-	        		.map(Product::toDto)
-	        		.toList();
-	    }
+    @GetMapping("/list/category/{category}")
+    public ResponseEntity<Page<ProductDto>> getProductsByCategory(
+        @PathVariable("category") String category, Pageable pageable) {
+        
+     // Product 엔티티를 ProductDto로 변환
+        Page<ProductDto> productDtoPage = productsRepository.findByCategory(category, pageable)
+                                                            .map(Product::toDto);
+      // 변환된 Page<ProductDto>를 반환
+        return ResponseEntity.ok(productDtoPage);
+    }
 	 
 	// 제품 상세보기 (no별 제품보기)
 	    @GetMapping("/list/product/{no}")

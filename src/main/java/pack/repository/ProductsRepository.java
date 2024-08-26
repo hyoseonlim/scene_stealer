@@ -23,7 +23,9 @@ public interface ProductsRepository extends JpaRepository<Product, Integer> {
     boolean existsByName(String name);
     
     // 카테고리로 제품 찾기
-    List<Product> findByCategory(String category);
+    //List<Product> findByCategory(String category);
+    Page<Product> findByCategory(String category, Pageable pageable);
+    
     
     @Query("SELECT p FROM Product p WHERE p.name LIKE %:name%")
     List<Product> findByNameContaining(@Param("name") String name);
