@@ -36,7 +36,7 @@ public class Item {
 		return ItemDto.builder()
 				.no(entity.getNo())
 				.pic(entity.getPic())
-				.productNo(entity.getProduct().getNo())
+				//.productNo(entity.getProduct().getNo())
 				.build();
 	}
 }

@@ -1,7 +1,6 @@
 // 메인(작품, 배역, 배우, 스타일, 아이템) CRUD
 package pack.admin.controller;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,10 +20,12 @@ import pack.admin.model.AdminMainModel;
 import pack.admin.scrap.Scrap;
 import pack.dto.ActorInfoDto;
 import pack.dto.CharacterDto;
+import pack.dto.ItemDto;
 import pack.dto.ItemDto_a;
 import pack.dto.ShowDto;
 import pack.dto.ShowInfoDto;
 import pack.dto.StyleDto;
+import pack.dto.StyleItemDto;
 
 @RestController
 public class AdminMainController {
@@ -99,7 +101,7 @@ public class AdminMainController {
 	
 	// 배역의 스타일 추가
 	@PostMapping("/admin/fashion/character/{no}/style") // 캐릭터 PK
-	public int addStyle(@PathVariable("no") int no, @RequestPart("file") MultipartFile pic) {
+	public StyleDto addStyle(@PathVariable("no") int no, @RequestPart("file") MultipartFile pic) {
 	    String staticDirectory = System.getProperty("user.dir") + "/src/main/resources/static/images/";
 	    Path uploadPath = Paths.get(staticDirectory, pic.getOriginalFilename());
 	    try {
@@ -107,19 +109,48 @@ public class AdminMainController {
 	        StyleDto styleDto = new StyleDto();
 	        styleDto.setPic("/images/" + pic.getOriginalFilename());
 	        styleDto.setCharacterNo(no);
-	        dao.insertStyle(styleDto);
-	        return no;
+	        styleDto.setNo(dao.insertStyle(styleDto)); // 스타일 저장 후 PK 받기
+	        return styleDto;
 	    } catch (Exception e) {
 	        System.out.println("에러: " + e);
-	        return 0;
+	        return null;
 	    }
 	}
-
 	
 	// 배역의 전체 아이템 목록 조회
 	@GetMapping("/admin/fashion/character/{no}/item") // 캐릭터 PK
 	public ArrayList<ItemDto_a> getItemsInfo(@PathVariable("no") int no) {
 		return dao.searchItems(no);
+	}
+	
+	// 아이템 추가
+	@PostMapping("/admin/fashion/{no}/item") // 스타일 PK
+	public ItemDto_a addItem(@PathVariable("no") int no, @RequestParam("product") int product, @RequestPart("file") MultipartFile pic) {
+		ItemDto_a dto = new ItemDto_a();
+		String staticDirectory = System.getProperty("user.dir") + "/src/main/resources/static/images/";
+	    Path uploadPath = Paths.get(staticDirectory, pic.getOriginalFilename());
+	    try {
+	        pic.transferTo(uploadPath); // 파일을 지정된 경로에 저장
+	        // Item
+	        ItemDto itemDto = new ItemDto();
+	        itemDto.setProductNo(product);
+	        itemDto.setPic("/images/" + pic.getOriginalFilename());
+	        
+	        dto.setNo(dao.insertItem(itemDto)); // 추가 후 PK 받기
+	        
+	        dto.setPic("/images/" + pic.getOriginalFilename());
+	        dto.setProduct(product);
+	        dto.setStyle(no);
+	        
+	        // Style_Item
+	        StyleItemDto styleItemDto = new StyleItemDto();
+	        styleItemDto.setItemNo(dto.getNo());
+	        styleItemDto.setStyleNo(no);
+	        dao.insertStyleItem(styleItemDto);
+	    } catch (Exception e) {
+	        System.out.println("에러: " + e);
+	    }
+	    return dto;
 	}
 	
 }

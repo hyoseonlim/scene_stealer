@@ -10,10 +10,12 @@ import org.springframework.stereotype.Repository;
 import pack.dto.ActorDto;
 import pack.dto.ActorInfoDto;
 import pack.dto.CharacterDto;
+import pack.dto.ItemDto;
 import pack.dto.ItemDto_a;
 import pack.dto.ShowActorDto;
 import pack.dto.ShowDto;
 import pack.dto.StyleDto;
+import pack.dto.StyleItemDto;
 import pack.entity.Actor;
 import pack.entity.Show;
 import pack.entity.Character;
@@ -138,6 +140,16 @@ public class AdminMainModel {
 			Optional<Character> character = charactersRepo.findById(dto.getCharacterNo());
 			if(character.isPresent()) dto.setCharacter(Character.toDto(character.get()));
 			return stylesRepo.save(StyleDto.toEntity(dto)).getNo();
+		}
+		
+		// 아이템 추가
+		public int insertItem(ItemDto dto) {
+			return itemsRepo.save(ItemDto.toEntity(dto)).getNo();
+		}
+		
+		// 스타일-아이템 추가
+		public void insertStyleItem(StyleItemDto dto) {
+			styleItemRepo.save(StyleItemDto.toEntity(dto));
 		}
 		
 }
