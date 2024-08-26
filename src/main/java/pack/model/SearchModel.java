@@ -11,10 +11,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import pack.dto.ActorDto;
+import pack.dto.CharacterDto;
 import pack.dto.ProductDto;
 import pack.dto.ShowDto;
 import pack.dto.UserDto;
 import pack.entity.Actor;
+import pack.entity.Character;
 import pack.entity.Product;
 import pack.entity.Show;
 import pack.entity.User;
@@ -60,7 +62,7 @@ public class SearchModel {
     }
     
     public List<ShowDto> autocompleteShows(String term) {
-        return showsRepository.findByTitleContaining(term, Pageable.unpaged()).stream()
+        return showsRepository.findByTitleContaining(term).stream()
             .map(Show::toDto)
             .toList();
     }
@@ -98,9 +100,10 @@ public class SearchModel {
 //    	return actorsPage.map(Actor::toDto);
 //    }
     
-    public Page<ShowDto> searchShows(String term, Pageable pageable) {
-        Page<Show> showsPage = showsRepository.findByTitleContaining(term, pageable);
-        return showsPage.map(Show::toDto);
+    public Page<CharacterDto> searchShows(String term, Pageable pageable) {
+        // showsRepository를 사용하여 title을 기반으로 shows를 찾고, 해당 show의 characters를 페이징 처리하여 반환
+        Page<Character> charactersPage = showsRepository.findCharactersByShowTitle(term, pageable);
+        return charactersPage.map(Character::toDto);
     }
 
     public Page<ProductDto> searchProducts(String term, Pageable pageable) {

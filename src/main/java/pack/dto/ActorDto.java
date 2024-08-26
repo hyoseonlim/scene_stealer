@@ -1,8 +1,6 @@
 package pack.dto;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pack.entity.Actor;
-import pack.entity.Character; // Ensure Character is imported
 
 @Getter
 @Setter

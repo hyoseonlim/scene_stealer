@@ -28,5 +28,9 @@ public interface ShowsRepository extends JpaRepository<Show, Integer>{
     List<Show> findByShowNos(@Param("showNos") List<Integer> showNos);
     
 //	@Query("SELECT c FROM Character c JOIN c.show s JOIN c.styles st JOIN st.items i WHERE s.no = :showNo")
-//	public List<Character> findSubData(int showNo);
+//	public List<Character> findByTitleContaining(int showNo);
+
+    // 제목에 검색어를 포함하는 쇼와 관련된 캐릭터들을 페이징 처리하여 반환
+    @Query("SELECT c FROM Character c JOIN c.show s WHERE s.title LIKE %:term%")
+    Page<Character> findCharactersByShowTitle(@Param("term") String term, Pageable pageable);
 }
