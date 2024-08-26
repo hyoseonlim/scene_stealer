@@ -1,4 +1,4 @@
-  package pack.model;
+package pack.model;
 
 import java.util.HashMap;
 import java.util.List;
@@ -99,17 +99,19 @@ public class PostsModel {
 
 	// 팔로잉 정보 가져오기
 	public Page<UserDto> followeeInfo(int no, Pageable pageable) {
-		List<Integer> followList = frps.findByFollowerNo(no).stream().map((res) -> res.getFollowee().getNo()).collect(Collectors.toList());
+		List<Integer> followList = frps.findByFollowerNo(no).stream().map((res) -> res.getFollowee().getNo())
+				.collect(Collectors.toList());
 		Page<User> followPage = urps.findByNoIn(followList, pageable);
 		List<UserDto> followDtoList = followPage.stream().map(User::toDto).collect(Collectors.toList());
 		return new PageImpl<>(followDtoList, pageable, followPage.getTotalElements());
-		
+
 	}
 
 	// 팔로워 정보 가져오기
 	public Page<UserDto> followerInfo(int no, Pageable pageable) {
-		
-		List<Integer> followList = frps.findByFolloweeNo(no).stream().map((res) -> res.getFollower().getNo()).collect(Collectors.toList());
+
+		List<Integer> followList = frps.findByFolloweeNo(no).stream().map((res) -> res.getFollower().getNo())
+				.collect(Collectors.toList());
 		Page<User> followPage = urps.findByNoIn(followList, pageable);
 		List<UserDto> followDtoList = followPage.stream().map(User::toDto).collect(Collectors.toList());
 		return new PageImpl<>(followDtoList, pageable, followPage.getTotalElements());
@@ -119,7 +121,7 @@ public class PostsModel {
 	public boolean followCheck(int no, int fno) {
 		return frps.findByFollowerNoAndFolloweeNo(no, fno).size() > 0 ? true : false;
 	}
-
+	
 	// 팔로우 취소하기
 	@Transactional
 	public boolean deleteFollow(int no, int fno) {
@@ -149,12 +151,13 @@ public class PostsModel {
 
 	// 팔로잉 글 모아보기
 	public Page<PostDto> followPostList(int userNo, Pageable pageable) {
-		List<Integer> followeeList = frps.findByFollowerNo(userNo).stream().map(f -> f.getFollowee().getNo()).collect(Collectors.toList());
+		List<Integer> followeeList = frps.findByFollowerNo(userNo).stream().map(f -> f.getFollowee().getNo())
+				.collect(Collectors.toList());
 
 		Page<Post> postPage = prps.findByUserNoIn(followeeList, pageable);
-		
+
 		List<PostDto> postList = postPage.stream().map(Post::toDto).collect(Collectors.toList());
-		
+
 		return new PageImpl<>(postList, pageable, postPage.getTotalElements());
 	}
 
@@ -172,19 +175,13 @@ public class PostsModel {
 
 		Page<Comment> commentsPage = crps.findByPostNo(postNo, pageable);
 
-        return PostDetailDto.builder()
-                .posts(postInfo)
-                .userPic(userInfo.getPic())
-                .userNickname(userInfo.getNickname())
-                .userBio(userInfo.getBio())
-                .userId(userInfo.getId())
-                .comments(commentsPage.getContent().stream()
-                            .map(Comment::toDto)
-                            .collect(Collectors.toList()))
-                .totalPages(commentsPage.getTotalPages()) // 전체 페이지 수
-                .currentPage(commentsPage.getNumber()) // 현재 페이지 번호
-                .totalElements(commentsPage.getTotalElements()) // 총 댓글 수
-                .build();
+		return PostDetailDto.builder().posts(postInfo).userPic(userInfo.getPic()).userNickname(userInfo.getNickname())
+				.userBio(userInfo.getBio()).userId(userInfo.getId())
+				.comments(commentsPage.getContent().stream().map(Comment::toDto).collect(Collectors.toList()))
+				.totalPages(commentsPage.getTotalPages()) // 전체 페이지 수
+				.currentPage(commentsPage.getNumber()) // 현재 페이지 번호
+				.totalElements(commentsPage.getTotalElements()) // 총 댓글 수
+				.build();
 	}
 
 	// 게시글 좋아요 취소하기

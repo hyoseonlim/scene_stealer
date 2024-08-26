@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,8 +31,11 @@ public class AdminHelpController {
 
 	// 공지 전체 목록
 	@GetMapping("/admin/help/notice")
-	public List<NoticeDto> getAllNotice() {
-		return repository.findAll().stream().map(Notice::toDto).toList();
+	public ResponseEntity<Page<NoticeDto>> getAllNotice(Pageable pageable) {
+		
+		Page<NoticeDto> noticePage = repository.findAll(pageable).map(Notice::toDto);
+
+		return ResponseEntity.ok(noticePage);
 	}
 	
 	// 공지 상세보기
