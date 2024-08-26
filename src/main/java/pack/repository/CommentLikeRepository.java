@@ -13,5 +13,6 @@ public interface CommentLikeRepository extends JpaRepository<CommentLike, Intege
 	public int deleteByCommentNoAndUserNo(int commentNo, int userNo);
 	
 	public List<CommentLike> findByCommentNoAndUserNo(int commentNo, int userNo);
-
+	
+	void deleteByCommentNo(Integer no);
 }

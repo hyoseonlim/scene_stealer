@@ -15,4 +15,6 @@ public interface CommentsRepository extends JpaRepository<Comment, Integer>{
 	public int deleteByNo(int no);
 	
 	Page<Comment> findByPostNo(int postNo, Pageable pageable);
+	
+	void deleteByPostNo(Integer postNo);
 }

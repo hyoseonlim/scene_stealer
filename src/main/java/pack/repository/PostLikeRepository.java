@@ -13,4 +13,6 @@ public interface PostLikeRepository extends JpaRepository<PostLike, Integer>{
 	public int deleteByPostNoAndUserNo(int postNo, int userNo);
 	
 	public List<PostLike> findByPostNoAndUserNo(int postNo, int userNo);
+	
+	void deleteByPostNo(Integer postNo);
 }

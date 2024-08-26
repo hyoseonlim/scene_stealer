@@ -5,12 +5,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import pack.dto.PostDto;
 import pack.dto.ReportedPosts_a;
 import pack.entity.Comment;
 import pack.entity.Post;
 import pack.entity.ReportedPost;
+import pack.repository.CommentLikeRepository;
+import pack.repository.CommentsRepository;
+import pack.repository.PostLikeRepository;
 import pack.repository.PostsRepository;
 import pack.repository.ReportedPostsRepository;
 
@@ -25,6 +29,12 @@ public class AdminCommunityModel {
     private PostsRepository postsRepository;
     @Autowired
     private ReportedPostsRepository reportedPostsRepository;
+    @Autowired
+    private CommentLikeRepository commentLikeRepository;
+    @Autowired
+    private CommentsRepository commentsRepository;
+    @Autowired
+    private PostLikeRepository postLikeRepository;
 
     public Page<PostDto> getAllPosts(Pageable pageable) {
         return postsRepository.findAll(pageable).map(this::convertToPostDto);
@@ -38,6 +48,7 @@ public class AdminCommunityModel {
         return postsRepository.findByReportsCountGreaterThanOrderByReportsCountDesc(0, pageable).map(this::convertToReportedPosts_a);
     }
     
+    /*
     public String deleteReportedPostByUserId(String userid) {
         List<ReportedPost> reportedPosts = reportedPostsRepository.findByUser_Id(userid);
         if (!reportedPosts.isEmpty()) {
@@ -47,6 +58,7 @@ public class AdminCommunityModel {
             return "해당 유저의 신고글을 찾을 수 없습니다.";
         }
     }
+    */
 
     // Post 엔티티를 PostDto로 변환하는 메서드
     private PostDto convertToPostDto(Post post) {
@@ -77,5 +89,21 @@ public class AdminCommunityModel {
             .category(post.getReportedPosts().isEmpty() ? null : post.getReportedPosts().get(0).getCategory())
             .reportsCount(post.getReportsCount())
             .build();
+    }
+    
+    @Transactional
+    public void deletePostData(int no) { // Post PK로 5개 테이블 처리
+    	// Comment_like
+    	commentsRepository.findByPostNo(no).stream()
+        	.map(Comment::getNo) // 각 댓글의 no 값 추출
+        	.forEach(commentNo -> commentLikeRepository.deleteByCommentNo(commentNo));
+    	// Comment
+    	commentsRepository.deleteByPostNo(no);
+    	// Post_like
+    	postLikeRepository.deleteByPostNo(no);
+    	// Reported_post
+    	reportedPostsRepository.deleteByPostNo(no);
+    	// Post
+    	postsRepository.deleteById(no);
     }
 }

@@ -58,12 +58,11 @@ public class AdminCommunityController {
     }
 
     // 신고글 삭제 기능
-    @DeleteMapping("/posts/reported/{userid}")
-    public ResponseEntity<Map<String, Object>> deleteReportedPost(@PathVariable("userid") String userid) {
+    @DeleteMapping("/posts/{no}")
+    public Map<String, Object> deleteReportedPost(@PathVariable("no") int no) {
         Map<String, Object> response = new HashMap<>();
-        String result = adminCommunityModel.deleteReportedPostByUserId(userid);
-        response.put("isSuccess", "신고글 삭제 성공".equals(result));
-        response.put("message", result);
-        return ResponseEntity.ok(response);
+        adminCommunityModel.deletePostData(no);
+        response.put("isSuccess", true);
+        return response;
     }
 }

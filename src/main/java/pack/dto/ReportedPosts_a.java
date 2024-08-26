@@ -20,8 +20,4 @@ public class ReportedPosts_a {
 	private String content;
 	private String category;
 	private Integer reportsCount;
-	
-	
-
-	
 }
