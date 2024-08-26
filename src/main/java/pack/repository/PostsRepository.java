@@ -12,6 +12,13 @@ import pack.entity.Post;
 public interface PostsRepository extends JpaRepository<Post, Integer>{
 	
     List<Post> findAll();
+    List<Post> findByReportsCountGreaterThanOrderByReportsCountDesc(int count);
+    
+    Page<Post> findByReportsCountGreaterThan(int count, Pageable pageable);
+    Page<Post> findByReportsCountGreaterThanOrderByReportsCountDesc(int count, Pageable pageable);
+    
+   
+
     
 	public List<Post> findTop3ByOrderByNoDesc();
 	

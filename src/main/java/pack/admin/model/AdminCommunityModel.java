@@ -1,19 +1,22 @@
 package pack.admin.model;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 import pack.dto.PostDto;
-import pack.dto.ProductDto;
+import pack.dto.ReportedPosts_a;
+import pack.entity.Comment;
 import pack.entity.Post;
-import pack.entity.Product;
 import pack.entity.ReportedPost;
 import pack.repository.PostsRepository;
 import pack.repository.ReportedPostsRepository;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 public class AdminCommunityModel {
@@ -22,23 +25,57 @@ public class AdminCommunityModel {
     private PostsRepository postsRepository;
     @Autowired
     private ReportedPostsRepository reportedPostsRepository;
-    
-//    // 페이징된 상품 리스트 조회 메서드
-//    public Page<ProductDto> listAll(Pageable pageable) {
-//        Page<Product> products = productReposi.findAll(pageable);
-//        return products.map(Product::toDto);
-//    }
-//
-//    public Page<PostDto> listAll(Pageable pageable){
-//    	Page<Post> post = postsRepository.findAll(pageable);
-//    	return post.map(Post::toDto);
-//    }
-    // 전체 글 조회 메서드
-    public List<Post> getAllPosts() {
-        return postsRepository.findAll(); // 전체 글 조회
+
+    public Page<PostDto> getAllPosts(Pageable pageable) {
+        return postsRepository.findAll(pageable).map(this::convertToPostDto);
     }
-    // 신고 글 조회 메서드
-    public List<ReportedPost> getAllReporte() {
-        return reportedPostsRepository.findAll(); // 전체 글 조회
+
+    public Page<ReportedPosts_a> getAllReportedPosts(Pageable pageable) {
+        return postsRepository.findByReportsCountGreaterThan(0, pageable).map(this::convertToReportedPosts_a);
+    }
+
+    public Page<ReportedPosts_a> getMostReportedPosts(Pageable pageable) {
+        return postsRepository.findByReportsCountGreaterThanOrderByReportsCountDesc(0, pageable).map(this::convertToReportedPosts_a);
+    }
+    
+    public String deleteReportedPostByUserId(String userid) {
+        List<ReportedPost> reportedPosts = reportedPostsRepository.findByUser_Id(userid);
+        if (!reportedPosts.isEmpty()) {
+            reportedPostsRepository.deleteAll(reportedPosts);
+            return "신고글 삭제 성공";
+        } else {
+            return "해당 유저의 신고글을 찾을 수 없습니다.";
+        }
+    }
+
+    // Post 엔티티를 PostDto로 변환하는 메서드
+    private PostDto convertToPostDto(Post post) {
+        return PostDto.builder()
+            .no(post.getNo())
+            .content(post.getContent())
+            .date(post.getDate())
+            .pic(post.getPic())
+            .userId(post.getUser().getId())
+            .likesCount(post.getLikesCount())
+            .commentsCount(post.getCommentsCount())
+            .reportsCount(post.getReportsCount())
+            .reportedPostsList(post.getReportedPosts().stream().map(ReportedPost::getNo).collect(Collectors.toList()))
+            .productNo(post.getProduct() != null ? post.getProduct().getNo() : null)
+            .userNickname(post.getUser().getNickname())
+            .userNo(post.getUser().getNo())
+            .userPic(post.getUser().getPic())
+            .commentsList(post.getComments().stream().map(Comment::getNo).collect(Collectors.toList()))
+            .build();
+    }
+
+    // Post 엔티티를 ReportedPosts_a로 변환하는 메서드
+    private ReportedPosts_a convertToReportedPosts_a(Post post) {
+        return ReportedPosts_a.builder()
+            .no(post.getNo())
+            .userId(post.getUser().getId())
+            .content(post.getContent())
+            .category(post.getReportedPosts().isEmpty() ? null : post.getReportedPosts().get(0).getCategory())
+            .reportsCount(post.getReportsCount())
+            .build();
     }
 }

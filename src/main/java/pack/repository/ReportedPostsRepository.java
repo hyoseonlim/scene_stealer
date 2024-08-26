@@ -7,5 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import pack.entity.ReportedPost;
 
 public interface ReportedPostsRepository extends JpaRepository<ReportedPost, Integer>{
-	List<ReportedPost> findAll();
+
+	List<ReportedPost> findAllByOrderByNoDesc();
+	 List<ReportedPost> findByUser_Id(String userid);
+	 void deleteByUser_Id(String userid);
 }
