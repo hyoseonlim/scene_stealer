@@ -27,6 +27,8 @@ public class Item {
 
 	@Column(name = "pic")
 	private String pic; // URL or file path
+	
+	private String name;
 
 	@ManyToOne
 	@JoinColumn(name = "product_no")
@@ -36,6 +38,7 @@ public class Item {
 		return ItemDto.builder()
 				.no(entity.getNo())
 				.pic(entity.getPic())
+				.name(entity.getName())
 				//.productNo(entity.getProduct().getNo())
 				.build();
 	}

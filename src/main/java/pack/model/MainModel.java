@@ -15,6 +15,7 @@ import pack.dto.PostDto;
 import pack.dto.ReviewDto;
 import pack.dto.ShowDto;
 import pack.dto.StyleDto;
+import pack.dto.StyleItemDto;
 import pack.dto.SubDto;
 import pack.entity.Character;
 import pack.entity.CharacterLike;
@@ -76,28 +77,36 @@ public class MainModel {
 	public SubDto subShowData(int no) {
 	    ShowDto dto = srps.findById(no).stream().map(Show::toDto).toList().get(0);
 	    
-	    List<CharacterDto> clist = new ArrayList<>();
-	    List<StyleDto> slist = new ArrayList<>();
-	    List<ItemDto> ilist = new ArrayList<>(); 
+	    List<CharacterDto> clist = new ArrayList<CharacterDto>();
+	    List<StyleDto> slist = new ArrayList<StyleDto>();
+	    List<StyleItemDto> silist = new ArrayList<StyleItemDto>();
+	    List<ItemDto> ilist = new ArrayList<ItemDto>(); 
 	    
 	    for (Integer c : dto.getCharacterNo()) {
 	        crps.findById(c).map(Character::toDto).ifPresent(cdto -> {
+	        	// c : show 의 character 번호
 	        	clist.add(cdto);
 	            for (Integer s : cdto.getStyleNo()) {
+	            	// s : character의 style 번호
 	                strps.findById(s).map(Style::toDto).ifPresent(sdto -> {
 	                	slist.add(sdto);
-	                	for(Integer i : sirps.findByStyleNo(sdto.getNo()).stream().map((res) -> res.getItem().getNo()).toList()) {
-	                		irps.findById(i).map(Item::toDto).ifPresent(ilist::add);
-	                	};
+	                	
 	                });
+	            for (Integer si : cdto.getStyleNo()) {
+	            	for(StyleItemDto i : sirps.findByStyleNo(si).stream().map(StyleItem::toDto).collect(Collectors.toList())) {
+	            		silist.add(i);
+                		irps.findById(i.getItemNo()).map(Item::toDto).ifPresent(ilist::add);
+                	};
+	            }
 	            }
 	        });
 	    }
-
+	    
 	    return SubDto.builder()
 	                 .show(dto)
 	                 .characters(clist)
 	                 .styles(slist)
+	                 .styleItems(silist)
 	                 .items(ilist)
 	                 .build();
 	    

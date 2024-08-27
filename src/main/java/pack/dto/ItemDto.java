@@ -19,6 +19,7 @@ import pack.entity.Style;
 public class ItemDto {
 	  private Integer no;
 	  private String pic;  // URL or file path
+	  private String name;
 	  private StyleDto style;
 	  private ProductDto product;
 	  private Integer productNo;
