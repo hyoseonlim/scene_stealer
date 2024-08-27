@@ -46,14 +46,25 @@ public class PostsController {
 		return pm.userInfo(no);
 	}
 
+//	// 유저 정보 수정하기
+//	@PutMapping("/posts/user/{userNo}")
+//	public Map<String, Boolean> userInfoUpdate(@PathVariable("userNo") int no, @RequestBody UserDto dto) {
+//		Map<String, Boolean> result = new HashMap<String, Boolean>();
+//		result.put("result", pm.userInfoUpdate(no, dto));
+//		return result;
+//	}
+	
+	 // 유저 정보 수정하기
 	// 유저 정보 수정하기
-	@PutMapping("/posts/user/{userNo}")
-	public Map<String, Boolean> userInfoUpdate(@PathVariable("userNo") int no, @RequestBody UserDto dto) {
-		Map<String, Boolean> result = new HashMap<String, Boolean>();
-		result.put("result", pm.userInfoUpdate(no, dto));
-		return result;
-	}
-
+    @PutMapping("/posts/user/{userNo}")
+    public Map<String, Boolean> userInfoUpdate(@PathVariable("userNo") int no, 
+                                               @RequestPart("userDto") UserDto dto,
+                                               @RequestPart(value = "profileImage", required = false) MultipartFile profileImage) {
+        dto.setProfileImage(profileImage); // DTO에 이미지 파일 설정
+        Map<String, Boolean> result = new HashMap<>();
+        result.put("result", pm.userInfoUpdate(no, dto));
+        return result;
+    }
 	// 팔로우 정보 (팔로잉, 팔로워) 가져오기
 	@GetMapping("/posts/user/follow/{no}")
 	public Map<String, List<Integer>> followInfo(@PathVariable("no") int no) {

@@ -1,8 +1,11 @@
 package pack.model;
 
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.transaction.Transactional;
 import pack.dto.CommentDto;
@@ -36,6 +40,18 @@ import pack.repository.FollowsRepository;
 import pack.repository.PostLikeRepository;
 import pack.repository.PostsRepository;
 import pack.repository.ReportedPostsRepository;
+import pack.repository.UsersRepository;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.UUID;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import jakarta.transaction.Transactional;
+import pack.dto.UserDto;
+import pack.entity.User;
 import pack.repository.UsersRepository;
 
 @Repository
@@ -70,24 +86,66 @@ public class PostsModel {
 		return User.toDto(urps.findById(no).get());
 	}
 
-	// 유저 정보 수정하기
-	@Transactional
-	public boolean userInfoUpdate(int userNo, UserDto dto) {
-		try {
-			User user = urps.findById(userNo).get();
+//	// 유저 정보 수정하기
+//	@Transactional
+//	public boolean userInfoUpdate(int userNo, UserDto dto) {
+//		try {
+//			User user = urps.findById(userNo).get();
+//
+//			if (dto.getNickname() != null && !dto.getNickname().isEmpty()) {
+//				user.setNickname(dto.getNickname());
+//			}
+//			user.setBio(dto.getBio());
+//
+//			urps.save(user);
+//			return true;
+//		} catch (Exception e) {
+//			System.out.println("updatePosts ERROR : " + e.getMessage());
+//			return false;
+//		}
+//	}
+	
 
-			if (dto.getNickname() != null && !dto.getNickname().isEmpty()) {
-				user.setNickname(dto.getNickname());
-			}
-			user.setBio(dto.getBio());
+    // 유저 정보 수정하기
+    @Transactional
+    public boolean userInfoUpdate(int userNo, UserDto dto) {
+        try {
+            User user = urps.findById(userNo).orElseThrow(() -> new RuntimeException("User not found"));
 
-			urps.save(user);
-			return true;
-		} catch (Exception e) {
-			System.out.println("updatePosts ERROR : " + e.getMessage());
-			return false;
-		}
-	}
+            if (dto.getNickname() != null && !dto.getNickname().isEmpty()) {
+                user.setNickname(dto.getNickname());
+            }
+            user.setBio(dto.getBio());
+
+            // 프로필 이미지 처리
+            if (dto.getProfileImage() != null && !dto.getProfileImage().isEmpty()) {
+                String imageUrl = saveProfileImage(dto.getProfileImage());
+                user.setPic(imageUrl);
+            } else if (user.getPic() == null || user.getPic().isEmpty()) {
+                // 이미지가 업로드되지 않았고, 사용자가 기존 이미지가 없는 경우 기본 이미지 설정
+                user.setPic("/images/default.png");  // 기본 이미지 경로
+            }
+
+            urps.save(user);
+            return true;
+        } catch (Exception e) {
+            System.out.println("updatePosts ERROR : " + e.getMessage());
+            return false;
+        }
+    }
+
+    private String saveProfileImage(MultipartFile profileImage) {
+        try {
+            UUID uuid = UUID.randomUUID();
+            String imageFileName = uuid + "_" + profileImage.getOriginalFilename();
+            Path destinationFilePath = Paths.get("src/main/resources/static/images", imageFileName);
+            Files.copy(profileImage.getInputStream(), destinationFilePath, StandardCopyOption.REPLACE_EXISTING);
+
+            return "/images/" + imageFileName;
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to store profile image", e);
+        }
+    }
 
 	// 한 유저에 대한 팔로잉, 팔로워 정보 가져오기
 	public Map<String, List<Integer>> followInfo(int no) {

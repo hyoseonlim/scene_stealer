@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,6 +31,7 @@ public class UserDto {
     private String nickname;
     private String bio;
     private String pic;
+    private MultipartFile profileImage;
     
     private List<CouponUserDto> couponUsers = new ArrayList<>();
     

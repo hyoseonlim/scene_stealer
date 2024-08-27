@@ -3,6 +3,8 @@ package pack.dto;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,6 +29,7 @@ public class PostDto {
 	private java.util.Date date;
 
 	private String pic; // URL or file path
+	
 
 	private Integer likesCount;
 	private Integer commentsCount;
