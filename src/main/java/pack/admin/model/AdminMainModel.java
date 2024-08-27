@@ -152,4 +152,9 @@ public class AdminMainModel {
 			styleItemRepo.save(StyleItemDto.toEntity(dto));
 		}
 		
+		// 작품 정보 삭제
+		public void deleteShowInfo(int no) {
+			
+		}
+		
 }

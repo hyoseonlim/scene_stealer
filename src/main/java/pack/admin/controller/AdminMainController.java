@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -152,5 +153,13 @@ public class AdminMainController {
 	    }
 	    return dto;
 	}
+	
+	// 배역의 전체 아이템 목록 조회
+	/*
+	@DeleteMapping("/admin/show/{no}") // 스타일 PK
+	public void deleteShow(@PathVariable("no") int no) {
+		return dao.deleteShowInfo(no);
+	}
+	*/
 	
 }
