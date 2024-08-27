@@ -135,14 +135,14 @@ public class AdminProductController {
     ProductsRepository productRepo;
     
     // 자동완성 - 입력값이 없을 때) 등록된 상품 전체
- 	@GetMapping("/admin/product/autocomplete")
+ 	@GetMapping("/autocomplete")
  	public List<ProductDto> autocompleteallProduct() {
  		System.out.println("하이하이");
  	     return productRepo.findAll().stream().map(Product::toDto).toList();
  	}
  		
  	// 자동완성 - 입력값이 있을 때) 등록된 상품 중 일부
- 	@GetMapping("/admin/product/autocomplete/{term}")
+ 	@GetMapping("/autocomplete/{term}")
  	public List<ProductDto> autocompleteProduct(@PathVariable("term") String term) {
  		return productRepo.findByNameContaining(term).stream().map(Product::toDto).toList();
  	}
