@@ -28,6 +28,7 @@ public class ItemDto {
 			return Item.builder()
 					.no(dto.getNo())
 	    			.pic(dto.getPic())
+	    			.name(dto.getName())
 	    			.product(ProductDto.toEntity(dto.getProduct()))
 	    			.build();
 		}
