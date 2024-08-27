@@ -36,15 +36,15 @@ public class AdminMainController {
 	@Autowired
 	private AdminMainModel dao;
 	
-	// 자동완성 - 입력값이 없을 때) 등록된 작품 전체
+	// 작품 자동완성 - 입력값이 없을 때) 등록된 작품 전체
 	@GetMapping("/admin/show/autocomplete")
-    public List<ShowDto> autocompleteall() {
+    public List<ShowDto> autocompleteallShow() {
         return dao.searchShows();
     }
 	
-	// 자동완성 - 입력값이 있을 때) 등록된 작품 중 일부
+	// 작품 자동완성 - 입력값이 있을 때) 등록된 작품 중 일부
     @GetMapping("/admin/show/autocomplete/{term}")
-    public List<ShowDto> autocomplete(@PathVariable("term") String term) {
+    public List<ShowDto> autocompleteShow(@PathVariable("term") String term) {
         return dao.searchShows(term);
     }
 
@@ -124,6 +124,27 @@ public class AdminMainController {
 		return dao.searchItems(no);
 	}
 	
+	// 아이템 자동완성 - 입력값이 없을 때) 등록된 아이템 전체
+	@GetMapping("/admin/item/autocomplete")
+	public List<ItemDto_a> autocompleteallItem() {
+	     return dao.searchItems();
+	}
+		
+	// 아이템 자동완성 - 입력값이 있을 때) 등록된 아이템 중 일부
+	@GetMapping("/admin/item/autocomplete/{term}")
+	public List<ItemDto_a> autocompleteItem(@PathVariable("term") String term) {
+		return dao.searchItems(term);
+	}
+	
+	// 스타일에 기존 아이템 추가
+	@PostMapping("/admin/fashion/{style}/item/{item}")
+	public void addStyleItem(@PathVariable("style") int style, @PathVariable("item") int item) {
+		StyleItemDto styleItemDto = new StyleItemDto();
+        styleItemDto.setItemNo(item);
+        styleItemDto.setStyleNo(style);
+        dao.insertStyleItem(styleItemDto);
+	}
+	
 	// 아이템 추가
 	@PostMapping("/admin/fashion/{no}/item") // 스타일 PK
 	public ItemDto_a addItem(@PathVariable("no") int no, @RequestParam("product") int product, @RequestPart("file") MultipartFile pic) {
@@ -154,7 +175,6 @@ public class AdminMainController {
 	    return dto;
 	}
 	
-	// 배역의 전체 아이템 목록 조회
 	/*
 	@DeleteMapping("/admin/show/{no}") // 스타일 PK
 	public void deleteShow(@PathVariable("no") int no) {

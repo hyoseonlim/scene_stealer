@@ -13,6 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ItemDto_a {
 	private int no; // 아이템 PK
+	private String name; // 아이템 이름
 	private int style; // 스타일 PK
 	private int product; // 상품 PK
 	private String pic; // 아이템 사진

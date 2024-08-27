@@ -19,6 +19,7 @@ import pack.dto.StyleItemDto;
 import pack.entity.Actor;
 import pack.entity.Show;
 import pack.entity.Character;
+import pack.entity.Item;
 import pack.entity.Style;
 import pack.entity.StyleItem;
 import pack.repository.ActorsRepository;
@@ -121,15 +122,46 @@ public class AdminMainModel {
 			return stylesRepo.findByCharacterNo(no).stream().map(Style::toDto).toList();
 		}
 		
-		// 아이템 전체 목록
+		// 특정 배역의 아이템 전체 목록
 		public ArrayList<ItemDto_a> searchItems(int character_no){
 			ArrayList<ItemDto_a> list = new ArrayList<ItemDto_a>();
 			for(StyleItem si : styleItemRepo.findByCharacterNo(character_no)) {
 				ItemDto_a item = new ItemDto_a();
 				item.setNo(si.getItem().getNo());
+				item.setName(si.getItem().getName());
 				item.setPic(si.getItem().getPic());
 				item.setStyle(si.getStyle().getNo());
 				item.setProduct(si.getItem().getProduct().getNo());
+				list.add(item);
+			}
+			return list;
+		}
+		
+		// 아이템 전체 목록
+		public ArrayList<ItemDto_a> searchItems(){
+			ArrayList<ItemDto_a> list = new ArrayList<ItemDto_a>();
+			for(StyleItem si : styleItemRepo.findAll()) {
+				ItemDto_a item = new ItemDto_a();
+				item.setNo(si.getItem().getNo());
+				item.setName(si.getItem().getName());
+				item.setPic(si.getItem().getPic());
+				item.setStyle(si.getStyle().getNo());
+				item.setProduct(si.getItem().getProduct().getNo());
+				list.add(item);
+			}
+			return list;
+		}
+		
+		// 아이템 이름 자동완성
+		public ArrayList<ItemDto_a> searchItems(String name){
+			ArrayList<ItemDto_a> list = new ArrayList<ItemDto_a>();
+			for(Item i: itemsRepo.findByNameContaining(name)) {
+				ItemDto_a item = new ItemDto_a();
+				item.setNo(i.getNo());
+				item.setName(i.getName());
+				item.setPic(i.getPic());
+				// item.setStyle();
+				item.setProduct(i.getProduct().getNo());
 				list.add(item);
 			}
 			return list;

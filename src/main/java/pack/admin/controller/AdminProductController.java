@@ -9,12 +9,15 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import pack.dto.ProductDto;
+import pack.entity.Product;
+import pack.repository.ProductsRepository;
 import pack.admin.model.AdminProductModel;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -127,4 +130,20 @@ public class AdminProductController {
         response.put("message", result);
         return response;
     }
+    
+    @Autowired
+    ProductsRepository productRepo;
+    
+    // 자동완성 - 입력값이 없을 때) 등록된 상품 전체
+ 	@GetMapping("/admin/product/autocomplete")
+ 	public List<ProductDto> autocompleteallProduct() {
+ 		System.out.println("하이하이");
+ 	     return productRepo.findAll().stream().map(Product::toDto).toList();
+ 	}
+ 		
+ 	// 자동완성 - 입력값이 있을 때) 등록된 상품 중 일부
+ 	@GetMapping("/admin/product/autocomplete/{term}")
+ 	public List<ProductDto> autocompleteProduct(@PathVariable("term") String term) {
+ 		return productRepo.findByNameContaining(term).stream().map(Product::toDto).toList();
+ 	}
 }
