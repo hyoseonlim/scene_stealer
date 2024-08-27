@@ -1,15 +1,19 @@
 package pack.dto;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import pack.entity.Comment;
 import pack.entity.Post;
 import pack.entity.User;
 
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,6 +25,7 @@ public class CommentDto {
 	private java.util.Date date;
 	private String content, userNickname;
 	private Integer postNo, userNo, parentCommentNo;
+	 private List<CommentDto> replies; // 자식 댓글 리스트
 
 	public static Comment toEntity(CommentDto dto) {
 		

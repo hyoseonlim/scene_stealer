@@ -14,7 +14,13 @@ public interface CommentsRepository extends JpaRepository<Comment, Integer>{
 	
 	public int deleteByNo(int no);
 	
-	Page<Comment> findByPostNo(int postNo, Pageable pageable);
+//	Page<Comment> findByPostNo(int postNo, Pageable pageable);
 	
+	// 부모 댓글을 페이징으로 가져옴
+	Page<Comment> findByPostNoAndParentCommentNoIsNull(int postNo, Pageable pageable);
+
+	// 자식 댓글을 가져옴
+	List<Comment> findByParentCommentNo(int parentCommentNo);
+
 	void deleteByPostNo(Integer postNo);
 }

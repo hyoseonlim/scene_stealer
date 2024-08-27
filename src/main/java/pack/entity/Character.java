@@ -10,6 +10,7 @@ import lombok.*;
 import pack.dto.CharacterDto;
 
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

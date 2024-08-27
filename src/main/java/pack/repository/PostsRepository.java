@@ -23,6 +23,7 @@ public interface PostsRepository extends JpaRepository<Post, Integer> {
 	public List<Post> findTop3ByOrderByNoDesc();
 
 	public List<Post> findByUserNo(int no);
+	
 
 	@Query("SELECT p FROM Post AS p JOIN p.user AS u WHERE u.no IN :postNoList AND p.reportsCount < 4 ORDER BY p.no DESC")
 	Page<Post> findByUserNoIn(@Param("postNoList") List<Integer> postNoList, Pageable pageable);

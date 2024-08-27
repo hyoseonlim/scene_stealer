@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import jakarta.transaction.Transactional;
@@ -63,7 +65,8 @@ public class MainModel {
 	
 
 	public List<ShowDto> mainShowData() {
-		return srps.findShowAll().stream().map(Show::toDto).toList();
+		Pageable pageable = PageRequest.of(0, 10);
+		return srps.findShowAll(pageable).stream().map(Show::toDto).toList();
 	}
 
 	public List<ReviewDto> mainShowReview() {
@@ -77,6 +80,7 @@ public class MainModel {
 	public SubDto subShowData(int no) {
 	    ShowDto dto = srps.findById(no).stream().map(Show::toDto).toList().get(0);
 	    
+	   
 	    List<CharacterDto> clist = new ArrayList<CharacterDto>();
 	    List<StyleDto> slist = new ArrayList<StyleDto>();
 	    List<StyleItemDto> silist = new ArrayList<StyleItemDto>();
@@ -120,7 +124,10 @@ public class MainModel {
 	public boolean deleteScrap(int cno, int uno) {
 		boolean b = false;
 		try {
-			if(clrps.deleteByCharacterNoAndUserNo(cno, uno) > 0) {				
+			if(clrps.deleteByCharacterNoAndUserNo(cno, uno) > 0) {
+				Character c = crps.findById(cno).get();
+				c.setLikesCount(c.getLikesCount() - 1);
+				crps.save(c);
 				b = true;
 			}
 		} catch (Exception e) {
@@ -133,6 +140,9 @@ public class MainModel {
 	@Transactional
 	public boolean insertScrap(CharacterLikeDto dto) {
 		try {
+			Character c = crps.findById(dto.getCharacterNo()).get();
+			c.setLikesCount(c.getLikesCount() + 1);
+			crps.save(c);
 			clrps.save(CharacterLikeDto.toEntity(dto));
 			return true;
 		} catch (Exception e) {

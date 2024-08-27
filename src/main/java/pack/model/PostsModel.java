@@ -233,19 +233,42 @@ public class PostsModel {
 
 		PostDto postInfo = Post.toDto(prps.findById(postNo).get());
 		UserDto userInfo = User.toDto(urps.findById(postInfo.getUserNo()).get());
+		
+		// 부모 댓글을 페이징으로 가져옴
+	    Page<Comment> parentCommentsPage = crps.findByPostNoAndParentCommentNoIsNull(postNo, pageable);
 
-		Page<Comment> commentsPage = crps.findByPostNo(postNo, pageable);
+	    // 각 부모 댓글에 대해 자식 댓글을 함께 가져옴
+	    List<CommentDto> commentsWithReplies = parentCommentsPage.getContent().stream().map(parentComment -> {
+	        List<CommentDto> replies = crps.findByParentCommentNo(parentComment.getNo()).stream().map(Comment::toDto).collect(Collectors.toList());
+	        CommentDto parentCommentDto = Comment.toDto(parentComment);
+	        parentCommentDto.setReplies(replies); // 부모 댓글에 자식 댓글(답글) 추가
+	        return parentCommentDto;
+	    }).collect(Collectors.toList());
 
-		return PostDetailDto.builder()
-				.posts(postInfo)
-				.userPic(userInfo.getPic())
-				.userNickname(userInfo.getNickname())
-				.userBio(userInfo.getBio()).userId(userInfo.getId())
-				.comments(commentsPage.getContent().stream().map(Comment::toDto).collect(Collectors.toList()))
-				.totalPages(commentsPage.getTotalPages()) // 전체 페이지 수
-				.currentPage(commentsPage.getNumber()) // 현재 페이지 번호
-				.totalElements(commentsPage.getTotalElements()) // 총 댓글 수
-				.build();
+	    return PostDetailDto.builder()
+	            .posts(postInfo)
+	            .userPic(userInfo.getPic())
+	            .userNickname(userInfo.getNickname())
+	            .userBio(userInfo.getBio())
+	            .userId(userInfo.getId())
+	            .comments(commentsWithReplies)
+	            .totalPages(parentCommentsPage.getTotalPages()) // 전체 페이지 수
+	            .currentPage(parentCommentsPage.getNumber()) // 현재 페이지 번호
+	            .totalElements(parentCommentsPage.getTotalElements()) // 총 댓글 수
+	            .build();
+
+//		Page<Comment> commentsPage = crps.findByPostNo(postNo, pageable);
+//
+//		return PostDetailDto.builder()
+//				.posts(postInfo)
+//				.userPic(userInfo.getPic())
+//				.userNickname(userInfo.getNickname())
+//				.userBio(userInfo.getBio()).userId(userInfo.getId())
+//				.comments(commentsPage.getContent().stream().map(Comment::toDto).collect(Collectors.toList()))
+//				.totalPages(commentsPage.getTotalPages()) // 전체 페이지 수
+//				.currentPage(commentsPage.getNumber()) // 현재 페이지 번호
+//				.totalElements(commentsPage.getTotalElements()) // 총 댓글 수
+//				.build();
 	}
 
 	// 게시글 좋아요 취소하기
