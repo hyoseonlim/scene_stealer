@@ -14,4 +14,6 @@ public interface StyleItemRepository extends JpaRepository<StyleItem, Integer> {
 	// 해당 배역의 전체 아이템 목록
 	@Query("SELECT si FROM StyleItem si WHERE si.style.no IN (SELECT s.no FROM Character c JOIN c.styles s WHERE c.no = :no)")
 	public List<StyleItem> findByCharacterNo(@Param("no") int no);
+	
+	public List<StyleItem> findByStyleNoIn(List<Integer> list);
 }

@@ -83,8 +83,8 @@ public class MainModel {
 	   
 	    List<CharacterDto> clist = new ArrayList<CharacterDto>();
 	    List<StyleDto> slist = new ArrayList<StyleDto>();
-	    List<StyleItemDto> silist = new ArrayList<StyleItemDto>();
-	    List<ItemDto> ilist = new ArrayList<ItemDto>(); 
+	    List<Integer> styleItemNoList = new ArrayList<Integer>();
+	    List<Integer> itemNoList = new ArrayList<Integer>(); 
 	    
 	    for (Integer c : dto.getCharacterNo()) {
 	        crps.findById(c).map(Character::toDto).ifPresent(cdto -> {
@@ -94,14 +94,13 @@ public class MainModel {
 	            	// s : character의 style 번호
 	                strps.findById(s).map(Style::toDto).ifPresent(sdto -> {
 	                	slist.add(sdto);
-	                	
+	                	for (Integer si : cdto.getStyleNo()) {
+	                		styleItemNoList.add(si);
+	                		for(StyleItemDto i : sirps.findByStyleNo(si).stream().map(StyleItem::toDto).collect(Collectors.toList())) {
+	                			itemNoList.add(i.getItemNo());
+	                		};
+	                	}
 	                });
-	            for (Integer si : cdto.getStyleNo()) {
-	            	for(StyleItemDto i : sirps.findByStyleNo(si).stream().map(StyleItem::toDto).collect(Collectors.toList())) {
-	            		silist.add(i);
-                		irps.findById(i.getItemNo()).map(Item::toDto).ifPresent(ilist::add);
-                	};
-	            }
 	            }
 	        });
 	    }
@@ -110,8 +109,8 @@ public class MainModel {
 	                 .show(dto)
 	                 .characters(clist)
 	                 .styles(slist)
-	                 .styleItems(silist)
-	                 .items(ilist)
+	                 .styleItems(sirps.findByStyleNoIn(styleItemNoList).stream().map(StyleItem::toDto).collect(Collectors.toList()))
+	                 .items(irps.findByNoIn(itemNoList).stream().map(Item::toDto).collect(Collectors.toList()))
 	                 .build();
 	    
 	}

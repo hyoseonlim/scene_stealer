@@ -12,4 +12,6 @@ public interface ItemsRepository extends JpaRepository<Item, Integer>{
 	// 아이템명 자동완성
 	@Query("SELECT i FROM Item i WHERE i.name LIKE %:name%")
     List<Item> findByNameContaining(@Param("name") String name);
+	
+	List<Item> findByNoIn(List<Integer> list);
 }

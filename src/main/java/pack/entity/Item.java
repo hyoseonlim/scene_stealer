@@ -41,7 +41,7 @@ public class Item {
 				.no(entity.getNo())
 				.pic(entity.getPic())
 				.name(entity.getName())
-				//.productNo(entity.getProduct().getNo())
+				.productNo(entity.getProduct().getNo())
 				.build();
 	}
 }
