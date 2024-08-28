@@ -3,7 +3,6 @@ package pack.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,7 +17,6 @@ import pack.dto.PostDto;
 import pack.dto.ReviewDto;
 import pack.dto.ShowDto;
 import pack.dto.SubDto;
-import pack.entity.CharacterLike;
 import pack.model.MainModel;
 import pack.repository.CharacterLikesRepository;
 
