@@ -1,6 +1,7 @@
 package pack.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,5 +28,7 @@ public interface UsersRepository extends JpaRepository<User, Integer> {
 	
 	// 로그인
 	User findByIdAndPwd(String id, String pwd);
+	
+	 Optional<User> findById(String id);
 
 }

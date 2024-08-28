@@ -42,40 +42,6 @@ public class UserController {
 		return um.getNoticeInfo(noticeNo);
 	}
 
-	@PostMapping("/api/kakao")
-	public ResponseEntity<Map<String, Object>> handleKakaoToken(@RequestBody Map<String, String> request) {
-		 String accessToken = request.get("accessToken");
-		    String userInfo = getUserInfoFromKakao(accessToken);
-
-		    // 사용자 정보를 JSON으로 변환
-		    ObjectMapper objectMapper = new ObjectMapper();
-		    Map<String, Object> userMap = new HashMap<>();
-		    try {
-		        userMap = objectMapper.readValue(userInfo, new TypeReference<Map<String, Object>>(){});
-		    } catch (JsonProcessingException e) {
-		        e.printStackTrace();
-		    }
-
-		    return ResponseEntity.ok(userMap);
-	}
-
-	private String getUserInfoFromKakao(String accessToken) {
-		String userInfo = "";
-		try {
-			HttpHeaders headers = new HttpHeaders();
-			headers.setBearerAuth(accessToken);
-			HttpEntity<String> entity = new HttpEntity<>("", headers);
-
-			RestTemplate restTemplate = new RestTemplate();
-			ResponseEntity<String> response = restTemplate.exchange("https://kapi.kakao.com/v2/user/me", HttpMethod.GET,
-					entity, String.class);
-
-			userInfo = response.getBody();
-		} catch (HttpClientErrorException e) {
-			// 오류 처리
-			e.printStackTrace();
-		}
-		return userInfo;
-	}
+	
 
 }
