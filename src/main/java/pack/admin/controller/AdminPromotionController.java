@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -98,8 +100,9 @@ public class AdminPromotionController {
 	
 	// 쿠폰 목록
 	@GetMapping("/admin/coupons")
-    public List<CouponDto> getAllCoupons() {
-        return couponsRepo.findAll().stream().map(Coupon::toDto).toList();
+    public Page<CouponDto> getAllCoupons(Pageable pageable) {
+		Page<Coupon> couponPage = couponsRepo.findAll(pageable);
+        return couponPage.map(Coupon::toDto);
 	}
 
 }

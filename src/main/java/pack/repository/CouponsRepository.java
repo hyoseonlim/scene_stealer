@@ -10,4 +10,6 @@ import pack.entity.Coupon;
 
 public interface CouponsRepository extends JpaRepository<Coupon, Integer>{
 	Page<Coupon> findByNoIn(List<Integer> couponNoList, Pageable pageable);
+	
+	Page<Coupon> findAll(Pageable pageable);
 }
