@@ -1,6 +1,7 @@
 package pack.admin.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import pack.admin.model.AdminCommunityModel;
 import pack.dto.PostDto;
-import pack.dto.ReportedPosts_a;
+import pack.dto.ReportedPostDto;
 
 @RestController
 @RequestMapping("/admin")
@@ -42,12 +43,12 @@ public class AdminCommunityController {
 
     // 페이징된 신고 글 조회 
     @GetMapping("/posts/reported")
-    public ResponseEntity<Page<ReportedPosts_a>> getReportedPosts(
+    public ResponseEntity<Page<PostDto>> getReportedPosts(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size,
             @RequestParam(value = "sort", defaultValue = "latest") String sort) {
 
-        Page<ReportedPosts_a> reportedPostsPage;
+        Page<PostDto> reportedPostsPage;
         Pageable pageable = PageRequest.of(page, size);
 
         if ("mostReported".equals(sort)) {
@@ -57,6 +58,11 @@ public class AdminCommunityController {
         }
 
         return ResponseEntity.ok(reportedPostsPage);
+    }
+    
+    @GetMapping("/posts/reportedInfos")
+    public List<ReportedPostDto> getReportedInfos() {
+    	return adminCommunityModel.getReportedInfos();
     }
 
     // 신고글 삭제 기능

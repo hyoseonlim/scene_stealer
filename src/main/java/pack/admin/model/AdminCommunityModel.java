@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import pack.dto.PostDto;
-import pack.dto.ReportedPosts_a;
+import pack.dto.ReportedPostDto;
 import pack.entity.Comment;
 import pack.entity.Post;
 import pack.entity.ReportedPost;
@@ -40,12 +40,16 @@ public class AdminCommunityModel {
         return postsRepository.findAll(pageable).map(this::convertToPostDto);
     }
 
-    public Page<ReportedPosts_a> getAllReportedPosts(Pageable pageable) {
-        return postsRepository.findByReportsCountGreaterThan(0, pageable).map(this::convertToReportedPosts_a);
+    public Page<PostDto> getAllReportedPosts(Pageable pageable) {
+        return postsRepository.findByReportsCountGreaterThan(0, pageable).map(Post::toDto);
     }
 
-    public Page<ReportedPosts_a> getMostReportedPosts(Pageable pageable) {
-        return postsRepository.findByReportsCountGreaterThanOrderByReportsCountDesc(0, pageable).map(this::convertToReportedPosts_a);
+    public Page<PostDto> getMostReportedPosts(Pageable pageable) {
+        return postsRepository.findByReportsCountGreaterThanOrderByReportsCountDesc(0, pageable).map(Post::toDto);
+    }
+    
+    public List<ReportedPostDto> getReportedInfos(){
+    	return reportedPostsRepository.findAll().stream().map(ReportedPost::toDto).toList();
     }
     
     /*
@@ -77,17 +81,6 @@ public class AdminCommunityModel {
             .userNo(post.getUser().getNo())
             .userPic(post.getUser().getPic())
             .commentsList(post.getComments().stream().map(Comment::getNo).collect(Collectors.toList()))
-            .build();
-    }
-
-    // Post 엔티티를 ReportedPosts_a로 변환하는 메서드
-    private ReportedPosts_a convertToReportedPosts_a(Post post) {
-        return ReportedPosts_a.builder()
-            .no(post.getNo())
-            .userId(post.getUser().getId())
-            .content(post.getContent())
-            .category(post.getReportedPosts().isEmpty() ? null : post.getReportedPosts().get(0).getCategory())
-            .reportsCount(post.getReportsCount())
             .build();
     }
     

@@ -172,11 +172,9 @@ public class AdminMainController {
 	    }
 	}
 	
-	/*
-	@DeleteMapping("/admin/show/{no}") // 스타일 PK
-	public void deleteShow(@PathVariable("no") int no) {
-		return dao.deleteShowInfo(no);
+	@DeleteMapping("/admin/character/{no}") // 배역 PK
+	public void deleteCharacter(@PathVariable("no") int no) {
+		
 	}
-	*/
 	
 }
