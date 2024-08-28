@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import pack.dto.ProductDto;
+import pack.dto.ReviewDto;
 import pack.entity.Product;
 import pack.repository.ProductsRepository;
 import pack.admin.model.AdminProductModel;
@@ -146,4 +147,16 @@ public class AdminProductController {
  	public List<ProductDto> autocompleteProduct(@PathVariable("term") String term) {
  		return productRepo.findByNameContaining(term).stream().map(Product::toDto).toList();
  	}
+ 	// 특정 상품의 리뷰를 페이징된 형태로 조회하는 API
+    @GetMapping("/{productId}/reviews")
+    public ResponseEntity<Page<ReviewDto>> getProductReviews(
+            @PathVariable("productId") int productId,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ReviewDto> reviewsPage = adminProductModel.getProductReviews(productId, pageable);
+
+        return ResponseEntity.ok(reviewsPage);
+    }
 }

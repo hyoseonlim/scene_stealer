@@ -26,7 +26,7 @@ public class ReviewDto {
 	 private Integer score;
 	 
 	 private Integer userNo, productNo;
-	 private String userNickname, productName;
+	 private String userNickname,userid, productName;
 	 
 	 private int totalPages, currentPage;
 	 private Long totalElements;

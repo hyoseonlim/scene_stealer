@@ -44,10 +44,12 @@ public class Review {
 
     private Integer score;
     
+    
     public static ReviewDto toDto (Review entity) {
     	return ReviewDto.builder()
     			.no(entity.getNo())
     			.userNo(entity.getUser().getNo())
+    			.userid(entity.getUser().getId())
     			.userNickname(entity.getUser().getNickname())
     			.productNo(entity.getProduct().getNo())
     			.productName(entity.getProduct().getName())

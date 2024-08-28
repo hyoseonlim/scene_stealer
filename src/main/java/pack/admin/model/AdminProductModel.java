@@ -5,8 +5,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import pack.dto.ProductDto;
+import pack.dto.ReviewDto;
 import pack.entity.Product;
+import pack.entity.Review;
 import pack.repository.ProductsRepository;
+import pack.repository.ReviewsRepository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -17,14 +20,29 @@ public class AdminProductModel {
 
     @Autowired
     private ProductsRepository productReposi;
+    @Autowired
+    private ReviewsRepository repositoryl;
 
-    // 페이징된 상품 리스트 조회 메서드
+//    // 페이징된 상품 리스트 조회 메서드
+//    public Page<ProductDto> listAll(Pageable pageable) {
+//        Page<Product> products = productReposi.findAll(pageable);
+//        return products.map(product -> {
+//            ProductDto dto = Product.toDto(product);
+//            dto.setReviewCount(repositoryl.countByProductNo(product.getNo())); // 리뷰 갯수 설정
+//            return dto;
+//        });
+//    }
+ // 페이징된 상품 리스트 조회 메서드
     public Page<ProductDto> listAll(Pageable pageable) {
         Page<Product> products = productReposi.findAll(pageable);
-        return products.map(Product::toDto);
+        return products.map(product -> {
+            ProductDto dto = Product.toDto(product);
+            int reviewCount = repositoryl.countByProductNo(product.getNo());  // 리뷰 갯수 조회
+            dto.setReviewCount(reviewCount);  // 리뷰 갯수 설정 (null이 아닌 0 이상 값이 설정되도록 보장)
+            return dto;
+        });
     }
-
-    // 검색 기능을 추가한 메서드
+ // 검색 기능을 추가한 메서드
     public Page<ProductDto> searchProducts(Pageable pageable, String searchTerm, String searchField, String startDate, String endDate) {
         Page<Product> products;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -45,13 +63,54 @@ public class AdminProductModel {
                 products = productReposi.findAll(pageable);
                 break;
         }
-        return products.map(Product::toDto);
-    }
 
-    // 특정 no에 해당하는 상품 조회
+        return products.map(product -> {
+            ProductDto dto = Product.toDto(product);
+            int reviewCount = repositoryl.countByProductNo(product.getNo());  // 리뷰 갯수 조회
+            dto.setReviewCount(reviewCount);  // 리뷰 갯수 설정
+            return dto;
+        });
+    }
+//
+//    // 검색 기능을 추가한 메서드
+//    public Page<ProductDto> searchProducts(Pageable pageable, String searchTerm, String searchField, String startDate, String endDate) {
+//        Page<Product> products;
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//
+//        switch (searchField) {
+//            case "name":
+//                products = productReposi.findByNameContainingIgnoreCase(searchTerm, pageable);
+//                break;
+//            case "date":
+//                LocalDateTime start = LocalDateTime.parse(startDate + " 00:00:00", formatter);
+//                LocalDateTime end = LocalDateTime.parse(endDate + " 23:59:59", formatter);
+//                products = productReposi.findByDateBetween(start, end, pageable);
+//                break;
+//            case "category":
+//                products = productReposi.findByCategoryContainingIgnoreCase(searchTerm, pageable);
+//                break;
+//            default:
+//                products = productReposi.findAll(pageable);
+//                break;
+//        }
+//        return products.map(Product::toDto);
+//    }
+
+//    // 특정 no에 해당하는 상품 조회
+//    public ProductDto getData(Integer no) {
+//        Product product = productReposi.findByNo(no);
+//        return product != null ? Product.toDto(product) : null;
+//    }
+ // 특정 no에 해당하는 상품 조회
     public ProductDto getData(Integer no) {
         Product product = productReposi.findByNo(no);
-        return product != null ? Product.toDto(product) : null;
+        if (product != null) {
+            ProductDto dto = Product.toDto(product);
+            int reviewCount = repositoryl.countByProductNo(no);  // 리뷰 갯수 조회
+            dto.setReviewCount(reviewCount);  // 리뷰 갯수 설정
+            return dto;
+        }
+        return null;
     }
 
     // 상품 추가
@@ -98,5 +157,10 @@ public class AdminProductModel {
         } else {
             return "상품을 찾을 수 없습니다.";
         }
+    }
+    // 특정 상품의 리뷰를 페이징된 형태로 조회하는 메서드
+    public Page<ReviewDto> getProductReviews(int productId, Pageable pageable) {
+        Page<Review> reviews = repositoryl.findByProductNo(productId, pageable);
+        return reviews.map(Review::toDto);
     }
 }

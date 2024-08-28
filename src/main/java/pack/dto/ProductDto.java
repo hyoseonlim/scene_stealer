@@ -19,12 +19,13 @@ import pack.entity.Product;
 @AllArgsConstructor
 public class ProductDto {
     private Integer no;
-
+    
     private String name;
     private Integer price;
     private String contents;
 
     private Date date;
+    private Integer reviewCount;
 
     private String category;
     private PostDto post;
