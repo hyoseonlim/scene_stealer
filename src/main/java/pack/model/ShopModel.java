@@ -158,7 +158,53 @@ public class ShopModel {
 				.build();
 	}
 	
-	// 장바구니 담기
+	// 리뷰 작성 기능
+	@Transactional
+	public boolean writeReview(ReviewDto reviewDto) {
+	    try {
+	        Review review = Review.builder()
+	            .contents(reviewDto.getContents())
+	            .score(reviewDto.getScore())
+	            .pic(reviewDto.getPic())
+	            .product(productsRepository.findById(reviewDto.getProductNo()).orElseThrow(() -> new IllegalArgumentException("Invalid product ID")))
+	            .user(usersRepository.findById(reviewDto.getUserNo()).orElseThrow(() -> new IllegalArgumentException("Invalid user ID")))
+	            .build();
+	        
+	        reviewsRepository.save(review);
+	        return true;
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return false;
+	    }
+	}
+
+	//리뷰 수정 기능
+//	@Transactional
+//	public boolean updateReview(int reviewNo, ReviewDto reviewDto) {
+//	    try {
+//	        Review review = reviewsRepository.findById(reviewNo).orElseThrow(() -> new IllegalArgumentException("Review not found"));
+//	        review.setContents(reviewDto.getContents());
+//	        review.setScore(reviewDto.getScore());
+//	        reviewsRepository.save(review);
+//	        return true;
+//	    } catch (Exception e) {
+//	        e.printStackTrace();
+//	        return false;
+//	    }
+//	}
+//
+//	// 리뷰 삭제 기능
+//	@Transactional
+//	public boolean deleteReview(int reviewNo) {
+//	    try {
+//	        reviewsRepository.deleteById(reviewNo);
+//	        return true;
+//	    } catch (Exception e) {
+//	        e.printStackTrace();
+//	        return false;
+//	    }
+//	}
+
 
 	
 }

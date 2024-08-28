@@ -37,5 +37,11 @@ public class ShopDto {
 //	private List<Integer> orderProductNoList;
 //	private List<Integer> productNoList;
 	
+	// 장바구니 부분
+	private long userId;
+	
+	private CartDto cart; // 장바구니 정보 추가
+	
+	private UserDto user; // 사용자 정보 추가
 	
 }

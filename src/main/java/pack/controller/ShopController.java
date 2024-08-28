@@ -9,8 +9,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -100,6 +104,54 @@ public class ShopController {
 	    public ReviewDto getReviewDetail(@PathVariable("reviewNo") int reviewNo) {
 	    	return smodel.getReviewDetail(reviewNo);
 	    }
+	    
+	    
+	    // 리뷰 글쓰기 // putmapping - update
+	    // 상품별 리뷰 insert
+	    @PostMapping("/list/review/{no}")
+	    public ResponseEntity<String> writeReview(
+	            @PathVariable int no, 
+	            @RequestBody ReviewDto reviewDto) {
+
+	        // reviewDto의 productNo 필드에 @PathVariable에서 받은 값을 설정
+	        reviewDto.setProductNo(no);
+
+	        // 리뷰 작성 처리
+	        boolean success = smodel.writeReview(reviewDto);
+	        
+	        if (success) {
+	            return ResponseEntity.ok("리뷰 작성이 완료되었습니다.");
+	        } else {
+	            return ResponseEntity.status(500).body("리뷰 작성에 실패했습니다.");
+	        }
+	    }
+	    // 리뷰 수정
+//	    @PutMapping("/review/update/{reviewNo}")
+//	    public ResponseEntity<String> updateReview(@PathVariable("reviewNo") int reviewNo, @RequestBody ReviewDto reviewDto) {
+//	        boolean success = smodel.updateReview(reviewNo, reviewDto);
+//	        if (success) {
+//	            return ResponseEntity.ok("리뷰 수정이 완료되었습니다.");
+//	        } else {
+//	            return ResponseEntity.status(500).body("리뷰 수정에 실패했습니다.");
+//	        }
+//	    }
+//
+//	    // 리뷰 삭제
+//	    @DeleteMapping("/review/delete/{reviewNo}")
+//	    public ResponseEntity<String> deleteReview(@PathVariable("reviewNo") int reviewNo) {
+//	        boolean success = smodel.deleteReview(reviewNo);
+//	        if (success) {
+//	            return ResponseEntity.ok("리뷰 삭제가 완료되었습니다.");
+//	        } else {
+//	            return ResponseEntity.status(500).body("리뷰 삭제에 실패했습니다.");
+//	        }
+//	    }
+	    
+	    
+	    
+	    
+	    
+	    
 	    
 	    // 장바구니 담기 @PostMapping
 	    // 장바구니 조회 @GetMapping
