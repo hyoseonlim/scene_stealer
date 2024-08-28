@@ -175,8 +175,8 @@ public class AdminMainModel {
 		}
 		
 		// 아이템 추가
-		public int insertItem(ItemDto dto) {
-			return itemsRepo.save(ItemDto.toEntity(dto)).getNo();
+		public int insertItem(Item item) {
+			return itemsRepo.save(item).getNo();
 		}
 		
 		// 스타일-아이템 추가

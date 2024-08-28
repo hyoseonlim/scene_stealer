@@ -12,8 +12,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import pack.dto.ItemDto;
 
+@Setter // 관리자 아이템 추가 시 에러 해결을 위해 불가피한 사용
 @Getter
 @Builder
 @NoArgsConstructor

@@ -27,6 +27,8 @@ import pack.dto.ShowDto;
 import pack.dto.ShowInfoDto;
 import pack.dto.StyleDto;
 import pack.dto.StyleItemDto;
+import pack.entity.Item;
+import pack.repository.ProductsRepository;
 
 @RestController
 public class AdminMainController {
@@ -145,34 +147,29 @@ public class AdminMainController {
         dao.insertStyleItem(styleItemDto);
 	}
 	
+	@Autowired
+	private ProductsRepository productsRepository;
+	
 	// 아이템 추가
 	@PostMapping("/admin/fashion/{no}/item") // 스타일 PK
-	public ItemDto_a addItem(@PathVariable("no") int no, @RequestParam("product") int product, @RequestPart("file") MultipartFile pic) {
-		ItemDto_a dto = new ItemDto_a();
+	public void addItem(@PathVariable("no") int no, @RequestParam("name") String name, @RequestParam("product") int product, @RequestPart("file") MultipartFile pic) {
 		String staticDirectory = System.getProperty("user.dir") + "/src/main/resources/static/images/";
 	    Path uploadPath = Paths.get(staticDirectory, pic.getOriginalFilename());
 	    try {
 	        pic.transferTo(uploadPath); // 파일을 지정된 경로에 저장
-	        // Item
-	        ItemDto itemDto = new ItemDto();
-	        itemDto.setProductNo(product);
-	        itemDto.setPic("/images/" + pic.getOriginalFilename());
-	        
-	        dto.setNo(dao.insertItem(itemDto)); // 추가 후 PK 받기
-	        
-	        dto.setPic("/images/" + pic.getOriginalFilename());
-	        dto.setProduct(product);
-	        dto.setStyle(no);
-	        
-	        // Style_Item
+	        Item item = new Item();
 	        StyleItemDto styleItemDto = new StyleItemDto();
-	        styleItemDto.setItemNo(dto.getNo());
+	        
+	        item.setName(name);
+	        item.setProduct(productsRepository.getReferenceById(product)); // 어거지입니다
+	        item.setPic("/images/" + pic.getOriginalFilename());
+	        
+	        styleItemDto.setItemNo(dao.insertItem(item)); // Item 추가 후 받은 PK로
 	        styleItemDto.setStyleNo(no);
 	        dao.insertStyleItem(styleItemDto);
 	    } catch (Exception e) {
 	        System.out.println("에러: " + e);
 	    }
-	    return dto;
 	}
 	
 	/*
