@@ -9,12 +9,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
+import lombok.Setter;
 import pack.entity.Post;
 import pack.entity.Product;
 import pack.entity.User;
 
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -30,6 +31,7 @@ public class PostDto {
 
 	private String pic; // URL or file path
 	
+	private MultipartFile image; // 이미지 파일을 저장할 필드
 
 	private Integer likesCount;
 	private Integer commentsCount;

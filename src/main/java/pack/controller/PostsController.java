@@ -1,5 +1,6 @@
 package pack.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -24,12 +25,15 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import pack.dto.CommentDto;
 import pack.dto.CommentLikeDto;
 import pack.dto.FollowDto;
 import pack.dto.PostDetailDto;
 import pack.dto.PostDto;
 import pack.dto.PostLikeDto;
+import pack.dto.ProductDto;
 import pack.dto.ReportedPostDto;
 import pack.dto.UserDto;
 import pack.model.PostsModel;
@@ -210,13 +214,52 @@ public class PostsController {
 		return result;
 	}
 
-	// 게시글 등록하기
+//	// 게시글 등록하기
+//	@PostMapping("/posts/detail")
+//	public Map<String, Boolean> insertPosts(@RequestBody PostDto dto) {
+//		Map<String, Boolean> result = new HashMap<String, Boolean>();
+//		result.put("result", pm.insertPosts(dto));
+//		return result;
+//	}
 	@PostMapping("/posts/detail")
-	public Map<String, Boolean> insertPosts(@RequestBody PostDto dto) {
-		Map<String, Boolean> result = new HashMap<String, Boolean>();
-		result.put("result", pm.insertPosts(dto));
-		return result;
+	public Map<String, Object> addPosts(
+	        @RequestPart("postDto") String postDtoJson,
+	        @RequestPart(value = "pic", required = false) MultipartFile pic) {
+	    Map<String, Object> response = new HashMap<>();
+	    try {
+	        ObjectMapper objectMapper = new ObjectMapper();
+	        PostDto dto = objectMapper.readValue(postDtoJson, PostDto.class);
+
+	        if (pic != null && !pic.isEmpty()) {
+	            String staticDirectory = System.getProperty("user.dir") + "/src/main/resources/static/images/";
+	            Path imagePath = Paths.get(staticDirectory, pic.getOriginalFilename());
+	            File dest = imagePath.toFile();
+
+	            if (!dest.getParentFile().exists()) {
+	                dest.getParentFile().mkdirs();
+	            }
+
+	            pic.transferTo(dest);
+	            dto.setPic("/images/" + pic.getOriginalFilename());
+	        }
+
+	        boolean isSuccess = pm.insertPosts(dto);
+
+	        if (isSuccess) {
+	            response.put("isSuccess", true);
+	            response.put("message", "게시물 추가 성공");
+	        } else {
+	            response.put("isSuccess", false);
+	            response.put("message", "게시물 추가 실패");
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        response.put("isSuccess", false);
+	        response.put("message", "서버 오류 발생: " + e.getMessage());
+	    }
+	    return response;
 	}
+	
 
 	// 게시글 수정하기
 	@PutMapping("/posts/detail/{postNo}")
