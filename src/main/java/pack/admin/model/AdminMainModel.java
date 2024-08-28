@@ -6,11 +6,11 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import pack.dto.ActorDto;
 import pack.dto.ActorInfoDto;
 import pack.dto.CharacterDto;
-import pack.dto.ItemDto;
 import pack.dto.ItemDto_a;
 import pack.dto.ShowActorDto;
 import pack.dto.ShowDto;
@@ -184,9 +184,14 @@ public class AdminMainModel {
 			styleItemRepo.save(StyleItemDto.toEntity(dto));
 		}
 		
-		// 작품 정보 삭제
-		public void deleteShowInfo(int no) {
-			
+		// 배역 관련 정보 삭제
+		@Transactional
+		public void deleteCharacterInfo(int no) {
+			Character character = charactersRepo.findById(no).get();
+			styleItemRepo.deleteByStyleIn(character.getStyles()); // Style_Item
+			stylesRepo.deleteAll(character.getStyles()); // Style
+			showActorRepo.deleteByShow(character.getShow()); // Show_Actor
+			charactersRepo.delete(character); // Character
 		}
 		
 }

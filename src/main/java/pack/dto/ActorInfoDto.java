@@ -13,8 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ActorInfoDto {
-	private int no; // Character PK임. 스타일 조회 시 필요
-	
+	private int no; // Character PK
 	private String actor;
 	private String character;
 	private String pic;

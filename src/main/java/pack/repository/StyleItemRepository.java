@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import pack.entity.Style;
 import pack.entity.StyleItem;
 
 public interface StyleItemRepository extends JpaRepository<StyleItem, Integer> {
@@ -16,4 +17,6 @@ public interface StyleItemRepository extends JpaRepository<StyleItem, Integer> {
 	public List<StyleItem> findByCharacterNo(@Param("no") int no);
 	
 	public List<StyleItem> findByStyleNoIn(List<Integer> list);
+	
+	public void deleteByStyleIn(List<Style> list); // 배역의 전체 스타일에 있는 아이템 연결 관계 삭제
 }

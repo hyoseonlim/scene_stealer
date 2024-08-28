@@ -174,7 +174,7 @@ public class AdminMainController {
 	
 	@DeleteMapping("/admin/character/{no}") // 배역 PK
 	public void deleteCharacter(@PathVariable("no") int no) {
-		
+		dao.deleteCharacterInfo(no);
 	}
 	
 }
