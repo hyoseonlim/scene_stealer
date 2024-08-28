@@ -52,7 +52,7 @@ public class Post {
 
     @Column(name = "pic")
     private String pic;  // URL or file path
-
+   
     private Integer likesCount;
     private Integer commentsCount;
     private Integer reportsCount;
