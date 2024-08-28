@@ -95,5 +95,11 @@ public class AdminPromotionController {
 		}
 		return Map.of("isSuccess", true);
 	}
+	
+	// 쿠폰 목록
+	@GetMapping("/admin/coupons")
+    public List<CouponDto> getAllCoupons() {
+        return couponsRepo.findAll().stream().map(Coupon::toDto).toList();
+	}
 
 }
