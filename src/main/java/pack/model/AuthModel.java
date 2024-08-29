@@ -1,7 +1,6 @@
 package pack.model;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,8 +10,6 @@ import org.springframework.stereotype.Service;
 import pack.config.CustomUserDetails;
 import pack.dto.UserDto;
 import pack.repository.UsersRepository;
-
-import java.util.Collections;
 
 @Service
 public class AuthModel implements UserDetailsService {
@@ -52,5 +49,16 @@ public class AuthModel implements UserDetailsService {
     public void saveUserFromDto(UserDto userDto) {
         pack.entity.User user = UserDto.toEntity(userDto);
         saveUser(user);
+    }
+    
+    // 회원가입 아이디 체크
+    public boolean idCheck(String id) {
+        try {
+            return userRepository.findByLoginId(id).isPresent();
+        } catch (Exception e) {
+            // 예외 처리: 예외를 기록하고 적절한 처리를 합니다.
+            System.err.println("Error checking ID: " + e.getMessage());
+            throw new RuntimeException("Error checking ID", e);
+        }
     }
 }
