@@ -5,7 +5,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pack.entity.Product;
 import pack.entity.Review;
+import pack.entity.User;
 
 @Getter
 @Setter
@@ -34,10 +36,10 @@ public class ReviewDto {
 	 public static Review toEntity(ReviewDto dto) {
 			return Review.builder()
 					.no(dto.getNo())
-	    			.user(UserDto.toEntity(dto.getUser()))
-	    			.product(ProductDto.toEntity(dto.getProduct()))
+	    			.user(User.builder().no(dto.getUserNo()).build())
+	    			.product(Product.builder().no(dto.getProductNo()).build())
 	    			.contents(dto.getContents())
-	    			.pic(dto.getPic())
+	    			.pic(dto.getPic() == null ? null : dto.getPic())
 	    			.score(dto.getScore())
 	    			.build();
 		}

@@ -25,9 +25,11 @@ import pack.dto.ShopDto;
 import pack.dto.SubDto;
 import pack.dto.UserDto;
 import pack.entity.Product;
+import pack.entity.User;
 import pack.model.PostsModel;
 import pack.model.ShopModel;
 import pack.repository.ProductsRepository;
+import pack.repository.UsersRepository;
 
 @RestController
 public class ShopController {
@@ -39,6 +41,9 @@ public class ShopController {
 	
 	@Autowired
 	private PostsModel pmodel;
+	
+	@Autowired
+	private UsersRepository usersRepository;
 	
 	//----Rest 요청
     @GetMapping("/list")
@@ -108,9 +113,9 @@ public class ShopController {
 	    
 	    // 리뷰 글쓰기 // putmapping - update
 	    // 상품별 리뷰 insert
-	    @PostMapping("/list/review/{no}")
+	    @PostMapping("/list/review/{productNo}")
 	    public ResponseEntity<String> writeReview(
-	            @PathVariable int no, 
+	            @PathVariable("productNo") int no, 
 	            @RequestBody ReviewDto reviewDto) {
 
 	        // reviewDto의 productNo 필드에 @PathVariable에서 받은 값을 설정
@@ -125,35 +130,55 @@ public class ShopController {
 	            return ResponseEntity.status(500).body("리뷰 작성에 실패했습니다.");
 	        }
 	    }
+	    
 	    // 리뷰 수정
-//	    @PutMapping("/review/update/{reviewNo}")
-//	    public ResponseEntity<String> updateReview(@PathVariable("reviewNo") int reviewNo, @RequestBody ReviewDto reviewDto) {
-//	        boolean success = smodel.updateReview(reviewNo, reviewDto);
-//	        if (success) {
-//	            return ResponseEntity.ok("리뷰 수정이 완료되었습니다.");
-//	        } else {
-//	            return ResponseEntity.status(500).body("리뷰 수정에 실패했습니다.");
-//	        }
-//	    }
-//
+	    @PutMapping("/review/update/{reviewNo}")
+	    public ResponseEntity<String> updateReview(@PathVariable("reviewNo") int reviewNo, @RequestBody ReviewDto reviewDto) {
+	        boolean success = smodel.updateReview(reviewNo, reviewDto);
+	        if (success) {
+	            return ResponseEntity.ok("리뷰 수정이 완료되었습니다.");
+	        } else {
+	            return ResponseEntity.status(500).body("리뷰 수정에 실패했습니다.");
+	        }
+	    }
+
 //	    // 리뷰 삭제
-//	    @DeleteMapping("/review/delete/{reviewNo}")
-//	    public ResponseEntity<String> deleteReview(@PathVariable("reviewNo") int reviewNo) {
-//	        boolean success = smodel.deleteReview(reviewNo);
-//	        if (success) {
-//	            return ResponseEntity.ok("리뷰 삭제가 완료되었습니다.");
-//	        } else {
-//	            return ResponseEntity.status(500).body("리뷰 삭제에 실패했습니다.");
-//	        }
-//	    }
+	    @DeleteMapping("/review/delete/{reviewNo}")
+	    public ResponseEntity<String> deleteReview(@PathVariable("reviewNo") int reviewNo) {
+	        boolean success = smodel.deleteReview(reviewNo);
+	        if (success) {
+	            return ResponseEntity.ok("리뷰 삭제가 완료되었습니다.");
+	        } else {
+	            return ResponseEntity.status(500).body("리뷰 삭제에 실패했습니다.");
+	        }
+	    }
 	    
-	    
-	    
-	    
-	    
-	    
-	    
+
 	    // 장바구니 담기 @PostMapping
+	    @PostMapping("/cart/add")
+	    public ResponseEntity<String> addToCart(
+	    		 @RequestParam("userNo") String userNo,  
+	            @RequestParam("productNo") int productNo,
+	            @RequestParam("quantity") int quantity) {
+
+	    	// 시큐리티 제외하고 일단 고
+	       // Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	      //  String username = authentication.getName();
+
+	    	 // ID로 사용자 조회
+	        User user = usersRepository.findById(userNo)
+	                .orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
+
+	        // 장바구니에 제품 추가
+	        boolean isAdded = smodel.addToCart(user.getNo(), productNo, quantity);
+	        
+	        if (isAdded) {
+	            return ResponseEntity.ok("Product added to cart successfully.");
+	        } else {
+	            return ResponseEntity.status(500).body("Failed to add product to cart.");
+	        }
+	    } 
+	     
 	    // 장바구니 조회 @GetMapping
 	    // 장바구니 품목 선택 삭제 @DeleteMapping
 	    // 장바구니 물건 전체 구매 @PostMapping

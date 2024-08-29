@@ -2,6 +2,7 @@ package pack.repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,6 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import pack.entity.Order;
+import pack.entity.User;
 
 public interface OrdersRepository extends JpaRepository<Order, Integer> {
     Order findByNo(Integer no);
@@ -33,4 +35,8 @@ public interface OrdersRepository extends JpaRepository<Order, Integer> {
     
     public Page<Order> findByNoIn(List<Integer> list, Pageable pageable);
     
+    //사용자와 상태로 주문 찾기 (장바구니 확인)
+    @Query("SELECT o FROM Order o WHERE o.user = :user AND o.state = :status")
+    Optional<Order> findByUserAndStatus(@Param("user") User user, @Param("status") String status);
+ 
 }

@@ -1,6 +1,7 @@
 package pack.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -178,33 +179,87 @@ public class ShopModel {
 	    }
 	}
 
-	//리뷰 수정 기능
-//	@Transactional
-//	public boolean updateReview(int reviewNo, ReviewDto reviewDto) {
-//	    try {
-//	        Review review = reviewsRepository.findById(reviewNo).orElseThrow(() -> new IllegalArgumentException("Review not found"));
-//	        review.setContents(reviewDto.getContents());
-//	        review.setScore(reviewDto.getScore());
-//	        reviewsRepository.save(review);
-//	        return true;
-//	    } catch (Exception e) {
-//	        e.printStackTrace();
-//	        return false;
-//	    }
-//	}
+	//리뷰 수정 기능 - 하다가 멈춤
+	@Transactional
+	public boolean updateReview(int reviewNo, ReviewDto reviewDto) {
+	    try {
+	        Review existingReview = reviewsRepository.findById(reviewNo)
+	            .orElseThrow(() -> new IllegalArgumentException("Invalid review ID"));
+
+	        // 새로운 Review 객체를 생성
+	        Review updatedReview = Review.builder()
+	            .contents(reviewDto.getContents())
+	            .score(reviewDto.getScore())
+	            .pic(reviewDto.getPic())
+	            .product(existingReview.getProduct())
+	            .user(existingReview.getUser())
+	            .build();
+
+	        // 변경된 리뷰 엔티티를 저장
+	        reviewsRepository.save(updatedReview);
+
+	        return true;
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return false;
+	    }
+	}
+
 //
 //	// 리뷰 삭제 기능
-//	@Transactional
-//	public boolean deleteReview(int reviewNo) {
-//	    try {
-//	        reviewsRepository.deleteById(reviewNo);
-//	        return true;
-//	    } catch (Exception e) {
-//	        e.printStackTrace();
-//	        return false;
-//	    }
-//	}
+	@Transactional
+	public boolean deleteReview(int reviewNo) {
+	    try {
+	        reviewsRepository.deleteById(reviewNo);
+	        return true;
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return false;
+	    }
+	}
+	
+	// 장바구니 담기 // 장바구니에 제품 추가
+	 @Transactional
+	  public boolean addToCart(int userNo, int productNo, int quantity) {
+	       try {
+	       User user = usersRepository.findById(userNo)
+	                .orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
+	            Product product = productsRepository.findById(productNo)
+	                .orElseThrow(() -> new IllegalArgumentException("Invalid product ID"));
 
+	            Optional<Order> optionalOrder = ordersRepository.findByUserAndStatus(user, "CART");
 
+	            Order order;
+	            if (optionalOrder.isPresent()) {
+	                order = optionalOrder.get();
+	            } else {
+	                order = Order.builder()
+	                    .user(user)
+	                    .state("CART")
+	                    .date(new Date())
+	                    .price(0)
+	                    .build();
+	                ordersRepository.save(order);
+	            }
+
+	            OrderProduct orderProduct = OrderProduct.builder()
+	                .order(order)
+	                .product(product)
+	                .quantity(quantity)
+	                .build();
+
+	            orderProductRepository.save(orderProduct);
+
+	            return true;
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            return false;
+	        }
+	    }
+	
+	    public List<OrderProduct> getCartItems(int userNo) {
+	        return orderProductRepository.findCartItemsByUserNoAndState(userNo, "CART");
+	    }
+	 
 	
 }
