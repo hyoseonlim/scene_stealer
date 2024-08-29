@@ -30,6 +30,8 @@ public class User {
     private Integer reward;
     private String nickname;
     private String bio;
+    
+    private String subpath;
 
     @Column(name = "pic")
     private String pic;  // URL or file path
@@ -91,6 +93,7 @@ public class User {
                 .reviewsNoList(entity.getReviews().stream().map(Review::getNo).collect(Collectors.toList()))
                 .alertsNoList(entity.getAlerts().stream().map(Alert::getNo).collect(Collectors.toList()))
                 .couponNoList(entity.getCouponUsers().stream().map(CouponUser::getNo).collect(Collectors.toList()))
+                .subpath(entity.getSubpath() == null ? "0" : entity.getSubpath())
                 .build();
     }
 }

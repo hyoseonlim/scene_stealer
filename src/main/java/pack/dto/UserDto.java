@@ -32,6 +32,7 @@ public class UserDto {
     private String bio;
     private String pic;
     private MultipartFile profileImage;
+    private String subpath;
     
     private List<CouponUserDto> couponUsers = new ArrayList<>();
     
@@ -59,6 +60,7 @@ public class UserDto {
                 .nickname(dto.getNickname())
                 .bio(dto.getBio())
                 .pic(dto.getPic())
+                .subpath(dto.getSubpath())
                 .couponUsers(dto.getCouponUsers().stream().map(CouponUserDto::toEntity).collect(Collectors.toList()))
                 .build();
     }

@@ -29,4 +29,6 @@ public interface UsersRepository extends JpaRepository<User, Integer> {
 	// 로그인
     @Query("SELECT u FROM User u WHERE u.id = :id")
     Optional<User> findByLoginId(@Param("id") String id);
+    
+    Optional<User> findById(String id);
 }
