@@ -1,5 +1,6 @@
 package pack.dto;
 
+import java.util.Date;  // java.sql.Date 대신 java.util.Date 사용
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class PostDto {
 
 	private String content;
 
-	private java.util.Date date;
+	private Date date;
 
 	private String pic; // URL or file path
 	
@@ -36,7 +37,10 @@ public class PostDto {
 	private Integer likesCount;
 	private Integer commentsCount;
 	private Integer reportsCount;
-	
+
+    // 소프트 삭제 관련 필드
+	private boolean deleted;
+	private Date deletedAt;  // java.util.Date로 수정
 
 	private ProductDto product;
 	private List<CommentDto> comments = new ArrayList<>();
@@ -51,6 +55,7 @@ public class PostDto {
 	private int totalPages, currentPage;
 	private Long totalElements;
 
+    // DTO에서 Entity로 변환하는 메서드
 	public static Post toEntity(PostDto dto) {
 		return Post.builder()
 				.no(dto.getNo())
@@ -62,6 +67,8 @@ public class PostDto {
 				.commentsCount(dto.getCommentsCount())
 				.reportsCount(dto.getReportsCount())
 				.product(Product.builder().no(dto.getProductNo()).build())
+				.deleted(dto.isDeleted())  // 소프트 삭제 상태 추가
+				.deletedAt(dto.getDeletedAt())  // 삭제된 시점 추가
 				.build();
 	}
 }

@@ -27,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import net.coobird.thumbnailator.Thumbnails;
 import pack.dto.CommentDto;
 import pack.dto.CommentLikeDto;
 import pack.dto.FollowDto;
@@ -50,15 +51,9 @@ public class PostsController {
 		return pm.userInfo(no);
 	}
 
-//	// 유저 정보 수정하기
-//	@PutMapping("/posts/user/{userNo}")
-//	public Map<String, Boolean> userInfoUpdate(@PathVariable("userNo") int no, @RequestBody UserDto dto) {
-//		Map<String, Boolean> result = new HashMap<String, Boolean>();
-//		result.put("result", pm.userInfoUpdate(no, dto));
-//		return result;
-//	}
+
 	
-	 // 유저 정보 수정하기
+	
 	// 유저 정보 수정하기
     @PutMapping("/posts/user/{userNo}")
     public Map<String, Boolean> userInfoUpdate(@PathVariable("userNo") int no, 
@@ -111,13 +106,13 @@ public class PostsController {
 		return result;
 	}
 
-	// 팔로우한 사람 글 목록 가져오기
-	@GetMapping("/posts/followPostList/{no}")
-	public ResponseEntity<Page<PostDto>> followPostList(@PathVariable("no") int userNo, Pageable pageable) {
-		Page<PostDto> postPage = pm.followPostList(userNo, pageable);
-		return ResponseEntity.ok(postPage);
-	}
 
+	//  팔로우한 사람 글 목록 가져오기 또는 좋아요 순으로 게시글 가져오기
+    @GetMapping("/posts/followOrPopular/{no}")
+    public ResponseEntity<Page<PostDto>> followPostListOrPopular(@PathVariable("no") int userNo, Pageable pageable) {
+        Page<PostDto> postPage = pm.followPostListOrPopular(userNo, pageable);
+        return ResponseEntity.ok(postPage);
+    }
 	// 특정 유저 글 목록 가져오기
 	@GetMapping("/posts/list/{no}")
 	public ResponseEntity<Page<PostDto>> postListByUser(@PathVariable("no") int no, Pageable pageable) {
@@ -214,52 +209,7 @@ public class PostsController {
 		return result;
 	}
 
-//	// 게시글 등록하기
-//	@PostMapping("/posts/detail")
-//	public Map<String, Boolean> insertPosts(@RequestBody PostDto dto) {
-//		Map<String, Boolean> result = new HashMap<String, Boolean>();
-//		result.put("result", pm.insertPosts(dto));
-//		return result;
-//	}
-//	@PostMapping("/posts/detail")
-//	public Map<String, Object> addPosts(
-//	        @RequestPart("postDto") String postDtoJson,
-//	        @RequestPart(value = "pic", required = false) MultipartFile pic) {
-//	    Map<String, Object> response = new HashMap<>();
-//	    try {
-//	        ObjectMapper objectMapper = new ObjectMapper();
-//	        PostDto dto = objectMapper.readValue(postDtoJson, PostDto.class);
-//
-//	        if (pic != null && !pic.isEmpty()) {
-//	            String staticDirectory = System.getProperty("user.dir") + "/src/main/resources/static/images/";
-//	            Path imagePath = Paths.get(staticDirectory, pic.getOriginalFilename());
-//	            File dest = imagePath.toFile();
-//
-//	            if (!dest.getParentFile().exists()) {
-//	                dest.getParentFile().mkdirs();
-//	            }
-//
-//	            pic.transferTo(dest);
-//	            dto.setPic("/images/" + pic.getOriginalFilename());
-//	        }
-//
-//	        boolean isSuccess = pm.insertPosts(dto);
-//
-//	        if (isSuccess) {
-//	            response.put("isSuccess", true);
-//	            response.put("message", "게시물 추가 성공");
-//	        } else {
-//	            response.put("isSuccess", false);
-//	            response.put("message", "게시물 추가 실패");
-//	        }
-//	    } catch (Exception e) {
-//	        e.printStackTrace();
-//	        response.put("isSuccess", false);
-//	        response.put("message", "서버 오류 발생: " + e.getMessage());
-//	    }
-//	    return response;
-//	}
-//	
+
 	@PostMapping("/posts/detail")
 	public Map<String, Object> addPosts(
 	    @RequestPart("postDto") String postDtoJson,
@@ -278,8 +228,13 @@ public class PostsController {
 	            if (!dest.getParentFile().exists()) {
 	                dest.getParentFile().mkdirs();
 	            }
-
-	            pic.transferTo(dest);
+	            
+	         // 이미지 파일을 압축하고 JPEG 포맷으로 저장
+	            Thumbnails.of(pic.getInputStream()) // inputFile을 pic.getInputStream()으로 설정
+	                .size(300, 300)
+	                .outputQuality(0.8) // 80% 품질로 압축
+	                .outputFormat("JPEG") // JPEG 포맷으로 저장
+	                .toFile(dest); // outputFile을 dest로 설정
 	            dto.setPic("/images/" + pic.getOriginalFilename());
 	        }
 
@@ -293,14 +248,9 @@ public class PostsController {
 	    }
 	    return response;
 	}
-//
-//	// 게시글 수정하기
-//	@PutMapping("/posts/detail/{postNo}")
-//	public Map<String, Boolean> updatePosts(@PathVariable("postNo") int postNo, @RequestBody PostDto dto) {
-//		Map<String, Boolean> result = new HashMap<String, Boolean>();
-//		result.put("result", pm.updatePosts(postNo, dto));
-//		return result;
-//	}
+
+	// 게시글 수정하기
+
 	@PutMapping("/posts/detail/{postNo}")
 	public Map<String, Object> updatePosts(
 	        @PathVariable("postNo") int postNo,
@@ -321,7 +271,12 @@ public class PostsController {
 	                dest.getParentFile().mkdirs();
 	            }
 
-	            pic.transferTo(dest);
+	         // 이미지 파일을 압축하고 JPEG 포맷으로 저장
+	            Thumbnails.of(pic.getInputStream()) // inputFile을 pic.getInputStream()으로 설정
+	                .size(300, 300)
+	                .outputQuality(0.8) // 80% 품질로 압축
+	                .outputFormat("JPEG") // JPEG 포맷으로 저장
+	                .toFile(dest); // outputFile을 dest로 설정
 	            dto.setPic("/images/" + pic.getOriginalFilename());
 	        }
 
@@ -359,5 +314,38 @@ public class PostsController {
 		result.put("result", pm.reportedPost(dto));
 		return result;
 	}
+	///////////////휴지통///////////////
+	// 휴지통으로 이동
+	@DeleteMapping("/posts/soft-delete/{postNo}")
+	public Map<String, Boolean> softDeletePost(@PathVariable("postNo") int postNo) {
+	    Map<String, Boolean> result = new HashMap<>();
+	    boolean isDeleted = pm.softDeletePost(postNo);
+	    result.put("result", isDeleted);
+	    return result;
+	}
+	// 복구
+	@PutMapping("/posts/restore/{postNo}")
+	public Map<String, Boolean> restorePost(@PathVariable("postNo") int postNo) {
+	    Map<String, Boolean> result = new HashMap<>();
+	    boolean isRestored = pm.restorePost(postNo);
+	    result.put("result", isRestored);
+	    return result;
+	}
+	// 게시글 완전 삭제
+	@DeleteMapping("/posts/permanent-delete/{postNo}")
+	public Map<String, Boolean> permanentDeletePost(@PathVariable("postNo") int postNo) {
+	    Map<String, Boolean> result = new HashMap<>();
+	    boolean isDeleted = pm.permanentDeletePost(postNo);
+	    result.put("result", isDeleted);
+	    return result;
+	}
+	// 휴지통 게시물 조회
+	@GetMapping("/posts/deleted")
+	public ResponseEntity<Page<PostDto>> getDeletedPosts(Pageable pageable) {
+	    Page<PostDto> deletedPosts = pm.getDeletedPosts(pageable);
+	    return ResponseEntity.ok(deletedPosts);
+	}
+
+
 	
 }

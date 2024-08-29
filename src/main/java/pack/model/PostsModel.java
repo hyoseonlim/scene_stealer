@@ -2,6 +2,7 @@ package pack.model;
 
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +12,9 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -85,6 +88,9 @@ public class PostsModel {
 	public UserDto userInfo(int no) {
 		return User.toDto(urps.findById(no).get());
 	}
+
+
+	
 
     // 유저 정보 수정하기
     @Transactional
@@ -191,16 +197,36 @@ public class PostsModel {
 		}
 	}
 
-	// 팔로잉 글 모아보기
-	public Page<PostDto> followPostList(int userNo, Pageable pageable) {
-		List<Integer> followeeList = frps.findByFollowerNo(userNo).stream().map(f -> f.getFollowee().getNo()).collect(Collectors.toList());
+//	// 팔로잉 글 모아보기
+//	public Page<PostDto> followPostList(int userNo, Pageable pageable) {
+//		List<Integer> followeeList = frps.findByFollowerNo(userNo).stream().map(f -> f.getFollowee().getNo()).collect(Collectors.toList());
+//
+//		Page<Post> postPage = prps.findByUserNoIn(followeeList, pageable);
+//
+//		List<PostDto> postList = postPage.stream().map(Post::toDto).collect(Collectors.toList());
+//
+//		return new PageImpl<>(postList, pageable, postPage.getTotalElements());
+//	}
+	   // 팔로우한 사람 글 모아보기 또는 좋아요 순으로 게시글 가져오기
+    public Page<PostDto> followPostListOrPopular(int userNo, Pageable pageable) {
+        // 팔로우한 사용자의 번호를 가져옴
+        List<Integer> followeeList = frps.findByFollowerNo(userNo).stream()
+            .map(f -> f.getFollowee().getNo())
+            .collect(Collectors.toList());
 
-		Page<Post> postPage = prps.findByUserNoIn(followeeList, pageable);
+        Page<Post> postPage;
 
-		List<PostDto> postList = postPage.stream().map(Post::toDto).collect(Collectors.toList());
+        if (followeeList.isEmpty()) {
+            // 팔로우한 사용자가 없으면 좋아요 순으로 게시글을 가져옴
+            Pageable sortedByLikes = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "likesCount"));
+            postPage = prps.findAll(sortedByLikes);
+        } else {
+            // 팔로우한 사용자가 있으면 해당 사용자의 게시글을 가져옴
+            postPage = prps.findByUserNoIn(followeeList, pageable);
+        }
 
-		return new PageImpl<>(postList, pageable, postPage.getTotalElements());
-	}
+        return postPage.map(Post::toDto);
+    }
 
 	// 특정 유저 작성 글 보기
 	public Page<PostDto> postListByUser(int userNo, Pageable pageable) {
@@ -236,6 +262,8 @@ public class PostsModel {
 	            .currentPage(parentCommentsPage.getNumber()) // 현재 페이지 번호
 	            .totalElements(parentCommentsPage.getTotalElements()) // 총 댓글 수
 	            .build();
+
+
 	}
 
 	// 게시글 좋아요 취소하기
@@ -256,7 +284,8 @@ public class PostsModel {
 	// 게시글 좋아요
 	@Transactional
 	public boolean insertPostLike(PostLikeDto dto) {
-		try {			
+		try {
+			
 			plrps.save(PostLikeDto.toEntity(dto));
 			return true;
 		} catch (Exception e) {
@@ -409,6 +438,61 @@ public class PostsModel {
 		}
 		return b;
 	}
+	// 소프트 삭제메서드
+	@Transactional
+	public boolean softDeletePost(int postNo) {
+	    try {
+	        Post post = prps.findById(postNo).orElseThrow(() -> new RuntimeException("Post not found"));
+	        post.setDeleted(true);
+	        post.setDeletedAt(new java.util.Date());
+	        prps.save(post);
+	        return true;
+	    } catch (Exception e) {
+	        System.out.println("softDeletePost ERROR : " + e.getMessage());
+	        return false;
+	    }
+	}
+
+	//복구 메소드
+	@Transactional
+	public boolean restorePost(int postNo) {
+	    try {
+	        Post post = prps.findById(postNo).orElseThrow(() -> new RuntimeException("Post not found"));
+	        if (post.isDeleted()) {
+	            post.setDeleted(false);
+	            post.setDeletedAt(null);
+	            prps.save(post);
+	            return true;
+	        }
+	        return false;  // 이미 활성화된 게시물인 경우
+	    } catch (Exception e) {
+	        System.out.println("restorePost ERROR : " + e.getMessage());
+	        return false;
+	    }
+	}
+
+	//완전 삭제 메소드
+	@Transactional
+	public boolean permanentDeletePost(int postNo) {
+	    try {
+	        int rowsDeleted = prps.deleteByNoAndDeletedTrue(postNo);
+	        return rowsDeleted > 0;
+	    } catch (Exception e) {
+	        System.out.println("permanentDeletePost ERROR : " + e.getMessage());
+	        return false;
+	    }
+	}
+	public Page<PostDto> postListByUser1(int userNo, Pageable pageable) {
+	    Page<Post> postPage = prps.findActiveByUserNo(userNo, pageable);  // 수정된 부분
+	    return postPage.map(Post::toDto);
+	}
+	// 휴지통에서 삭제된 게시물조회
+	public Page<PostDto> getDeletedPosts(Pageable pageable) {
+	    Page<Post> postPage = prps.findDeletedPosts(pageable);
+	    return postPage.map(Post::toDto);
+	}
+
+
 	
 
 }

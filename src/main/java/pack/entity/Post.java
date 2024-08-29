@@ -1,11 +1,11 @@
 package pack.entity;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.hibernate.annotations.CreationTimestamp;
-
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,7 +16,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -48,11 +47,11 @@ public class Post {
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
     @Column(name = "date")
-    private java.util.Date date;
+    private Date date;
 
     @Column(name = "pic")
     private String pic;  // URL or file path
-   
+
     private Integer likesCount;
     private Integer commentsCount;
     private Integer reportsCount;
@@ -72,14 +71,22 @@ public class Post {
     @OneToMany(mappedBy = "post")
     @Builder.Default
     private List<PostLike> postLikes = new ArrayList<>();
-    
+
+    // 소프트 삭제 관련 필드 추가
+    @Column(name = "deleted", nullable = false)
+    private boolean deleted = false;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "deleted_at")
+    private Date deletedAt;
+
+    // 엔티티를 DTO로 변환하는 메서드
     public static PostDto toDto(Post entity) {
         return PostDto.builder()
             .no(entity.getNo())
             .content(entity.getContent())
             .date(entity.getDate())
             .pic(entity.getPic())
-            // userId 받아오기
             .userId(entity.getUser().getId())
             .likesCount(entity.getLikesCount())
             .commentsCount(entity.getCommentsCount())
@@ -90,7 +97,8 @@ public class Post {
             .userNo(entity.getUser() != null ? entity.getUser().getNo() : null)
             .userPic(entity.getUser() != null ? entity.getUser().getPic() : null)
             .commentsList(entity.getComments().stream().map(Comment::getNo).collect(Collectors.toList()))
+            .deleted(entity.isDeleted())  // 소프트 삭제 상태 추가
+            .deletedAt(entity.getDeletedAt())  // 삭제된 시점 추가
             .build();
     }
-
 }
