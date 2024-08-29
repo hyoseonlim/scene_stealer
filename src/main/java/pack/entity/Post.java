@@ -74,7 +74,7 @@ public class Post {
 
     // 소프트 삭제 관련 필드 추가
     @Column(name = "deleted", nullable = false)
-    private boolean deleted = false;
+    private boolean deleted;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "deleted_at")

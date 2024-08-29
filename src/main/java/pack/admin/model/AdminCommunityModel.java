@@ -51,18 +51,6 @@ public class AdminCommunityModel {
     public List<ReportedPostDto> getReportedInfos(){
     	return reportedPostsRepository.findAll().stream().map(ReportedPost::toDto).toList();
     }
-    
-    /*
-    public String deleteReportedPostByUserId(String userid) {
-        List<ReportedPost> reportedPosts = reportedPostsRepository.findByUser_Id(userid);
-        if (!reportedPosts.isEmpty()) {
-            reportedPostsRepository.deleteAll(reportedPosts);
-            return "신고글 삭제 성공";
-        } else {
-            return "해당 유저의 신고글을 찾을 수 없습니다.";
-        }
-    }
-    */
 
     // Post 엔티티를 PostDto로 변환하는 메서드
     private PostDto convertToPostDto(Post post) {
@@ -81,6 +69,8 @@ public class AdminCommunityModel {
             .userNo(post.getUser().getNo())
             .userPic(post.getUser().getPic())
             .commentsList(post.getComments().stream().map(Comment::getNo).collect(Collectors.toList()))
+            .deleted(post.isDeleted())
+            .deletedAt(post.getDeletedAt())
             .build();
     }
     
