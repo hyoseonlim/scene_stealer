@@ -41,7 +41,7 @@ public class AdminCommunityModel {
     }
 
     public Page<PostDto> getAllReportedPosts(Pageable pageable) {
-        return postsRepository.findByReportsCountGreaterThan(0, pageable).map(Post::toDto);
+        return postsRepository.findByReportsCountGreaterThanOrderByNoDesc(0, pageable).map(Post::toDto);
     }
 
     public Page<PostDto> getMostReportedPosts(Pageable pageable) {

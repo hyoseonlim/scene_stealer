@@ -16,7 +16,7 @@ public interface PostsRepository extends JpaRepository<Post, Integer> {
 
 	List<Post> findByReportsCountGreaterThanOrderByReportsCountDesc(int count);
 
-	Page<Post> findByReportsCountGreaterThan(int count, Pageable pageable);
+	Page<Post> findByReportsCountGreaterThanOrderByNoDesc(int count, Pageable pageable);
 
 	Page<Post> findByReportsCountGreaterThanOrderByReportsCountDesc(int count, Pageable pageable);
 
@@ -37,12 +37,12 @@ public interface PostsRepository extends JpaRepository<Post, Integer> {
     // 좋아요 순으로 모든 게시글 가져오기
     Page<Post> findAll(Pageable pageable);
     
-    // 소프트 삭제된 게시물 포함 전체 조회
- 	@Query("SELECT p FROM Post p WHERE p.deleted = false")
+    // 소프트 삭제된 게시물 제외 전체 조회
+ 	@Query("SELECT p FROM Post p WHERE p.deleted = false ORDER BY p.no DESC")
  	List<Post> findAllActive();
 
- 	// 소프트 삭제된 게시물 포함 전체 조회 (페이징)
- 	@Query("SELECT p FROM Post p WHERE p.deleted = false")
+ 	// 소프트 삭제된 게시물 제외 전체 조회 (페이징)
+ 	@Query("SELECT p FROM Post p WHERE p.deleted = false ORDER BY p.no DESC")
  	Page<Post> findAllActive(Pageable pageable);
 
  	// 특정 사용자의 활성 게시물 조회
