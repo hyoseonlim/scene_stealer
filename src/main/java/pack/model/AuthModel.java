@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import pack.config.CustomUserDetails;
 import pack.dto.UserDto;
 import pack.repository.UsersRepository;
 
@@ -28,10 +29,11 @@ public class AuthModel implements UserDetailsService {
         pack.entity.User user = userRepository.findByLoginId(id)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + id));
 
-        return new User(
+        // 사용자 no 값을 추가하여 CustomUserDetails 객체를 반환
+        return new CustomUserDetails(
                 user.getId(),
-                user.getPwd(),
-                Collections.emptyList() // 권한이 필요하다면 이 부분을 수정
+                user.getNo(), // user.getNo()는 사용자 no를 반환하는 메소드
+                user.getPwd()
         );
     }
 

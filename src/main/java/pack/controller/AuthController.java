@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import pack.config.CustomUserDetails;
 import pack.dto.UserDto;
 import pack.entity.User;
 import pack.model.AuthModel;
@@ -56,34 +57,33 @@ public class AuthController {
     // 로그인 처리 메소드
     @PostMapping("/user/auth/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody UserDto userDto) {
-        // 클라이언트로부터 받은 사용자 ID와 비밀번호 추출
         String id = userDto.getId(); // 사용자 ID
         String pwd = userDto.getPwd(); // 사용자 비밀번호
 
+        Map<String, Object> response = new HashMap<>();
+        
         UserDetails userDetails;
         try {
             // ID를 기준으로 사용자 정보를 로드
             userDetails = model.loadUserByUsername(id);
         } catch (UsernameNotFoundException e) {
             // 사용자 정보가 없는 경우: 401 Unauthorized 응답 반환
-            Map<String, Object> response = new HashMap<>();
             response.put("success", false);
             response.put("message", "계정이 존재하지 않습니다."); // 사용자 없음 메시지
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
 
         // 비밀번호가 일치하는지 확인
-        // passwordEncoder.matches()는 사용자가 입력한 비밀번호를 암호화하여
-        // 데이터베이스에 저장된 암호화된 비밀번호와 비교
         if (passwordEncoder.matches(pwd, userDetails.getPassword())) {
-            // 인증 성공 시: 200 OK 응답 반환
-            Map<String, Object> response = new HashMap<>();
+            CustomUserDetails customUserDetails = (CustomUserDetails) userDetails;
             response.put("success", true);
-            response.put("user", Map.of("id", userDetails.getUsername())); // 사용자 ID 반환
+            response.put("user", Map.of(
+                "id", customUserDetails.getUsername(), 
+                "no", customUserDetails.getNo() // 사용자 no 반환
+            ));
             return ResponseEntity.ok(response);
         } else {
             // 비밀번호가 일치하지 않는 경우: 401 Unauthorized 응답 반환
-            Map<String, Object> response = new HashMap<>();
             response.put("success", false);
             response.put("message", "비밀번호를 확인해주세요."); // 비밀번호 불일치 메시지
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
