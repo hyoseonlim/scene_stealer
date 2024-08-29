@@ -86,26 +86,6 @@ public class PostsModel {
 		return User.toDto(urps.findById(no).get());
 	}
 
-//	// 유저 정보 수정하기
-//	@Transactional
-//	public boolean userInfoUpdate(int userNo, UserDto dto) {
-//		try {
-//			User user = urps.findById(userNo).get();
-//
-//			if (dto.getNickname() != null && !dto.getNickname().isEmpty()) {
-//				user.setNickname(dto.getNickname());
-//			}
-//			user.setBio(dto.getBio());
-//
-//			urps.save(user);
-//			return true;
-//		} catch (Exception e) {
-//			System.out.println("updatePosts ERROR : " + e.getMessage());
-//			return false;
-//		}
-//	}
-	
-
     // 유저 정보 수정하기
     @Transactional
     public boolean userInfoUpdate(int userNo, UserDto dto) {
@@ -256,19 +236,6 @@ public class PostsModel {
 	            .currentPage(parentCommentsPage.getNumber()) // 현재 페이지 번호
 	            .totalElements(parentCommentsPage.getTotalElements()) // 총 댓글 수
 	            .build();
-
-//		Page<Comment> commentsPage = crps.findByPostNo(postNo, pageable);
-//
-//		return PostDetailDto.builder()
-//				.posts(postInfo)
-//				.userPic(userInfo.getPic())
-//				.userNickname(userInfo.getNickname())
-//				.userBio(userInfo.getBio()).userId(userInfo.getId())
-//				.comments(commentsPage.getContent().stream().map(Comment::toDto).collect(Collectors.toList()))
-//				.totalPages(commentsPage.getTotalPages()) // 전체 페이지 수
-//				.currentPage(commentsPage.getNumber()) // 현재 페이지 번호
-//				.totalElements(commentsPage.getTotalElements()) // 총 댓글 수
-//				.build();
 	}
 
 	// 게시글 좋아요 취소하기
@@ -289,7 +256,7 @@ public class PostsModel {
 	// 게시글 좋아요
 	@Transactional
 	public boolean insertPostLike(PostLikeDto dto) {
-		try {
+		try {			
 			plrps.save(PostLikeDto.toEntity(dto));
 			return true;
 		} catch (Exception e) {

@@ -4,16 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import pack.dto.UserDto;
 import pack.entity.User;
 import pack.repository.UsersRepository;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.net.http.HttpRequest;
 import java.net.http.HttpClient;
 import java.net.http.HttpResponse;
@@ -26,65 +22,66 @@ import java.util.Optional;
 @RequestMapping("/api/kakao")
 public class KakaoController {
 
-    @Value("${kakao.api-url.user-info}")
-    private String kakaoUserInfoUrl;
+	@Value("${kakao.api-url.user-info}")
+	private String kakaoUserInfoUrl;
 
-    @Autowired
-    private UsersRepository urps;
+	@Autowired
+	private UsersRepository urps;
 
-    @PostMapping
-    public ResponseEntity<User> handleKakaoLogin(@RequestBody Map<String, String> payload) {
-        String accessToken = payload.get("accessToken");
-       
-        try {
-            HttpClient client = HttpClient.newHttpClient();
-            HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(kakaoUserInfoUrl))
-                .header("Authorization", "Bearer " + accessToken)
-                .GET()
-                .build();
+	@PostMapping
+	public ResponseEntity<Map<String, Object>> handleKakaoLogin(@RequestBody Map<String, String> payload) {
+		String accessToken = payload.get("accessToken");
 
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+		try {
+			HttpClient client = HttpClient.newHttpClient();
+			HttpRequest request = HttpRequest.newBuilder().uri(URI.create(kakaoUserInfoUrl))
+					.header("Authorization", "Bearer " + accessToken).GET().build();
 
-            if (response.statusCode() == HttpURLConnection.HTTP_OK) {
-                String content = response.body();
+			HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-                ObjectMapper mapper = new ObjectMapper();
-                Map<String, Object> userInfo = mapper.readValue(content, Map.class);
+			if (response.statusCode() == HttpURLConnection.HTTP_OK) {
+				String content = response.body();
 
-                String kakaoId = String.valueOf(userInfo.get("id"));
+				ObjectMapper mapper = new ObjectMapper();
+				Map<String, Object> userInfo = mapper.readValue(content, Map.class);
 
-                Map<String, Object> kakaoAccount = (Map<String, Object>) userInfo.get("kakao_account");
-                String email = (String) kakaoAccount.get("email");
+				String kakaoId = String.valueOf(userInfo.get("id"));
 
-                Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
+				Map<String, Object> kakaoAccount = (Map<String, Object>) userInfo.get("kakao_account");
+				String email = (String) kakaoAccount.get("email");
 
-                String nickname = profile != null ? (String) profile.get("nickname") : null;
-                String profilePic = profile != null ? (String) profile.get("thumbnail_image_url") : null;
+				Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
 
-                
-                System.out.println("\n\n\n" + kakaoId +  " " + email + " " + nickname + " " + profilePic + "\n\n\n");
-                
-                // 사용자 정보 저장 또는 업데이트
-                Optional<User> userOptional = urps.findById(kakaoId); 
-               
-                User user = null;
-                
-                if (userOptional.isPresent()) {
-                	
-                } else {
-                	user = User.builder().id(kakaoId).email(email).nickname(nickname).pic(profilePic).subpath("kakao").build();
-                    urps.save(user);
-                }
+				String nickname = profile != null ? (String) profile.get("nickname") : null;
+				String profilePic = profile != null ? (String) profile.get("thumbnail_image_url") : null;
 
-                return ResponseEntity.ok(user);
-            } else {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-            }
+				System.out.println("\n\n\n" + kakaoId + " " + email + " " + nickname + " " + profilePic + "\n\n\n");
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
+				// 사용자 정보 저장 또는 업데이트
+				Optional<User> userOptional = urps.findById(kakaoId);
+				System.out.println(kakaoId);
+
+				User user = null;
+				Map<String, Object> result;
+
+				if (userOptional.isPresent()) {
+					user = userOptional.get();
+					result = Map.of("status", "login", "user", user);
+				} else {
+					user = User.builder().id(kakaoId).email(email).nickname(nickname).pic(profilePic).subpath("kakao")
+							.build();
+					urps.save(user);
+					result = Map.of("status", "signup", "user", user);
+				}
+
+				return ResponseEntity.ok(result);
+			} else {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+	}
 }
