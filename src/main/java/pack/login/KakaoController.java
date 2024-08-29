@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import pack.dto.UserDto;
 import pack.entity.User;
 import pack.repository.UsersRepository;
 
@@ -61,12 +62,13 @@ public class KakaoController {
 				Optional<User> userOptional = urps.findById(kakaoId);
 				System.out.println(kakaoId);
 
+				UserDto userDto = null;
 				User user = null;
 				Map<String, Object> result;
 
 				if (userOptional.isPresent()) {
-					user = userOptional.get();
-					result = Map.of("status", "login", "user", user);
+					userDto = User.toDto(userOptional.get());
+					result = Map.of("status", "login", "user", userDto);
 				} else {
 					user = User.builder().id(kakaoId).email(email).nickname(nickname).pic(profilePic).subpath("kakao")
 							.build();

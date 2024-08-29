@@ -86,9 +86,19 @@ public class PostsController {
 
 	// 팔로우 여부 체크하기
 	@GetMapping("/posts/user/follow/{no}/{fno}")
-	public boolean followCheck(@PathVariable("no") int no, @PathVariable("fno") int fno) {
-		return pm.followCheck(no, fno);
+	public Map<String, Boolean> followCheck(@PathVariable("no") int no, @PathVariable("fno") int fno) {
+		Map<String, Boolean> result = new HashMap<String, Boolean>();
+		result.put("result", pm.followCheck(no, fno));
+		return result;
 	}
+	
+	// 신고 여부 체크하기
+		@GetMapping("/posts/report/{userNo}/{postNo}")
+		public Map<String, Boolean> reportCheck(@PathVariable("userNo") int userNo, @PathVariable("postNo") int postNo) {
+			Map<String, Boolean> result = new HashMap<String, Boolean>();
+			result.put("result", pm.reportCheck(userNo, postNo));
+			return result;
+		}
 
 	// 팔로우 취소하기 (no 가 fno 팔로우 취소)
 	@DeleteMapping("/posts/user/follow/{no}/{fno}")

@@ -170,6 +170,11 @@ public class PostsModel {
 		return frps.findByFollowerNoAndFolloweeNo(no, fno).size() > 0 ? true : false;
 	}
 	
+	// 신고 여부 체크하기
+		public boolean reportCheck(int userNo, int postNo) {
+			return rprps.findByUserNoAndPostNo(userNo, postNo).size() > 0 ? true : false;
+		}
+	
 	// 팔로우 취소하기
 	@Transactional
 	public boolean deleteFollow(int no, int fno) {
@@ -197,17 +202,7 @@ public class PostsModel {
 		}
 	}
 
-//	// 팔로잉 글 모아보기
-//	public Page<PostDto> followPostList(int userNo, Pageable pageable) {
-//		List<Integer> followeeList = frps.findByFollowerNo(userNo).stream().map(f -> f.getFollowee().getNo()).collect(Collectors.toList());
-//
-//		Page<Post> postPage = prps.findByUserNoIn(followeeList, pageable);
-//
-//		List<PostDto> postList = postPage.stream().map(Post::toDto).collect(Collectors.toList());
-//
-//		return new PageImpl<>(postList, pageable, postPage.getTotalElements());
-//	}
-	   // 팔로우한 사람 글 모아보기 또는 좋아요 순으로 게시글 가져오기
+	// 팔로우한 사람 글 모아보기 또는 좋아요 순으로 게시글 가져오기
     public Page<PostDto> followPostListOrPopular(int userNo, Pageable pageable) {
         // 팔로우한 사용자의 번호를 가져옴
         List<Integer> followeeList = frps.findByFollowerNo(userNo).stream()

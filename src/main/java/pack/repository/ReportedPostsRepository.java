@@ -13,4 +13,6 @@ public interface ReportedPostsRepository extends JpaRepository<ReportedPost, Int
 	 void deleteByUser_Id(String userid);
 	 
 	 void deleteByPostNo(Integer postNo);
+	 
+	 List<ReportedPost> findByUserNoAndPostNo(int userNo, int postNo);
 }
