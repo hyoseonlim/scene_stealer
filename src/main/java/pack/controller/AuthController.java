@@ -35,6 +35,8 @@ public class AuthController {
     @PostMapping("/user/auth/register")
     public ResponseEntity<Map<String, Object>> signUp(@RequestBody UserDto userDto) {
         Map<String, Object> response = new HashMap<>();
+       
+        userDto.setNickname(userDto.getId());
         
         try {
             // UserDto를 User 엔티티로 변환
