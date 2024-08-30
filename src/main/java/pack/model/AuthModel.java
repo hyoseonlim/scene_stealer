@@ -9,13 +9,14 @@ import org.springframework.stereotype.Service;
 
 import pack.config.CustomUserDetails;
 import pack.dto.UserDto;
+import pack.entity.User;
 import pack.repository.UsersRepository;
 
 @Service
 public class AuthModel implements UserDetailsService {
 
     @Autowired
-    private UsersRepository userRepository;
+    private UsersRepository usersRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -23,7 +24,7 @@ public class AuthModel implements UserDetailsService {
     // 로그인
     @Override
     public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
-        pack.entity.User user = userRepository.findByLoginId(id)
+        pack.entity.User user = usersRepository.findByLoginId(id)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + id));
 
         // 사용자 no 값을 추가하여 CustomUserDetails 객체를 반환
@@ -43,7 +44,7 @@ public class AuthModel implements UserDetailsService {
         user.setPwd(encodedPassword);
 
         // 사용자 정보를 저장합니다.
-        userRepository.save(user);
+        usersRepository.save(user);
     }
 
     public void saveUserFromDto(UserDto userDto) {
@@ -54,11 +55,17 @@ public class AuthModel implements UserDetailsService {
     // 회원가입 아이디 체크
     public boolean idCheck(String id) {
         try {
-            return userRepository.findByLoginId(id).isPresent();
+            return usersRepository.findByLoginId(id).isPresent();
         } catch (Exception e) {
             // 예외 처리: 예외를 기록하고 적절한 처리를 합니다.
             System.err.println("Error checking ID: " + e.getMessage());
             throw new RuntimeException("Error checking ID", e);
         }
     }
+//    
+//    
+//    // 이메일로 사용자 찾기
+//    public User findByEmail(String email) {
+//        return usersRepository.findByEmail(email).orElse(null);
+//    }
 }

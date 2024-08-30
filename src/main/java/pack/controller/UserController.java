@@ -1,14 +1,8 @@
 package pack.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,23 +11,21 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+import pack.dto.FindPassDto;
 import pack.dto.NoticeDto;
 import pack.dto.UserDto;
-import pack.entity.User;
 import pack.model.UserModel;
+import pack.service.PasswordResetService;
 
 @RestController
 public class UserController {
 
 	@Autowired
 	private UserModel um;
+	
+	@Autowired
+	private PasswordResetService passwordResetService;
 
 	@GetMapping("/user/notice")
 	public ResponseEntity<Page<NoticeDto>> getNoticeList(Pageable pageable) {
@@ -72,4 +64,16 @@ public class UserController {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류가 발생했습니다.");
 	    }
 	}
+	
+    @PostMapping("/password-reset")
+    public ResponseEntity<String> resetPassword(@RequestBody FindPassDto findPassDto) {
+        try {
+            passwordResetService.resetPassword(findPassDto);
+            return ResponseEntity.ok("임시 비밀번호가 이메일로 전송되었습니다.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("비밀번호 재설정 요청에 실패했습니다.");
+        }
+    }
 }

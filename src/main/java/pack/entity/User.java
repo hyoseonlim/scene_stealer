@@ -1,5 +1,6 @@
 package pack.entity;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -69,6 +70,7 @@ public class User {
     private List<Follow> followees = new ArrayList<>();
     
 
+
     public static UserDto toDto(User entity) {
         return UserDto.builder()
         		.no(entity.getNo())
@@ -95,6 +97,11 @@ public class User {
                 .couponNoList(entity.getCouponUsers().stream().map(CouponUser::getNo).collect(Collectors.toList()))
                 .subpath(entity.getSubpath() == null ? "0" : entity.getSubpath())
                 .build();
+    }
+    
+    public void updatePassword(String email, String encodedPassword) {
+        this.pwd = encodedPassword;
+        // Optionally, you might want to update the reset token and expiration fields here as well
     }
 }
 

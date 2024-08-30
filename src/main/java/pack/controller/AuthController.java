@@ -20,6 +20,7 @@ import pack.config.CustomUserDetails;
 import pack.dto.UserDto;
 import pack.entity.User;
 import pack.model.AuthModel;
+import pack.service.EmailService;
 
 @RestController
 @CrossOrigin(origins = "*") // 모든 출처에서 CORS 요청 허용
@@ -31,6 +32,9 @@ public class AuthController {
     @Autowired
     private PasswordEncoder passwordEncoder; // 비밀번호 암호화 및 검증을 위한 PasswordEncoder
 
+    @Autowired
+    private EmailService emailService;
+    
     // 회원가입 처리
     @PostMapping("/user/auth/register")
     public ResponseEntity<Map<String, Object>> signUp(@RequestBody UserDto userDto) {
@@ -44,6 +48,9 @@ public class AuthController {
             
             // 사용자 정보를 데이터베이스에 저장
             model.saveUser(user);
+            
+            // 환영 이메일 발송
+            emailService.sendWelcomeEmail(user);
             
             // 성공 응답 구성
             response.put("status", "success");
