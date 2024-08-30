@@ -36,7 +36,7 @@ public interface OrdersRepository extends JpaRepository<Order, Integer> {
     public Page<Order> findByNoIn(List<Integer> list, Pageable pageable);
     
     //사용자와 상태로 주문 찾기 (장바구니 확인)
-    @Query("SELECT o FROM Order o WHERE o.user = :user AND o.state = :status")
-    Optional<Order> findByUserAndStatus(@Param("user") User user, @Param("status") String status);
+//    @Query("SELECT o FROM Order o WHERE o.user = :user AND o.state = :status")
+//    Optional<Order> findByUserAndStatus(@Param("user") User user, @Param("status") String status);
  
 }

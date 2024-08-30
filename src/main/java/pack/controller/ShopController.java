@@ -154,34 +154,6 @@ public class ShopController {
 	    }
 	    
 
-	    // 장바구니 담기 @PostMapping
-	    @PostMapping("/cart/add")
-	    public ResponseEntity<String> addToCart(
-	    		 @RequestParam("userNo") String userNo,  
-	            @RequestParam("productNo") int productNo,
-	            @RequestParam("quantity") int quantity) {
-
-	    	// 시큐리티 제외하고 일단 고
-	       // Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-	      //  String username = authentication.getName();
-
-	    	 // ID로 사용자 조회
-	        User user = usersRepository.findById(userNo)
-	                .orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
-
-	        // 장바구니에 제품 추가
-	        boolean isAdded = smodel.addToCart(user.getNo(), productNo, quantity);
-	        
-	        if (isAdded) {
-	            return ResponseEntity.ok("Product added to cart successfully.");
-	        } else {
-	            return ResponseEntity.status(500).body("Failed to add product to cart.");
-	        }
-	    } 
-	     
-	    // 장바구니 조회 @GetMapping
-	    // 장바구니 품목 선택 삭제 @DeleteMapping
-	    // 장바구니 물건 전체 구매 @PostMapping
-	    
+	
 	    
 }
