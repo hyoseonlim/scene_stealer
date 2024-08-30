@@ -132,8 +132,8 @@ public class MyPageModel {
 	}
 
 	public Page<CouponDto> getCouponData(int userNo, Pageable pageable) {
-		List<Integer> couponNoList = cpurps.findByUserNo(userNo).stream().map(CouponUser::getNo)
-				.collect(Collectors.toList());
+//		List<Integer> couponNoList = cpurps.findByUserNo(userNo).stream().map(CouponUser::getNo).collect(Collectors.toList());
+		List<Integer> couponNoList = cpurps.findByUserNoAndIsUsedFalse(userNo).stream().map(CouponUser::getNo).collect(Collectors.toList());
 		Page<Coupon> couponPage = cprps.findByNoIn(couponNoList, pageable);
 		List<CouponDto> couponDtoList = couponPage.stream().map(Coupon::toDto).collect(Collectors.toList());
 		return new PageImpl<>(couponDtoList, pageable, couponPage.getTotalElements());

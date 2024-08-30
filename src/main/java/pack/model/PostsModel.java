@@ -31,6 +31,8 @@ import pack.dto.UserDto;
 import pack.entity.Comment;
 import pack.entity.CommentLike;
 import pack.entity.Follow;
+import pack.entity.Order;
+import pack.entity.OrderProduct;
 import pack.entity.Post;
 import pack.entity.PostLike;
 import pack.entity.Product;
@@ -40,6 +42,8 @@ import pack.repository.AdminsRepository;
 import pack.repository.CommentLikeRepository;
 import pack.repository.CommentsRepository;
 import pack.repository.FollowsRepository;
+import pack.repository.OrderProductRepository;
+import pack.repository.OrdersRepository;
 import pack.repository.PostLikeRepository;
 import pack.repository.PostsRepository;
 import pack.repository.ReportedPostsRepository;
@@ -80,58 +84,61 @@ public class PostsModel {
 
 	@Autowired
 	private ReportedPostsRepository rprps;
-	
+
 	@Autowired
 	private AdminsRepository arps;
+	
+	@Autowired
+	private OrdersRepository orps;
+	
+	@Autowired
+	private OrderProductRepository oprps;
 
 	// 유저 정보 하나 가져오기
 	public UserDto userInfo(int no) {
 		return User.toDto(urps.findById(no).get());
 	}
 
+	// 유저 정보 수정하기
+	@Transactional
+	public boolean userInfoUpdate(int userNo, UserDto dto) {
+		try {
+			User user = urps.findById(userNo).orElseThrow(() -> new RuntimeException("User not found"));
 
-	
+			if (dto.getNickname() != null && !dto.getNickname().isEmpty()) {
+				user.setNickname(dto.getNickname());
+			}
+			user.setBio(dto.getBio());
 
-    // 유저 정보 수정하기
-    @Transactional
-    public boolean userInfoUpdate(int userNo, UserDto dto) {
-        try {
-            User user = urps.findById(userNo).orElseThrow(() -> new RuntimeException("User not found"));
+			// 프로필 이미지 처리
+			if (dto.getProfileImage() != null && !dto.getProfileImage().isEmpty()) {
+				String imageUrl = saveProfileImage(dto.getProfileImage());
+				user.setPic(imageUrl);
+			} else if (user.getPic() == null || user.getPic().isEmpty()) {
+				// 이미지가 업로드되지 않았고, 사용자가 기존 이미지가 없는 경우 기본 이미지 설정
+				user.setPic("/images/default.png"); // 기본 이미지 경로
+			}
 
-            if (dto.getNickname() != null && !dto.getNickname().isEmpty()) {
-                user.setNickname(dto.getNickname());
-            }
-            user.setBio(dto.getBio());
+			urps.save(user);
+			return true;
+		} catch (Exception e) {
+			System.out.println("updatePosts ERROR : " + e.getMessage());
+			return false;
+		}
+	}
 
-            // 프로필 이미지 처리
-            if (dto.getProfileImage() != null && !dto.getProfileImage().isEmpty()) {
-                String imageUrl = saveProfileImage(dto.getProfileImage());
-                user.setPic(imageUrl);
-            } else if (user.getPic() == null || user.getPic().isEmpty()) {
-                // 이미지가 업로드되지 않았고, 사용자가 기존 이미지가 없는 경우 기본 이미지 설정
-                user.setPic("/images/default.png");  // 기본 이미지 경로
-            }
+	private String saveProfileImage(MultipartFile profileImage) {
+		try {
+			UUID uuid = UUID.randomUUID();
+			String imageFileName = uuid + "_" + profileImage.getOriginalFilename();
+			Path destinationFilePath = Paths.get("src/main/resources/static/images", imageFileName);
+			Files.copy(profileImage.getInputStream(), destinationFilePath, StandardCopyOption.REPLACE_EXISTING);
 
-            urps.save(user);
-            return true;
-        } catch (Exception e) {
-            System.out.println("updatePosts ERROR : " + e.getMessage());
-            return false;
-        }
-    }
-
-    private String saveProfileImage(MultipartFile profileImage) {
-        try {
-            UUID uuid = UUID.randomUUID();
-            String imageFileName = uuid + "_" + profileImage.getOriginalFilename();
-            Path destinationFilePath = Paths.get("src/main/resources/static/images", imageFileName);
-            Files.copy(profileImage.getInputStream(), destinationFilePath, StandardCopyOption.REPLACE_EXISTING);
-
-            return "/images/" + imageFileName;
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to store profile image", e);
-        }
-    }
+			return "/images/" + imageFileName;
+		} catch (IOException e) {
+			throw new RuntimeException("Failed to store profile image", e);
+		}
+	}
 
 	// 한 유저에 대한 팔로잉, 팔로워 정보 가져오기
 	public Map<String, List<Integer>> followInfo(int no) {
@@ -169,12 +176,12 @@ public class PostsModel {
 	public boolean followCheck(int no, int fno) {
 		return frps.findByFollowerNoAndFolloweeNo(no, fno).size() > 0 ? true : false;
 	}
-	
+
 	// 신고 여부 체크하기
-		public boolean reportCheck(int userNo, int postNo) {
-			return rprps.findByUserNoAndPostNo(userNo, postNo).size() > 0 ? true : false;
-		}
-	
+	public boolean reportCheck(int userNo, int postNo) {
+		return rprps.findByUserNoAndPostNo(userNo, postNo).size() > 0 ? true : false;
+	}
+
 	// 팔로우 취소하기
 	@Transactional
 	public boolean deleteFollow(int no, int fno) {
@@ -224,24 +231,25 @@ public class PostsModel {
 //    }
 	// 팔로우한 사람 글 모아보기 또는 좋아요 순으로 게시글 가져오기 메소드 수정
 	public Page<PostDto> followPostListOrPopular(int userNo, Pageable pageable) {
-	    // 팔로우한 사용자의 번호를 가져옴
-	    List<Integer> followeeList = frps.findByFollowerNo(userNo).stream()
-	        .map(f -> f.getFollowee().getNo())
-	        .collect(Collectors.toList());
+		// 팔로우한 사용자의 번호를 가져옴
+		List<Integer> followeeList = frps.findByFollowerNo(userNo).stream().map(f -> f.getFollowee().getNo())
+				.collect(Collectors.toList());
 
-	    Page<Post> postPage;
+		Page<Post> postPage;
 
-	    if (followeeList.isEmpty()) {
-	        // 팔로우한 사용자가 없으면 좋아요 순으로 삭제되지 않은 게시글을 가져옴
-	        Pageable sortedByLikes = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "likesCount"));
-	        postPage = prps.findByDeletedFalse(sortedByLikes);  // 추가된 부분
-	    } else {
-	        // 팔로우한 사용자가 있으면 해당 사용자의 삭제되지 않은 게시글을 가져옴
-	        postPage = prps.findByUserNoInAndDeletedFalse(followeeList, pageable);  // 추가된 부분
-	    }
+		if (followeeList.isEmpty()) {
+			// 팔로우한 사용자가 없으면 좋아요 순으로 삭제되지 않은 게시글을 가져옴
+			Pageable sortedByLikes = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+					Sort.by(Sort.Direction.DESC, "likesCount"));
+			postPage = prps.findByDeletedFalse(sortedByLikes); // 추가된 부분
+		} else {
+			// 팔로우한 사용자가 있으면 해당 사용자의 삭제되지 않은 게시글을 가져옴
+			postPage = prps.findByUserNoInAndDeletedFalse(followeeList, pageable); // 추가된 부분
+		}
 
-	    return postPage.map(Post::toDto);
+		return postPage.map(Post::toDto);
 	}
+
 	// 특정 유저 작성 글 보기
 	public Page<PostDto> postListByUser(int userNo, Pageable pageable) {
 		Page<Post> postPage = prps.findByUserNo(userNo, pageable);
@@ -253,30 +261,25 @@ public class PostsModel {
 
 		PostDto postInfo = Post.toDto(prps.findById(postNo).get());
 		UserDto userInfo = User.toDto(urps.findById(postInfo.getUserNo()).get());
-		
+
 		// 부모 댓글을 페이징으로 가져옴
-	    Page<Comment> parentCommentsPage = crps.findByPostNoAndParentCommentNoIsNull(postNo, pageable);
+		Page<Comment> parentCommentsPage = crps.findByPostNoAndParentCommentNoIsNull(postNo, pageable);
 
-	    // 각 부모 댓글에 대해 자식 댓글을 함께 가져옴
-	    List<CommentDto> commentsWithReplies = parentCommentsPage.getContent().stream().map(parentComment -> {
-	        List<CommentDto> replies = crps.findByParentCommentNo(parentComment.getNo()).stream().map(Comment::toDto).collect(Collectors.toList());
-	        CommentDto parentCommentDto = Comment.toDto(parentComment);
-	        parentCommentDto.setReplies(replies); // 부모 댓글에 자식 댓글(답글) 추가
-	        return parentCommentDto;
-	    }).collect(Collectors.toList());
+		// 각 부모 댓글에 대해 자식 댓글을 함께 가져옴
+		List<CommentDto> commentsWithReplies = parentCommentsPage.getContent().stream().map(parentComment -> {
+			List<CommentDto> replies = crps.findByParentCommentNo(parentComment.getNo()).stream().map(Comment::toDto)
+					.collect(Collectors.toList());
+			CommentDto parentCommentDto = Comment.toDto(parentComment);
+			parentCommentDto.setReplies(replies); // 부모 댓글에 자식 댓글(답글) 추가
+			return parentCommentDto;
+		}).collect(Collectors.toList());
 
-	    return PostDetailDto.builder()
-	            .posts(postInfo)
-	            .userPic(userInfo.getPic())
-	            .userNickname(userInfo.getNickname())
-	            .userBio(userInfo.getBio())
-	            .userId(userInfo.getId())
-	            .comments(commentsWithReplies)
-	            .totalPages(parentCommentsPage.getTotalPages()) // 전체 페이지 수
-	            .currentPage(parentCommentsPage.getNumber()) // 현재 페이지 번호
-	            .totalElements(parentCommentsPage.getTotalElements()) // 총 댓글 수
-	            .build();
-
+		return PostDetailDto.builder().posts(postInfo).userPic(userInfo.getPic()).userNickname(userInfo.getNickname())
+				.userBio(userInfo.getBio()).userId(userInfo.getId()).comments(commentsWithReplies)
+				.totalPages(parentCommentsPage.getTotalPages()) // 전체 페이지 수
+				.currentPage(parentCommentsPage.getNumber()) // 현재 페이지 번호
+				.totalElements(parentCommentsPage.getTotalElements()) // 총 댓글 수
+				.build();
 
 	}
 
@@ -299,7 +302,7 @@ public class PostsModel {
 	@Transactional
 	public boolean insertPostLike(PostLikeDto dto) {
 		try {
-			
+
 			plrps.save(PostLikeDto.toEntity(dto));
 			return true;
 		} catch (Exception e) {
@@ -452,58 +455,61 @@ public class PostsModel {
 		}
 		return b;
 	}
+
 	// 소프트 삭제메서드
 	@Transactional
 	public boolean softDeletePost(int postNo) {
-	    try {
-	        Post post = prps.findById(postNo).orElseThrow(() -> new RuntimeException("Post not found"));
-	        post.setDeleted(true);
-	        post.setDeletedAt(new java.util.Date());
-	        prps.save(post);
-	        return true;
-	    } catch (Exception e) {
-	        System.out.println("softDeletePost ERROR : " + e.getMessage());
-	        return false;
-	    }
+		try {
+			Post post = prps.findById(postNo).orElseThrow(() -> new RuntimeException("Post not found"));
+			post.setDeleted(true);
+			post.setDeletedAt(new java.util.Date());
+			prps.save(post);
+			return true;
+		} catch (Exception e) {
+			System.out.println("softDeletePost ERROR : " + e.getMessage());
+			return false;
+		}
 	}
 
-	//복구 메소드
+	// 복구 메소드
 	@Transactional
 	public boolean restorePost(int postNo) {
-	    try {
-	        Post post = prps.findById(postNo).orElseThrow(() -> new RuntimeException("Post not found"));
-	        if (post.isDeleted()) {
-	            post.setDeleted(false);
-	            post.setDeletedAt(null);
-	            prps.save(post);
-	            return true;
-	        }
-	        return false;  // 이미 활성화된 게시물인 경우
-	    } catch (Exception e) {
-	        System.out.println("restorePost ERROR : " + e.getMessage());
-	        return false;
-	    }
+		try {
+			Post post = prps.findById(postNo).orElseThrow(() -> new RuntimeException("Post not found"));
+			if (post.isDeleted()) {
+				post.setDeleted(false);
+				post.setDeletedAt(null);
+				prps.save(post);
+				return true;
+			}
+			return false; // 이미 활성화된 게시물인 경우
+		} catch (Exception e) {
+			System.out.println("restorePost ERROR : " + e.getMessage());
+			return false;
+		}
 	}
 
-	//완전 삭제 메소드
+	// 완전 삭제 메소드
 	@Transactional
 	public boolean permanentDeletePost(int postNo) {
-	    try {
-	        int rowsDeleted = prps.deleteByNoAndDeletedTrue(postNo);
-	        return rowsDeleted > 0;
-	    } catch (Exception e) {
-	        System.out.println("permanentDeletePost ERROR : " + e.getMessage());
-	        return false;
-	    }
+		try {
+			int rowsDeleted = prps.deleteByNoAndDeletedTrue(postNo);
+			return rowsDeleted > 0;
+		} catch (Exception e) {
+			System.out.println("permanentDeletePost ERROR : " + e.getMessage());
+			return false;
+		}
 	}
+
 	public Page<PostDto> postListByUser1(int userNo, Pageable pageable) {
-	    Page<Post> postPage = prps.findActiveByUserNo(userNo, pageable);  // 수정된 부분
-	    return postPage.map(Post::toDto);
+		Page<Post> postPage = prps.findActiveByUserNo(userNo, pageable); // 수정된 부분
+		return postPage.map(Post::toDto);
 	}
+
 	// 휴지통에서 삭제된 게시물조회
 	public Page<PostDto> getDeletedPosts(Pageable pageable) {
-	    Page<Post> postPage = prps.findDeletedPosts(pageable);
-	    return postPage.map(Post::toDto);
+		Page<Post> postPage = prps.findDeletedPosts(pageable);
+		return postPage.map(Post::toDto);
 	}
 
 	// 유저별 휴지통에서 삭제된 게시물조회
@@ -511,13 +517,22 @@ public class PostsModel {
 		Page<Post> postPage = prps.findDeletedPostsByUserNo(userNo, pageable);
 		return postPage.map(Post::toDto);
 	}
-	
+
 	// 인기 게시글 가져오기 메소드 수정
 	public Page<PostDto> getPopularPosts(Pageable pageable) {
-	    Pageable sortedByLikes = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "likesCount"));
-	    // 좋아요 수 기준으로 정렬된 삭제되지 않은 게시물만 가져옴
-	    Page<Post> postPage = prps.findByDeletedFalse(sortedByLikes);  // 추가된 부분
-	    return postPage.map(Post::toDto);
+		Pageable sortedByLikes = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+				Sort.by(Sort.Direction.DESC, "likesCount"));
+		// 좋아요 수 기준으로 정렬된 삭제되지 않은 게시물만 가져옴
+		Page<Post> postPage = prps.findByDeletedFalse(sortedByLikes); // 추가된 부분
+		return postPage.map(Post::toDto);
+	}
+	
+	// 주문 상품 불러오기
+	public List<ProductDto> getOrderProductList(int userNo) {
+		List<Integer> orderNoList = orps.findByUserNoOrderByNoDesc(userNo).stream().map(Order::getNo).collect(Collectors.toList());
+		List<Product> productList = oprps.findByOrderNoIn(orderNoList).stream().map(op -> op.getProduct()).collect(Collectors.toList());
+		
+		return productList.stream().map(Product::toDto).collect(Collectors.toList());
 	}
 
 }

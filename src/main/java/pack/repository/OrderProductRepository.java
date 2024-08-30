@@ -21,6 +21,8 @@ public interface OrderProductRepository extends JpaRepository<OrderProduct, Inte
 	@Query("SELECT op FROM OrderProduct op JOIN op.order o WHERE o.user.no = :userNo AND o.state = :state")
 	List<OrderProduct> findCartItemsByUserNoAndState(@Param("userNo") int userNo, @Param("state") String state);
 	
+	
+	
 	// ⭐⭐⭐  통계용  ⭐⭐⭐
 	// 기간별 인기상품
 	@Query("SELECT op.product.name, SUM(op.quantity) FROM OrderProduct op WHERE op.order.date BETWEEN :startDate AND :endDate GROUP BY op.product.no ORDER BY SUM(op.quantity) DESC")

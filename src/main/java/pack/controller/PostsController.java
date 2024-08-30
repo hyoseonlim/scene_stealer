@@ -50,9 +50,6 @@ public class PostsController {
 	public UserDto userInfo(@PathVariable("no") int no) {
 		return pm.userInfo(no);
 	}
-
-
-	
 	
 	// 유저 정보 수정하기
     @PutMapping("/posts/user/{userNo}")
@@ -361,6 +358,11 @@ public class PostsController {
 	public ResponseEntity<Page<PostDto>> getPopularPosts(Pageable pageable) {
 	    Page<PostDto> popularPosts = pm.getPopularPosts(pageable);
 	    return ResponseEntity.ok(popularPosts);
+	}
+	
+	@GetMapping("/posts/product/{userNo}")
+	public List<ProductDto> getOrderProductList(@PathVariable("userNo") int userNo) {
+		return pm.getOrderProductList(userNo);
 	}
 
 
