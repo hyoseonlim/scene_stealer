@@ -230,47 +230,7 @@ public class ShopModel {
 	}
 	
 	// 장바구니 담기 // 장바구니에 제품 추가
-//	 @Transactional
-//	  public boolean addToCart(int userNo, int productNo, int quantity) {
-//	       try {
-//	       User user = usersRepository.findById(userNo)
-//	                .orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
-//	            Product product = productsRepository.findById(productNo)
-//	                .orElseThrow(() -> new IllegalArgumentException("Invalid product ID"));
-//
-//	            Optional<Order> optionalOrder = ordersRepository.findByUserAndStatus(user, "CART");
-//
-//	            Order order;
-//	            if (optionalOrder.isPresent()) {
-//	                order = optionalOrder.get();
-//	            } else {
-//	                order = Order.builder()
-//	                    .user(user)
-//	                    .state("CART")
-//	                    .date(new Date())
-//	                    .price(0)
-//	                    .build();
-//	                ordersRepository.save(order);
-//	            }
-//
-//	            OrderProduct orderProduct = OrderProduct.builder()
-//	                .order(order)
-//	                .product(product)
-//	                .quantity(quantity)
-//	                .build();
-//
-//	            orderProductRepository.save(orderProduct);
-//
-//	            return true;
-//	        } catch (Exception e) {
-//	            e.printStackTrace();
-//	            return false;
-//	        }
-//	    }
-//	
-//	    public List<OrderProduct> getCartItems(int userNo) {
-//	        return orderProductRepository.findCartItemsByUserNoAndState(userNo, "CART");
-//	    }
+
 	
 	// 유저 PK로 쿠폰 리스트 가져오기
 	/*
@@ -286,6 +246,7 @@ public class ShopModel {
 		return list;
 	}
 	*/
+
 	 
 	
 }
