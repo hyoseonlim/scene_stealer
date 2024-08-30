@@ -1,5 +1,7 @@
 package pack.repository;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -39,4 +41,20 @@ public interface OrdersRepository extends JpaRepository<Order, Integer> {
 //    @Query("SELECT o FROM Order o WHERE o.user = :user AND o.state = :status")
 //    Optional<Order> findByUserAndStatus(@Param("user") User user, @Param("status") String status);
  
+    
+    
+    
+    
+    // ⭐⭐⭐  통계용  ⭐⭐⭐
+ 
+    // 특정 기간 동안의 총 매출
+    @Query("SELECT SUM(o.price) FROM Order o WHERE o.date BETWEEN :startDate AND :endDate")
+    BigDecimal findTotalRevenueBetween(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+    
+    // 월별 매출
+    @Query("SELECT MONTH(o.date) as month, SUM(op.price * op.quantity) as totalRevenue " +
+            "FROM Order o JOIN o.orderProducts op " +
+            "WHERE o.date BETWEEN :startDate AND :endDate " +
+            "GROUP BY MONTH(o.date)")
+     List<Object[]> findMonthlyRevenueBetween(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 }
