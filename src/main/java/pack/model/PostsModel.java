@@ -202,27 +202,46 @@ public class PostsModel {
 		}
 	}
 
-	// 팔로우한 사람 글 모아보기 또는 좋아요 순으로 게시글 가져오기
-    public Page<PostDto> followPostListOrPopular(int userNo, Pageable pageable) {
-        // 팔로우한 사용자의 번호를 가져옴
-        List<Integer> followeeList = frps.findByFollowerNo(userNo).stream()
-            .map(f -> f.getFollowee().getNo())
-            .collect(Collectors.toList());
+//	// 팔로우한 사람 글 모아보기 또는 좋아요 순으로 게시글 가져오기
+//    public Page<PostDto> followPostListOrPopular(int userNo, Pageable pageable) {
+//        // 팔로우한 사용자의 번호를 가져옴
+//        List<Integer> followeeList = frps.findByFollowerNo(userNo).stream()
+//            .map(f -> f.getFollowee().getNo())
+//            .collect(Collectors.toList());
+//
+//        Page<Post> postPage;
+//
+//        if (followeeList.isEmpty()) {
+//            // 팔로우한 사용자가 없으면 좋아요 순으로 게시글을 가져옴
+//            Pageable sortedByLikes = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "likesCount"));
+//            postPage = prps.findAll(sortedByLikes);
+//        } else {
+//            // 팔로우한 사용자가 있으면 해당 사용자의 게시글을 가져옴
+//            postPage = prps.findByUserNoIn(followeeList, pageable);
+//        }
+//
+//        return postPage.map(Post::toDto);
+//    }
+	// 팔로우한 사람 글 모아보기 또는 좋아요 순으로 게시글 가져오기 메소드 수정
+	public Page<PostDto> followPostListOrPopular(int userNo, Pageable pageable) {
+	    // 팔로우한 사용자의 번호를 가져옴
+	    List<Integer> followeeList = frps.findByFollowerNo(userNo).stream()
+	        .map(f -> f.getFollowee().getNo())
+	        .collect(Collectors.toList());
 
-        Page<Post> postPage;
+	    Page<Post> postPage;
 
-        if (followeeList.isEmpty()) {
-            // 팔로우한 사용자가 없으면 좋아요 순으로 게시글을 가져옴
-            Pageable sortedByLikes = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "likesCount"));
-            postPage = prps.findAll(sortedByLikes);
-        } else {
-            // 팔로우한 사용자가 있으면 해당 사용자의 게시글을 가져옴
-            postPage = prps.findByUserNoIn(followeeList, pageable);
-        }
+	    if (followeeList.isEmpty()) {
+	        // 팔로우한 사용자가 없으면 좋아요 순으로 삭제되지 않은 게시글을 가져옴
+	        Pageable sortedByLikes = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "likesCount"));
+	        postPage = prps.findByDeletedFalse(sortedByLikes);  // 추가된 부분
+	    } else {
+	        // 팔로우한 사용자가 있으면 해당 사용자의 삭제되지 않은 게시글을 가져옴
+	        postPage = prps.findByUserNoInAndDeletedFalse(followeeList, pageable);  // 추가된 부분
+	    }
 
-        return postPage.map(Post::toDto);
-    }
-
+	    return postPage.map(Post::toDto);
+	}
 	// 특정 유저 작성 글 보기
 	public Page<PostDto> postListByUser(int userNo, Pageable pageable) {
 		Page<Post> postPage = prps.findByUserNo(userNo, pageable);
@@ -493,17 +512,12 @@ public class PostsModel {
 		return postPage.map(Post::toDto);
 	}
 	
-	// PostsModel 클래스에 추가
+	// 인기 게시글 가져오기 메소드 수정
 	public Page<PostDto> getPopularPosts(Pageable pageable) {
-	    // 좋아요 수를 기준으로 게시물을 내림차순 정렬하여 가져옵니다.
 	    Pageable sortedByLikes = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "likesCount"));
-	    
-	    // 좋아요 수 기준으로 정렬된 게시물 페이지를 가져옵니다.
-	    Page<Post> postPage = prps.findAll(sortedByLikes);
-	    
-	    // Post 엔티티를 PostDto로 변환하여 반환합니다.
+	    // 좋아요 수 기준으로 정렬된 삭제되지 않은 게시물만 가져옴
+	    Page<Post> postPage = prps.findByDeletedFalse(sortedByLikes);  // 추가된 부분
 	    return postPage.map(Post::toDto);
 	}
-
 
 }
