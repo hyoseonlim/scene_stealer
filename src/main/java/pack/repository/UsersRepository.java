@@ -31,4 +31,6 @@ public interface UsersRepository extends JpaRepository<User, Integer> {
     Optional<User> findByLoginId(@Param("id") String id);
     
     Optional<User> findById(String id);
+    
+    Optional<User> findByNo(Integer no);
 }
