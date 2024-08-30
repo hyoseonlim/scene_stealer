@@ -98,6 +98,8 @@ public class NaverController {
                 Map<String, Object> userInfoResponse = (Map<String, Object>) userInfo.get("response");
                 String naverId = String.valueOf(userInfoResponse.get("id"));
                 String nickname = String.valueOf(userInfoResponse.get("nickname"));
+                String profile_image = String.valueOf(userInfoResponse.get("profile_image"));
+                
                 String name = String.valueOf(userInfoResponse.get("name"));
                 String email = String.valueOf(userInfoResponse.get("email"));
                 String mobile = String.valueOf(userInfoResponse.get("mobile"));
@@ -116,6 +118,7 @@ public class NaverController {
                         .nickname(nickname)
                         .name(name)
                         .tel(mobile)
+                        .pic(profile_image)
                         .subpath("naver")
                         .build();
                     urps.save(user);

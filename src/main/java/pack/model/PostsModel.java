@@ -88,10 +88,7 @@ public class PostsModel {
 	public UserDto userInfo(int no) {
 		return User.toDto(urps.findById(no).get());
 	}
-
-
 	
-
     // 유저 정보 수정하기
     @Transactional
     public boolean userInfoUpdate(int userNo, UserDto dto) {

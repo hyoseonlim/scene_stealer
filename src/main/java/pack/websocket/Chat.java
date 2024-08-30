@@ -2,6 +2,8 @@ package pack.websocket;
 
 import java.util.Date;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -9,13 +11,18 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import pack.entity.User;
+import lombok.Setter;
+import pack.dto.ShowActorDto;
+import pack.entity.ShowActor;
 
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,15 +33,25 @@ public class Chat {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer no;
-	
-	@ManyToOne
-    @JoinColumn(name = "user_no")
-	private User userNo;
 
-	private boolean sendCheck;
-	
-	private String content;
+	private boolean closeChat;
 
+	private String content; 
+	
+	private boolean sendAdmin;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@CreationTimestamp
 	private Date date;
+	
+	public static ChatDto toDto(Chat entity) {
+        return ChatDto.builder()
+        		.no(entity.getNo())
+        		.closeChat(entity.isCloseChat())
+        		.content(entity.getContent())
+        		.sendAdmin(entity.isSendAdmin())
+        		.date(entity.getDate())
+        		.build();
+    }
 
 }

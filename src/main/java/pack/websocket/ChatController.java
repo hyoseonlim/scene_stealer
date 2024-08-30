@@ -7,23 +7,43 @@ import org.springframework.stereotype.Controller;
 
 @Controller
 public class ChatController {
-	
-	// 채팅 구현을 위한 컨트롤러
-	// 일단 SpringSecurity를 사용한 로그인 세션이 구현 완료된 후
-	// 테스트 및 Dto 확정
 
     @Autowired
     private SimpMessagingTemplate msgt;
-    // SimpMessagingTemplate : 웹 소켓 메시징을 위한 템플릿 제공
-    // 메시지를 전송하는 메소드 제공
+
+    @Autowired
+    private ChatRepository crps;
+
+    @Autowired
+    private ChatUserRepository curps;
+
+    private static final String ADMIN_ID = "0"; // 관리자 ID 고정
 
     @MessageMapping("/chat/message")
-    // 클라이언트가 /chat/message 경로로 메시지 전송하면 이 메소드가 실행됨
-    // MessageMapping : 클라이언트의 웹 소켓 메시지를 메소드와 매핑해 주는 어노테이션
     public void message(ChatDto dto) {
-    	msgt.convertAndSend("/sub/chat/room/100", dto);
-    	// convertAndSend : 경로, 전송할 것
-    	// 여기서는 /sub/chat/room/100 경로로 dto를 전송하는 것인데
-    	// 추후 세션 작업 후 경로를 관리자 세션 경로로 변경해 주면 됨
+        // ChatUser 객체를 가져옴 (해당 유저의 채팅방)
+        ChatUser chatUser = chatUserRepository.findById(dto.getNo())
+            .orElseThrow(() -> new IllegalArgumentException("Invalid ChatUser ID: " + dto.getNo()));
+
+        // 메시지를 DB에 저장
+        Chat chat = Chat.builder()
+            .no(dto.getNo())
+            .closeChat(dto.isCloseChat())
+            .content(dto.getContent())
+            .sendAdmin(dto.isSendAdmin())
+            .date(dto.getDate())
+            .build();
+        chatRepository.save(chat);
+
+        // 채팅방 ID 생성 (관리자 ID와 유저 ID를 조합)
+        String chatRoomId = createChatRoomId(chatUser.getNo());
+
+        // 메시지를 채팅방 구독자에게 전송
+        msgt.convertAndSend("/sub/chat/room/" + chatRoomId, Chat.toDto(chat));
+    }
+
+    private String createChatRoomId(Integer chatUserNo) {
+        // 관리자의 ID와 ChatUser ID를 조합하여 고유한 채팅방 ID 생성
+        return ADMIN_ID + "_" + chatUserNo;
     }
 }

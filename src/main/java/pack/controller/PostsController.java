@@ -50,9 +50,6 @@ public class PostsController {
 	public UserDto userInfo(@PathVariable("no") int no) {
 		return pm.userInfo(no);
 	}
-
-
-	
 	
 	// 유저 정보 수정하기
     @PutMapping("/posts/user/{userNo}")
