@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import pack.dto.CouponDto;
 import pack.dto.OrderProductDto;
+import pack.dto.PersonalCouponDto;
 import pack.dto.ProductDto;
 import pack.dto.ReviewDto;
 import pack.dto.ShopDto;
@@ -152,6 +154,14 @@ public class ShopController {
 	            return ResponseEntity.status(500).body("리뷰 삭제에 실패했습니다.");
 	        }
 	    }
+	    
+	    // 해당 유저의 쿠폰함
+	    /*
+	    @GetMapping("/coupon/{no}")
+	    public List<PersonalCouponDto> getCouponListByUser(@PathVariable("no") int no){
+	    	return smodel.getCouponListByUser(no);
+	    }
+	    */
 	    
 
 	

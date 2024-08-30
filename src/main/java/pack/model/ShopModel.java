@@ -15,20 +15,25 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import jakarta.transaction.Transactional;
+import pack.dto.CouponDto;
 import pack.dto.OrderDto;
 import pack.dto.OrderProductDto;
+import pack.dto.PersonalCouponDto;
 import pack.dto.ProductDto;
 import pack.dto.ReviewDto;
 import pack.dto.ShopDto;
 import pack.dto.ShowDto;
 import pack.dto.UserDto;
-
+import pack.entity.Coupon;
+import pack.entity.CouponUser;
 import pack.entity.Order;
 import pack.entity.OrderProduct;
 import pack.entity.Product;
 import pack.entity.Review;
 import pack.entity.Show;
 import pack.entity.User;
+import pack.repository.CouponUserRepository;
+import pack.repository.CouponsRepository;
 import pack.repository.OrderProductRepository;
 import pack.repository.OrdersRepository;
 import pack.repository.ProductsRepository;
@@ -55,6 +60,12 @@ public class ShopModel {
 
 	@Autowired
 	private OrderProductRepository opRepository;
+	
+	@Autowired
+	private CouponUserRepository couponUserRepo;
+	
+	@Autowired
+	private CouponsRepository couponRepo;
 
 //	public List<ProductDto> list() {// 전체 자료 읽기
 //		List<ProductDto> list = productsRepository.findAll().stream().map(Product::toDto).toList();
@@ -260,6 +271,21 @@ public class ShopModel {
 //	    public List<OrderProduct> getCartItems(int userNo) {
 //	        return orderProductRepository.findCartItemsByUserNoAndState(userNo, "CART");
 //	    }
+	
+	// 유저 PK로 쿠폰 리스트 가져오기
+	/*
+	public List<PersonalCouponDto> getCouponListByUser(int userNo){
+		List<CouponUser> couponUserList = couponUserRepo.findByUserNo(userNo);
+		List<PersonalCouponDto> list = new ArrayList<PersonalCouponDto>();
+		for(CouponUser couponUser : couponUserList) {
+			PersonalCouponDto dto = new PersonalCouponDto();
+			dto.setCouponUser(CouponUser.toDto(couponUser));
+			dto.setCoupon(Coupon.toDto(couponUser.getCoupon()));
+			list.add(dto);
+		}
+		return list;
+	}
+	*/
 	 
 	
 }
