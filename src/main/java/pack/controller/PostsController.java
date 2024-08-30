@@ -50,6 +50,9 @@ public class PostsController {
 	public UserDto userInfo(@PathVariable("no") int no) {
 		return pm.userInfo(no);
 	}
+
+
+	
 	
 	// 유저 정보 수정하기
     @PutMapping("/posts/user/{userNo}")
@@ -352,6 +355,12 @@ public class PostsController {
 	public ResponseEntity<Page<PostDto>> getDeletedPosts(@PathVariable("userNo") int userNo, Pageable pageable) {
 	    Page<PostDto> deletedPosts = pm.getDeletedPostsByUser(userNo, pageable);
 	    return ResponseEntity.ok(deletedPosts);
+	}
+	
+	@GetMapping("/posts/popular")
+	public ResponseEntity<Page<PostDto>> getPopularPosts(Pageable pageable) {
+	    Page<PostDto> popularPosts = pm.getPopularPosts(pageable);
+	    return ResponseEntity.ok(popularPosts);
 	}
 
 

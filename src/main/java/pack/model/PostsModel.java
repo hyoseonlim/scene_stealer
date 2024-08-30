@@ -88,7 +88,10 @@ public class PostsModel {
 	public UserDto userInfo(int no) {
 		return User.toDto(urps.findById(no).get());
 	}
+
+
 	
+
     // 유저 정보 수정하기
     @Transactional
     public boolean userInfoUpdate(int userNo, UserDto dto) {
@@ -489,5 +492,18 @@ public class PostsModel {
 		Page<Post> postPage = prps.findDeletedPostsByUserNo(userNo, pageable);
 		return postPage.map(Post::toDto);
 	}
+	
+	// PostsModel 클래스에 추가
+	public Page<PostDto> getPopularPosts(Pageable pageable) {
+	    // 좋아요 수를 기준으로 게시물을 내림차순 정렬하여 가져옵니다.
+	    Pageable sortedByLikes = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "likesCount"));
+	    
+	    // 좋아요 수 기준으로 정렬된 게시물 페이지를 가져옵니다.
+	    Page<Post> postPage = prps.findAll(sortedByLikes);
+	    
+	    // Post 엔티티를 PostDto로 변환하여 반환합니다.
+	    return postPage.map(Post::toDto);
+	}
+
 
 }
