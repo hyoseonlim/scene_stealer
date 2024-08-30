@@ -487,7 +487,10 @@ public class PostsModel {
 	    return postPage.map(Post::toDto);
 	}
 
-
-	
+	// 유저별 휴지통에서 삭제된 게시물조회
+	public Page<PostDto> getDeletedPostsByUser(int userNo, Pageable pageable) {
+		Page<Post> postPage = prps.findDeletedPostsByUserNo(userNo, pageable);
+		return postPage.map(Post::toDto);
+	}
 
 }

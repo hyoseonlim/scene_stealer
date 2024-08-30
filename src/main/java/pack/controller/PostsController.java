@@ -349,10 +349,11 @@ public class PostsController {
 	    result.put("result", isDeleted);
 	    return result;
 	}
+	
 	// 휴지통 게시물 조회
-	@GetMapping("/posts/deleted")
-	public ResponseEntity<Page<PostDto>> getDeletedPosts(Pageable pageable) {
-	    Page<PostDto> deletedPosts = pm.getDeletedPosts(pageable);
+	@GetMapping("/posts/deleted/{userNo}")
+	public ResponseEntity<Page<PostDto>> getDeletedPosts(@PathVariable("userNo") int userNo, Pageable pageable) {
+	    Page<PostDto> deletedPosts = pm.getDeletedPostsByUser(userNo, pageable);
 	    return ResponseEntity.ok(deletedPosts);
 	}
 
