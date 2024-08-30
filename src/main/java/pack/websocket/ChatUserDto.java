@@ -1,6 +1,8 @@
 package pack.websocket;
 
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,12 +20,15 @@ public class ChatUserDto {
 	private Integer no;
 	private UserDto user;
 	private Integer userNo;
+	private Integer chatNo;
 	private String category;
+	private List<Integer> chatsList;
 	
 	public static ChatUser toEntity(ChatUserDto dto) {
         return ChatUser.builder()
         		.no(dto.getNo())
         		.user(User.builder().no(dto.getUserNo()).build())
+        		.chats(null)
         		.category(dto.getCategory())
         		.build();
     }

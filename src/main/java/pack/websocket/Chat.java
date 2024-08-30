@@ -36,22 +36,27 @@ public class Chat {
 
 	private boolean closeChat;
 
-	private String content; 
-	
+	private String content;
+
 	private boolean sendAdmin;
+
+	@ManyToOne
+	@JoinColumn(name = "chat_no") // chatuser와 매핑될 컬럼 이름을 명확하게 지정
+	private ChatUser chatuser;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@CreationTimestamp
 	private Date date;
-	
+
 	public static ChatDto toDto(Chat entity) {
-        return ChatDto.builder()
-        		.no(entity.getNo())
-        		.closeChat(entity.isCloseChat())
-        		.content(entity.getContent())
-        		.sendAdmin(entity.isSendAdmin())
-        		.date(entity.getDate())
-        		.build();
-    }
+		return ChatDto.builder()
+				.no(entity.getNo())
+				.closeChat(entity.isCloseChat())
+				.content(entity.getContent())
+				.sendAdmin(entity.isSendAdmin())
+				.chatNo(entity.getChatuser().getNo())
+				.date(entity.getDate())
+				.build();
+	}
 
 }
