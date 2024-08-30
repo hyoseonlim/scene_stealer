@@ -35,7 +35,7 @@ public class AuthController {
     @PostMapping("/user/auth/register")
     public ResponseEntity<Map<String, Object>> signUp(@RequestBody UserDto userDto) {
         Map<String, Object> response = new HashMap<>();
-       
+        userDto.setPic("/images/default.png");  // 기본 이미지 경로
         userDto.setNickname(userDto.getId());
         
         try {
