@@ -66,6 +66,7 @@ public class SearchController {
                     break;
                 case "user":
                     searchResults = model.searchUsersId(term, pageable);
+                    searchResults = model.searchUsersNickname(term, pageable);
                     break;
                 default:
                     throw new IllegalArgumentException("Unknown category: " + category);

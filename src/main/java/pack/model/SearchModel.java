@@ -121,4 +121,5 @@ public class SearchModel {
         Page<User> usersPage = usersRepository.findByIdContaining(term, pageable);
         return usersPage.map(User::toDto);
     }
+
 }
