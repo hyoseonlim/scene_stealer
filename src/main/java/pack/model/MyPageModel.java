@@ -3,6 +3,7 @@ package pack.model;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -81,7 +82,7 @@ public class MyPageModel {
 		}
 		return b;
 	}
-	
+
 	@Transactional
 	public boolean updateAlert(int alertNo) {
 		try {
@@ -95,14 +96,13 @@ public class MyPageModel {
 		}
 	}
 
-
 	@Transactional
 	public boolean insertAlert(String category, String value, int userNo, AlertDto dto) {
 		try {
 			String path = dto.getPath();
 			dto.setCategory("커뮤니티");
 			String userNickname;
-			
+
 			if (category.equals("follow")) {
 				userNickname = urps.findById(userNo).get().getNickname();
 				dto.setContent(userNickname + "님이 나를 팔로우하기 시작했습니다.");
@@ -113,9 +113,9 @@ public class MyPageModel {
 				dto.setPath("/user/style/detail/" + path);
 
 				if (category.equals("reply")) {
-					if(value.equals("recomment")) {						
+					if (value.equals("recomment")) {
 						dto.setContent("내 댓글에 " + userNickname + "님이 답댓글을 작성했습니다.");
-					} else {						
+					} else {
 						dto.setContent("내 포스트에 " + userNickname + "님이 댓글을 작성했습니다.");
 					}
 				} else if (category.equals("like")) {
@@ -132,9 +132,9 @@ public class MyPageModel {
 	}
 
 	public Page<CouponDto> getCouponData(int userNo, Pageable pageable) {
-//		List<Integer> couponNoList = cpurps.findByUserNo(userNo).stream().map(CouponUser::getNo).collect(Collectors.toList());
-		List<Integer> couponNoList = cpurps.findByUserNoAndIsUsedFalse(userNo).stream().map(CouponUser::getNo).collect(Collectors.toList());
+		List<Integer> couponNoList = cpurps.findByUserNoAndIsUsedIsNull(userNo).stream().map((cu) -> cu.getCoupon().getNo()).collect(Collectors.toList());
 		Page<Coupon> couponPage = cprps.findByNoIn(couponNoList, pageable);
+		
 		List<CouponDto> couponDtoList = couponPage.stream().map(Coupon::toDto).collect(Collectors.toList());
 		return new PageImpl<>(couponDtoList, pageable, couponPage.getTotalElements());
 	}

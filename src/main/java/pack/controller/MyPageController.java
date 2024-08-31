@@ -63,12 +63,12 @@ public class MyPageController {
 	@GetMapping("/coupon/{userNo}")
 	public ResponseEntity<Map<String, Object>> getCouponData(@PathVariable("userNo") int userNo, Pageable pageable) {
  
-		Page<CouponDto> noticePage = mm.getCouponData(userNo, pageable);
+		Page<CouponDto> couponPage = mm.getCouponData(userNo, pageable);
 		Map<String, Object> response = new HashMap<String, Object>();
-		response.put("content", noticePage.getContent());
-		response.put("totalPages", noticePage.getTotalPages());
-		response.put("currentPage", noticePage.getNumber());
-		response.put("totalElements", noticePage.getTotalElements());
+		response.put("content", couponPage.getContent());
+		response.put("totalPages", couponPage.getTotalPages());
+		response.put("currentPage", couponPage.getNumber());
+		response.put("totalElements", couponPage.getTotalElements());
 		return ResponseEntity.ok(response);
 	}
 

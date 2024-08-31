@@ -9,6 +9,6 @@ import pack.entity.CouponUser;
 public interface CouponUserRepository extends JpaRepository<CouponUser, Integer> {
 	
 	public List<CouponUser> findByUserNo(int userNo);
-	public List<CouponUser> findByUserNoAndIsUsedFalse(int userNo);
+	public List<CouponUser> findByUserNoAndIsUsedIsNull(int userNo);
 
 }

@@ -519,9 +519,8 @@ public class PostsModel {
 	}
 
 	// 인기 게시글 가져오기 메소드 수정
-	public Page<PostDto> getPopularPosts(Pageable pageable) {
-		Pageable sortedByLikes = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
-				Sort.by(Sort.Direction.DESC, "likesCount"));
+	public Page<PostDto> getPopularPosts(Pageable pageable) {	
+		Pageable sortedByLikes = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "likesCount"));
 		// 좋아요 수 기준으로 정렬된 삭제되지 않은 게시물만 가져옴
 		Page<Post> postPage = prps.findByDeletedFalse(sortedByLikes); // 추가된 부분
 		return postPage.map(Post::toDto);
@@ -531,7 +530,6 @@ public class PostsModel {
 	public List<ProductDto> getOrderProductList(int userNo) {
 		List<Integer> orderNoList = orps.findByUserNoOrderByNoDesc(userNo).stream().map(Order::getNo).collect(Collectors.toList());
 		List<Product> productList = oprps.findByOrderNoIn(orderNoList).stream().map(op -> op.getProduct()).collect(Collectors.toList());
-		
 		return productList.stream().map(Product::toDto).collect(Collectors.toList());
 	}
 

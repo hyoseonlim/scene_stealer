@@ -74,6 +74,7 @@ public class AuthController {
         Map<String, Object> response = new HashMap<>();
         
         UserDetails userDetails;
+        
         try {
             // ID를 기준으로 사용자 정보를 로드
             userDetails = model.loadUserByUsername(id);
