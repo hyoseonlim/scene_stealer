@@ -75,12 +75,10 @@ public class KakaoController {
 					urps.save(user);
 					result = Map.of("status", "signup", "user", user);
 				}
-
 				return ResponseEntity.ok(result);
 			} else {
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

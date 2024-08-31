@@ -34,7 +34,7 @@ public interface OrdersRepository extends JpaRepository<Order, Integer> {
     Page<Order> findByDateBetween(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, Pageable pageable);
     
     public List<Order> findByUserNo(Integer no);
-    public List<Order> findByUserNoOrderByNoDesc(Integer no);
+    public List<Order> findTop5ByUserNoOrderByNoDesc(Integer no);
     
     public Page<Order> findByNoIn(List<Integer> list, Pageable pageable);
     

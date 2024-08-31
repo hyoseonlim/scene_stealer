@@ -528,7 +528,8 @@ public class PostsModel {
 	
 	// 주문 상품 불러오기
 	public List<ProductDto> getOrderProductList(int userNo) {
-		List<Integer> orderNoList = orps.findByUserNoOrderByNoDesc(userNo).stream().map(Order::getNo).collect(Collectors.toList());
+		List<Integer> orderNoList = orps.findTop5ByUserNoOrderByNoDesc(userNo).stream().map(Order::getNo).collect(Collectors.toList());
+		
 		List<Product> productList = oprps.findByOrderNoIn(orderNoList).stream().map(op -> op.getProduct()).collect(Collectors.toList());
 		return productList.stream().map(Product::toDto).collect(Collectors.toList());
 	}
