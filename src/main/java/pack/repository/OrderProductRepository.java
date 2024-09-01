@@ -24,7 +24,13 @@ public interface OrderProductRepository extends JpaRepository<OrderProduct, Inte
 	
 	
 	// ⭐⭐⭐  통계용  ⭐⭐⭐
+	
+	// 인기상품
+	@Query("SELECT op.product.name as name, SUM(op.quantity) as quantity FROM OrderProduct op GROUP BY op.product.no ORDER BY SUM(op.quantity) DESC")
+	List<Object[]> findTopSellingProducts(Pageable pageable);
+	
+	
 	// 기간별 인기상품
-	@Query("SELECT op.product.name, SUM(op.quantity) FROM OrderProduct op WHERE op.order.date BETWEEN :startDate AND :endDate GROUP BY op.product.no ORDER BY SUM(op.quantity) DESC")
+	@Query("SELECT op.product.name as name, SUM(op.quantity) as quantity FROM OrderProduct op WHERE op.order.date BETWEEN :startDate AND :endDate GROUP BY op.product.no ORDER BY SUM(op.quantity) DESC")
 	List<Object[]> findTopSellingProductsBetween(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, Pageable pageable);
 }

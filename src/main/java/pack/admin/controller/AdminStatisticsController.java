@@ -51,10 +51,16 @@ public class AdminStatisticsController {
     }
 	
 	@GetMapping("/products/monthly-best")
-	public List<Object[]> getTopSellingProducts() {
+	public List<Object[]> getMonthlyTopSellingProducts() {
 		LocalDateTime endDate = LocalDateTime.now();
 		LocalDateTime startDate = endDate.minusMonths(1); // 한 달 전
-        Pageable pageable = PageRequest.of(0, 10); // 페이지 사이즈를 10으로 설정
+        Pageable pageable = PageRequest.of(0, 3); // 페이지 사이즈를 10으로 설정
         return orderProductRepository.findTopSellingProductsBetween(startDate, endDate, pageable);
+    }
+	
+	@GetMapping("/products/best")
+	public List<Object[]> getTopSellingProducts() {
+        Pageable pageable = PageRequest.of(0, 3); // 페이지 사이즈를 10으로 설정
+        return orderProductRepository.findTopSellingProducts(pageable);
     }
 }

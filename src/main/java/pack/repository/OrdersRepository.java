@@ -53,9 +53,7 @@ public interface OrdersRepository extends JpaRepository<Order, Integer> {
     BigDecimal findTotalRevenueBetween(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
     
     // 월별 매출
-    @Query("SELECT MONTH(o.date) as month, SUM(op.price * op.quantity) as totalRevenue " +
-            "FROM Order o JOIN o.orderProducts op " +
-            "WHERE o.date BETWEEN :startDate AND :endDate " +
-            "GROUP BY MONTH(o.date)")
+    @Query("SELECT MONTH(o.date) as month, SUM(op.price * op.quantity) as totalRevenue FROM Order o JOIN o.orderProducts op " +
+            "WHERE o.date BETWEEN :startDate AND :endDate GROUP BY MONTH(o.date)")
      List<Object[]> findMonthlyRevenueBetween(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 }
