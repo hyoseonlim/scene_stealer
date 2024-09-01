@@ -51,6 +51,7 @@ public class UserController {
 	        if (userNo.equals(userDto.getNo())) {
 	        	if (userDto.getPic() == null || userDto.getPic().isEmpty()) userDto.setPic("/images/default.png"); // 이미지가 업로드되지 않았고, 사용자가 기존 이미지가 없는 경우 기본 이미지 설정
 	            boolean isUpdated = um.updateUser(userDto);
+	            
 	            if (isUpdated) {
 	                return ResponseEntity.ok("회원 정보가 수정되었습니다.");
 	            } else {

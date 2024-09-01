@@ -1,8 +1,5 @@
 package pack.model;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -43,22 +40,24 @@ public class UserModel {
 	}
 
     // 사용자 정보 업데이트
-    public boolean updateUser(UserDto userDto) {
-        User user = usersRepository.findById(userDto.getNo()).orElse(null);
-        if (user != null) {
-            user.setName(userDto.getName());
-            user.setEmail(userDto.getEmail());
-            user.setTel(userDto.getTel());
-            user.setZipcode(userDto.getZipcode());
-            user.setAddress(userDto.getAddress());
+	public boolean updateUser(UserDto userDto) {
+	    User user = usersRepository.findById(userDto.getNo()).orElse(null);
+	    if (user != null) {
+	        user.setName(userDto.getName());
+	        user.setEmail(userDto.getEmail());
+	        user.setTel(userDto.getTel());
+	        user.setZipcode(userDto.getZipcode());
+	        user.setAddress(userDto.getAddress());
 
-            // 비밀번호 암호화
-            String encodedPassword = passwordEncoder.encode(userDto.getPwd());
-            user.setPwd(encodedPassword);
+	        // 비밀번호가 있는 경우에만 암호화
+	        if (userDto.getPwd() != null && !userDto.getPwd().isEmpty()) {
+	            String encodedPassword = passwordEncoder.encode(userDto.getPwd());
+	            user.setPwd(encodedPassword);
+	        }
 
-            usersRepository.save(user);
-            return true;
-        }
-        return false;
-    }
+	        usersRepository.save(user);
+	        return true;
+	    }
+	    return false;
+	}
 }
