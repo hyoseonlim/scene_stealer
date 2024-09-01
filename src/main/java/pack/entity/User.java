@@ -21,6 +21,16 @@ public class User {
     private Integer no;
 
     private String id;
+    
+    @Column(name="id_k")
+    private String idK;
+    
+    @Column(name="id_n")
+    private String idN;
+    
+    @Column(name="id_g")
+    private String idG;
+    
     private String pwd;
     private String name;
     private String tel;
@@ -31,7 +41,6 @@ public class User {
     private String nickname;
     private String bio;
     
-    private String subpath;
 
     @Column(name = "pic")
     private String pic;  // URL or file path
@@ -74,6 +83,9 @@ public class User {
         return UserDto.builder()
         		.no(entity.getNo())
                 .id(entity.getId())
+                .idG(entity.getIdG())
+                .idK(entity.getIdK())
+                .idN(entity.getIdN())
                 .pwd(entity.getPwd())
                 .name(entity.getName())
                 .tel(entity.getTel())
@@ -84,17 +96,10 @@ public class User {
                 .nickname(entity.getNickname())
                 .bio(entity.getBio())
                 .pic(entity.getPic())
-//				.posts(entity.getPosts().stream().map(Post::toDto).collect(Collectors.toList()))
-//				.comments(entity.getComments().stream().map(Comment::toDto).collect(Collectors.toList()))
-//				.reviews(entity.getReviews().stream().map(Review::toDto).collect(Collectors.toList()))
-//				.coupons(entity.getCoupons().stream().map(Coupon::toDto).collect(Collectors.toList()))
-//				.alerts(entity.getAlerts().stream().map(Alert::toDto).collect(Collectors.toList()))
-//              .couponUsers(entity.getCouponUsers().stream().map(CouponUser::toDto).collect(Collectors.toList()))
                 .postsNoList(entity.getPosts().stream().map(Post::getNo).collect(Collectors.toList()))
                 .reviewsNoList(entity.getReviews().stream().map(Review::getNo).collect(Collectors.toList()))
                 .alertsNoList(entity.getAlerts().stream().map(Alert::getNo).collect(Collectors.toList()))
                 .couponNoList(entity.getCouponUsers().stream().map(CouponUser::getNo).collect(Collectors.toList()))
-                .subpath(entity.getSubpath() == null ? "0" : entity.getSubpath())
                 .build();
     }
     

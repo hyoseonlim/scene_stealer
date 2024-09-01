@@ -59,18 +59,29 @@ public class KakaoController {
 				System.out.println("\n\n\n" + kakaoId + " " + email + " " + nickname + " " + profilePic + "\n\n\n");
 
 				// 사용자 정보 저장 또는 업데이트
-				Optional<User> userOptional = urps.findById(kakaoId);
+				Optional<User> userEmailCheck = urps.findByEmail(email);
+				Optional<User> userOptional = urps.findByIdK(kakaoId);
+				User user;
 				System.out.println(kakaoId);
 
-				UserDto userDto = null;
-				User user = null;
 				Map<String, Object> result;
-
-				if (userOptional.isPresent()) {
-					userDto = User.toDto(userOptional.get());
-					result = Map.of("status", "login", "user", userDto);
+				
+				if(userEmailCheck.isPresent()) {
+					user = userEmailCheck.get();
+					if (user.getIdK() == null) {
+						user.setIdK(kakaoId);
+						urps.save(user);
+					}
+					result = Map.of("status", "login", "user", user);
+				} else if (userOptional.isPresent()) {
+					user = userOptional.get();
+					result = Map.of("status", "login", "user", user);
 				} else {
-					user = User.builder().id(kakaoId).email(email).nickname(nickname).pic(profilePic).subpath("kakao")
+					user = User.builder()
+							.id(kakaoId)
+							.email(email)
+							.nickname(nickname)
+							.pic(profilePic)
 							.build();
 					urps.save(user);
 					result = Map.of("status", "signup", "user", user);

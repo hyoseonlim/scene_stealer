@@ -130,7 +130,7 @@ public class MyPageModel {
 			return false;
 		}
 	}
-
+	
 	public Page<CouponDto> getCouponData(int userNo, Pageable pageable) {
 		List<Integer> couponNoList = cpurps.findByUserNoAndIsUsedIsNull(userNo).stream().map((cu) -> cu.getCoupon().getNo()).collect(Collectors.toList());
 		Page<Coupon> couponPage = cprps.findByNoIn(couponNoList, pageable);

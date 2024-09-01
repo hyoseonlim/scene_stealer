@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -13,6 +14,7 @@ import jakarta.transaction.Transactional;
 import pack.dto.CharacterDto;
 import pack.dto.CharacterLikeDto;
 import pack.dto.ItemDto;
+import pack.dto.PopupDto;
 import pack.dto.PostDto;
 import pack.dto.ReviewDto;
 import pack.dto.ShowDto;
@@ -22,6 +24,7 @@ import pack.dto.SubDto;
 import pack.entity.Character;
 import pack.entity.CharacterLike;
 import pack.entity.Item;
+import pack.entity.Popup;
 import pack.entity.Post;
 import pack.entity.Review;
 import pack.entity.Show;
@@ -30,6 +33,7 @@ import pack.entity.StyleItem;
 import pack.repository.CharacterLikesRepository;
 import pack.repository.CharactersRepository;
 import pack.repository.ItemsRepository;
+import pack.repository.PopupRepository;
 import pack.repository.PostsRepository;
 import pack.repository.ReviewsRepository;
 import pack.repository.ShowsRepository;
@@ -63,10 +67,20 @@ public class MainModel {
 	@Autowired
 	private StyleItemRepository sirps;
 	
+	@Autowired
+	private PopupRepository purps;
+	
 
 	public List<ShowDto> mainShowData() {
 		Pageable pageable = PageRequest.of(0, 10);
 		return srps.findShowAll(pageable).stream().map(Show::toDto).toList();
+	}
+	
+	public Page<ShowDto> mainShowData(Pageable pageable) {
+		
+		Page<Show> showPage = srps.findAll(pageable);
+		
+		return showPage.map(Show::toDto);
 	}
 
 	public List<ReviewDto> mainShowReview() {
@@ -148,6 +162,10 @@ public class MainModel {
 			System.out.println("insertScrap ERROR : " + e.getMessage());
 			return false;
 		}
+	}
+	
+	public List<PopupDto> getMainPopup() {
+		return purps.findByIsShowIsTrue().stream().map(Popup::toDto).collect(Collectors.toList());
 	}
 
 }
