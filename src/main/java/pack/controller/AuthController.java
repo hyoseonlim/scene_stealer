@@ -1,5 +1,6 @@
 package pack.controller;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,6 +36,28 @@ public class AuthController {
     @Autowired
     private EmailService emailService;
     
+    // 이메일 인증 코드 저장
+    private Map<String, VerificationCode> emailVerificationCodes = new HashMap<>();
+
+    // VerificationCode 클래스 정의
+    public static class VerificationCode {
+        private int code;
+        private LocalDateTime expiryTime;
+
+        public VerificationCode(int code, LocalDateTime expiryTime) {
+            this.code = code;
+            this.expiryTime = expiryTime;
+        }
+
+        public int getCode() {
+            return code;
+        }
+
+        public LocalDateTime getExpiryTime() {
+            return expiryTime;
+        }
+    }
+
     // 회원가입 처리
     @PostMapping("/user/auth/register")
     public ResponseEntity<Map<String, Object>> signUp(@RequestBody UserDto userDto) {
@@ -110,5 +133,71 @@ public class AuthController {
         response.put("exists", exists);
         
         return ResponseEntity.ok(response);
+    }
+
+    // 이메일 인증 코드 발송
+    @PostMapping("/user/auth/send-verification-code")
+    public ResponseEntity<Map<String, Object>> sendVerificationCode(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        Map<String, Object> response = new HashMap<>();
+        
+        if (email == null || email.isEmpty()) {
+            response.put("status", "error");
+            response.put("message", "이메일을 입력하세요.");
+            return ResponseEntity.badRequest().body(response);
+        }
+        
+        try {
+            int verificationCode = emailService.sendMail(email); // 인증 코드 발송
+            LocalDateTime expiryTime = LocalDateTime.now().plusMinutes(10); // 10분 유효 시간 설정
+            //LocalDateTime expiryTime = LocalDateTime.now().plusSeconds(10); // 10분 유효 시간 설정
+            emailVerificationCodes.put(email, new VerificationCode(verificationCode, expiryTime)); // 인증 코드와 만료 시간 저장
+            System.out.println("발송된 인증번호: " + verificationCode); // 로그 추가
+            response.put("status", "success");
+            response.put("message", "인증번호가 이메일로 발송되었습니다.");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("status", "error");
+            response.put("message", "인증번호 발송 실패: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    // 이메일 인증 코드 검증
+    @PostMapping("/user/auth/verify-code")
+    public ResponseEntity<Map<String, Object>> verifyCode(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        int inputCode;
+        Map<String, Object> response = new HashMap<>();
+
+        // 입력된 인증 코드 검증
+        try {
+            inputCode = Integer.parseInt(request.get("code"));
+        } catch (NumberFormatException e) {
+            response.put("status", "error");
+            response.put("message", "유효하지 않은 인증 코드입니다.");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        // 저장된 인증 코드와 비교
+        VerificationCode storedCode = emailVerificationCodes.get(email);
+
+        // 만료 시간 확인 및 코드 비교
+        if (storedCode != null) {
+            if (storedCode.getExpiryTime().isBefore(LocalDateTime.now())) {
+                response.put("status", "error");
+                response.put("message", "인증번호가 만료되었습니다.");
+                return ResponseEntity.badRequest().body(response);
+            } else if (storedCode.getCode() == inputCode) {
+                // 인증 성공
+                response.put("status", "success");
+                response.put("message", "인증이 완료되었습니다.");
+                return ResponseEntity.ok(response);
+            }
+        }
+
+        response.put("status", "error");
+        response.put("message", "인증번호가 일치하지 않습니다");
+        return ResponseEntity.badRequest().body(response);
     }
 }
