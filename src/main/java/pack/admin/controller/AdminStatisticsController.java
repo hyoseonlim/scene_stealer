@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import pack.dto.ProductReturnRateDto;
 import pack.repository.OrderProductRepository;
 import pack.repository.OrdersRepository;
 
@@ -51,16 +52,51 @@ public class AdminStatisticsController {
     }
 	
 	@GetMapping("/products/monthly-best")
-	public List<Object[]> getMonthlyTopSellingProducts() {
+	public ResponseEntity<List<Map<String, Object>>> getMonthlyTopSellingProducts() {
 		LocalDateTime endDate = LocalDateTime.now();
 		LocalDateTime startDate = endDate.minusMonths(1); // 한 달 전
         Pageable pageable = PageRequest.of(0, 3); // 페이지 사이즈를 10으로 설정
-        return orderProductRepository.findTopSellingProductsBetween(startDate, endDate, pageable);
+        List<Object[]> results = orderProductRepository.findTopSellingProductsBetween(startDate, endDate, pageable);
+        
+        List<Map<String, Object>> bestsellers = results.stream().map(result -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("no", result[0]);
+            map.put("name", result[1]);
+            map.put("quantity", result[2]);
+            return map;
+        }).collect(Collectors.toList());
+        return ResponseEntity.ok(bestsellers);
     }
 	
 	@GetMapping("/products/best")
-	public List<Object[]> getTopSellingProducts() {
-        Pageable pageable = PageRequest.of(0, 3); // 페이지 사이즈를 10으로 설정
-        return orderProductRepository.findTopSellingProducts(pageable);
+	public ResponseEntity<List<Map<String, Object>>> getTopSellingProducts() {
+        Pageable pageable = PageRequest.of(0, 3); // 페이지 사이즈를 10으로 설정       
+        List<Object[]> results = orderProductRepository.findTopSellingProducts(pageable);
+        
+        List<Map<String, Object>> bestsellers = results.stream().map(result -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("no", result[0]);
+            map.put("name", result[1]);
+            map.put("quantity", result[2]);
+            return map;
+        }).collect(Collectors.toList());
+        return ResponseEntity.ok(bestsellers);
+    }
+	
+	@GetMapping("/products/return-rate")
+	public List<ProductReturnRateDto> getSadProducts() {
+        Pageable pageable = PageRequest.of(0, 3); // 페이지 사이즈를 10으로 설정       
+        List<Object[]> results = orderProductRepository.findProductReturnRates(pageable);
+        return results.stream()
+            .map(result -> {
+                Integer productNo = (Integer) result[0];
+                String productName = (String) result[1];
+                Integer deliveredQuantity = ((Number) result[2]).intValue();
+                Integer canceledQuantity = ((Number) result[3]).intValue();
+                double returnRate = (double) canceledQuantity / (deliveredQuantity + canceledQuantity);
+                return new ProductReturnRateDto(productNo, productName, deliveredQuantity, canceledQuantity, returnRate);
+            })
+            .sorted((p1, p2) -> Double.compare(p2.getReturnRate(), p1.getReturnRate())) // 내림차순 정렬
+            .collect(Collectors.toList());
     }
 }
