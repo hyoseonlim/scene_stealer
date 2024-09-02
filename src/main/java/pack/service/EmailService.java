@@ -69,10 +69,19 @@ public class EmailService {
         helper.setTo(mail);
         helper.setSubject("[SceneStealer] 이메일 인증 코드");
 
-        String body = "<h3>SceneStealer</h3>" +
-                      "요청하신 인증 코드는 <b>" + code + "</b>입니다.<br/><br/>" +
-                      "해당 코드는 10분 뒤 만료됩니다.<br/><br/>" +
-                      "감사합니다.";
+        String body = "<html>" +
+                      "<head><style>" +
+                      "body { font-family: Arial, sans-serif; }" +
+                      "h1 { color: #333; }" +
+                      "p { font-size: 16px; color: #555; }" +
+                      "b { color: #000; }" +
+                      "</style></head>" +
+                      "<body>" +
+                      "<h1>❣️ SceneStealer ❣️</h1>" +
+                      "<br/><br/><p>요청하신 인증 코드는 <b>" + code + "</b>입니다.</p>" +
+                      "<p>해당 코드는 10분 뒤 만료됩니다.</p>" +
+                      "<p>감사합니다.</p>" +
+                      "</body></html>";
         helper.setText(body, true); // HTML 포맷으로 메시지 설정
 
         return message;
@@ -101,11 +110,11 @@ public class EmailService {
      */
     private void sendEmail(MailDto mailDto) throws MessagingException {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
         mimeMessageHelper.setTo(mailDto.getReceiver());
         mimeMessageHelper.setSubject(mailDto.getTitle());
-        mimeMessageHelper.setText(mailDto.getMessage(), false);
+        mimeMessageHelper.setText(mailDto.getMessage(), true);
 
         javaMailSender.send(mimeMessage);
     }
@@ -121,14 +130,22 @@ public class EmailService {
         mailDto.setReceiver(user.getEmail());
         mailDto.setTitle("[SceneStealer] 회원가입 환영합니다!");
         mailDto.setMessage(
-                "안녕하세요 " + user.getId() + "님,\n\n" +
-                "SceneStealer에 회원가입이 성공적으로 완료되었습니다! 🎉\n\n" +
-                "이제 다양한 서비스와 기능을 이용하실 수 있습니다. 사용 중 궁금한 점이나 도움이 필요하시면 언제든지 고객 지원팀에 문의해 주세요.\n\n" +
-                "우리는 항상 여러분의 소중한 의견을 기다리고 있습니다. 즐거운 시간 되세요!\n\n" +
-                "감사합니다!\n\n" +
-                "SceneStealer 팀 드림\n\n" +
-                "[SceneStealer 웹사이트 링크]\n" +
-                "[고객 지원 이메일 또는 전화번호]"
+            "<html>" +
+            "<head><style>" +
+            "body { font-family: Arial, sans-serif; }" +
+            "p { font-size: 16px; color: #555; }" +
+            "a { color: #1a73e8; text-decoration: none; }" +
+            "</style></head>" +
+            "<body>" +
+            "<p>안녕하세요 " + user.getId() + "님,<br/></p>" +
+            "<p>SceneStealer에 회원가입이 성공적으로 완료되었습니다! 🎉<br/></p>" +
+            "<p>이제 다양한 서비스와 기능을 이용하실 수 있습니다. 즐거운 시간 되시기를 바랍니다!<br/></p>" +
+            "<p>저희는 항상 여러분의 소중한 의견을 기다리고 있습니다. 사용 중 궁금한 점이나 도움이 필요하시면 언제든지 고객 지원팀에 문의해 주세요.<br/></p>" +
+            "<p>감사합니다!</p><br/><br/>" +
+            "<p><b>SceneStealer 팀 드림</b></p><br/>" +
+            "<p><a href='http://localhost:3000/user'>SceneStealer</a></p>" +
+            "<p>teamdaracle@gmail.com</p>" +
+            "</body></html>"
         );
         return mailDto;
     }
