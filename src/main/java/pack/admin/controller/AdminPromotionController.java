@@ -27,10 +27,12 @@ import pack.dto.CouponUserDto_a;
 import pack.dto.PopupDto;
 import pack.dto.StyleDto;
 import pack.entity.Coupon;
+import pack.entity.Popup;
 import pack.entity.User;
 import pack.repository.AlertsRepository;
 import pack.repository.CouponUserRepository;
 import pack.repository.CouponsRepository;
+import pack.repository.PopupRepository;
 import pack.repository.UsersRepository;
 
 @RestController
@@ -53,6 +55,9 @@ public class AdminPromotionController {
 	
 	@Autowired
 	private AlertsRepository alertsRepo;
+	
+	@Autowired
+	private PopupRepository popupRepo;
 	
 	// 쿠폰 추가 (테이블 처리: coupon, coupon_user, alerts)
 	@PostMapping("/admin/coupon")
@@ -93,6 +98,13 @@ public class AdminPromotionController {
         }
 	}
 	
+	// 쿠폰 목록
+	@GetMapping("/admin/coupons")
+	public Page<CouponDto> getAllCoupons(Pageable pageable) {
+		Page<Coupon> couponPage = couponsRepo.findAll(pageable);
+		return couponPage.map(Coupon::toDto);
+	}
+	
 	// 광고 알림 추가 (테이블 처리: alerts)
 	@PostMapping("/admin/advertise")
 	public Map<String, Object> insertAd(@RequestBody AlertDto_a alertDto) { // content, path 설정됨
@@ -105,12 +117,6 @@ public class AdminPromotionController {
 		return Map.of("isSuccess", true);
 	}
 	
-	// 쿠폰 목록
-	@GetMapping("/admin/coupons")
-    public Page<CouponDto> getAllCoupons(Pageable pageable) {
-		Page<Coupon> couponPage = couponsRepo.findAll(pageable);
-        return couponPage.map(Coupon::toDto);
-	}
 	
 	// 팝업 등록
 	@PostMapping("/admin/popup")
@@ -127,6 +133,12 @@ public class AdminPromotionController {
 		} catch (Exception e) {
 			System.out.println("에러: " + e);
 		}
+	}
+	
+	// 팝업 목록
+	@GetMapping("/admin/popups")
+	public List<PopupDto> getAllPopups() {
+		return popupRepo.findAll().stream().map(Popup::toDto).toList();
 	}
 
 }
