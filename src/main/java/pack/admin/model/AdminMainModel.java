@@ -54,8 +54,9 @@ public class AdminMainModel {
 		
 		// 작품명 자동완성
 		public List<ShowDto> searchShows(String term) {
-	        return showsRepo.findByTitleContaining(term).stream().map(Show::toDto).toList();
+	        return showsRepo.findByTitleContaining(term).stream().map(this::toShowDto_a).toList();
 	    }
+		
 		
 		// 작품 추가
 		public int insertShow(ShowDto dto) {
@@ -94,7 +95,7 @@ public class AdminMainModel {
 		public ShowDto searchShow(int no) {
 			Optional<Show> optionalShow = showsRepo.findById(no);
 			if (optionalShow.isPresent()) {
-			    return Show.toDto(optionalShow.get());
+			    return toShowDto_a(optionalShow.get());
 			} else {
 				System.out.println("Optional<Show> 가 존재하지 않습니다.");
 				return null;
@@ -194,4 +195,7 @@ public class AdminMainModel {
 			charactersRepo.delete(character); // Character
 		}
 		
+		private ShowDto toShowDto_a(Show show) {
+			return new ShowDto().builder().no(show.getNo()).title(show.getTitle()).pic(show.getPic()). build();
+		}
 }

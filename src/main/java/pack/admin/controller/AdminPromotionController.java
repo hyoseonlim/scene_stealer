@@ -1,6 +1,8 @@
 // 쿠폰 발급 (쿠폰테이블 처리 & 알림 전송) , 광고 (알림 전송)
 package pack.admin.controller;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -12,13 +14,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import pack.admin.model.AdminMainModel;
 import pack.admin.model.AdminPromotionModel;
 import pack.dto.AlertDto_a;
 import pack.dto.CouponDto;
 import pack.dto.CouponUserDto_a;
+import pack.dto.PopupDto;
+import pack.dto.StyleDto;
 import pack.entity.Coupon;
 import pack.entity.User;
 import pack.repository.AlertsRepository;
@@ -103,6 +110,23 @@ public class AdminPromotionController {
     public Page<CouponDto> getAllCoupons(Pageable pageable) {
 		Page<Coupon> couponPage = couponsRepo.findAll(pageable);
         return couponPage.map(Coupon::toDto);
+	}
+	
+	// 팝업 등록
+	@PostMapping("/admin/popup")
+	public void addPopup(@RequestParam("path") String path, @RequestPart("pic") MultipartFile pic) {
+		String staticDirectory = System.getProperty("user.dir") + "/src/main/resources/static/images/";
+		Path uploadPath = Paths.get(staticDirectory, pic.getOriginalFilename());
+		System.out.println("경로는 " + path);
+		try {
+			pic.transferTo(uploadPath); // 파일을 지정된 경로에 저장
+			PopupDto dto = new PopupDto();
+			dto.setPic("/images/" + pic.getOriginalFilename());
+			dto.setPath(path);
+			promotionDao.addPopup(dto);
+		} catch (Exception e) {
+			System.out.println("에러: " + e);
+		}
 	}
 
 }
