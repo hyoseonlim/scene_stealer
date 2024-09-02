@@ -121,7 +121,7 @@ public class ShopModel {
 		return order;
 	}
 
-	// 주문과 상품을 연결
+	// 주문과 상품을 연결 
 	public OrderProductDto createOrderProduct(Integer orderId, Integer productId) {
 		// Order 및 Product 엔티티 조회
 		Order order = ordersRepository.findById(orderId).get();
@@ -158,6 +158,7 @@ public class ShopModel {
 		
 	}
 	
+	// 주문내역 상세 보기
 	public ShopDto myorderDetail(Integer orderNo) {
 		OrderDto orderInfo = Order.toDto(ordersRepository.findById(orderNo).get());
 		List<OrderProductDto> orderProductList = orderProductRepository.findByOrderNo(orderInfo.getNo()).stream().map(OrderProduct::toDto).collect(Collectors.toList());
@@ -229,11 +230,8 @@ public class ShopModel {
 	    }
 	}
 	
-	// 장바구니 담기 // 장바구니에 제품 추가
-
-	
 	// 유저 PK로 쿠폰 리스트 가져오기
-	/*
+	
 	public List<PersonalCouponDto> getCouponListByUser(int userNo){
 		List<CouponUser> couponUserList = couponUserRepo.findByUserNo(userNo);
 		List<PersonalCouponDto> list = new ArrayList<PersonalCouponDto>();
@@ -245,7 +243,8 @@ public class ShopModel {
 		}
 		return list;
 	}
-	*/
+	
+	
 
 	 
 	

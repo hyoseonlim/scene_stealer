@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import pack.dto.CouponDto;
+import pack.dto.OrderDto;
 import pack.dto.OrderProductDto;
 import pack.dto.PersonalCouponDto;
 import pack.dto.ProductDto;
@@ -105,6 +107,16 @@ public class ShopController {
 	    	return result;
 	    }
 	    
+	    // 주문 생성 API
+//	    @PostMapping("/purchase")
+//	    public ResponseEntity<String> createOrder(@RequestBody OrderDto orderDto, @PathVariable("userNo") Integer userNo, Pageable pageable) {
+//	        try {
+//	            smodel.myorder(userNo, pageable);// 서비스 계층의 주문 생성 로직 호출
+//	            return ResponseEntity.ok("Purchase successful");
+//	        } catch (Exception e) {
+//	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Purchase failed: " + e.getMessage());
+//	        }
+//	    }
 	    
 	    // 리뷰 디테일 보기
 	    @GetMapping("/mypage/review/detail/{reviewNo}")
@@ -156,14 +168,13 @@ public class ShopController {
 	    }
 	    
 	    // 해당 유저의 쿠폰함
-	    /*
-	    @GetMapping("/coupon/{no}")
+	    @GetMapping("/coupon/order/{no}")
 	    public List<PersonalCouponDto> getCouponListByUser(@PathVariable("no") int no){
 	    	return smodel.getCouponListByUser(no);
 	    }
-	    */
 	    
+	   
 
 	
-	    
+	     
 }
