@@ -17,7 +17,6 @@ public class ChatDto {
 
 	private Integer no;
 
-	private boolean closeChat;
 
 	private boolean sendCheck;
 
@@ -31,12 +30,10 @@ public class ChatDto {
 	
 	private int userNo;
 	
-	private int receiverNo;
 
 	public static Chat toEntity(ChatDto dto) {
 		return Chat.builder()
 				.no(dto.getNo())
-				.closeChat(dto.isCloseChat())
 				.content(dto.getContent())
 				.sendAdmin(dto.isSendAdmin())
 				.date(dto.getDate())

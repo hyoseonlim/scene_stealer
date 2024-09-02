@@ -20,8 +20,10 @@ public class ChatUserDto {
 	private Integer no;
 	private UserDto user;
 	private Integer userNo;
+	private String userName;
 	private Integer chatNo;
 	private String category;
+	private Boolean closeChat;
 	private List<Integer> chatsList;
 	
 	public static ChatUser toEntity(ChatUserDto dto) {
@@ -30,6 +32,7 @@ public class ChatUserDto {
         		.user(User.builder().no(dto.getUserNo()).build())
         		.chats(null)
         		.category(dto.getCategory())
+        		.closeChat(dto.getCloseChat())
         		.build();
     }
 }

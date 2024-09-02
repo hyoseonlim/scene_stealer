@@ -3,6 +3,7 @@ package pack.websocket;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,10 +16,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import pack.entity.User;
 
 @Getter
 @Builder
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -37,13 +40,17 @@ public class ChatUser {
     private List<Chat> chats;
 
     private String category;
+    
+    private Boolean closeChat;
 
     public static ChatUserDto toDto(ChatUser entity) {
         return ChatUserDto.builder()
                 .no(entity.getNo())
                 .userNo(entity.getUser().getNo())
+                .userName(entity.getUser().getName())
                 .chatsList(entity.getChats().stream().map(Chat::getNo).collect(Collectors.toList()))
                 .category(entity.getCategory())
+                .closeChat(entity.getCloseChat())
                 .build();
     }
 }
