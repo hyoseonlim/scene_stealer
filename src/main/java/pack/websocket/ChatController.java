@@ -1,6 +1,9 @@
 package pack.websocket;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -26,17 +29,22 @@ public class ChatController {
 
 		Optional<ChatUser> chatUser = curps.findById(dto.getChatNo());
 		int chatNo = 0;
+		
 		if (chatUser.isPresent()) {
 			chatNo = chatUser.get().getNo();
-		} else if (chatUser.isPresent()) {
+		} else {
 			ChatUserDto cud = ChatUserDto.builder().userNo(dto.getUserNo()).closeChat(false).build();
 			ChatUser cu = curps.save(ChatUserDto.toEntity(cud));
 			chatNo = cu.getNo();
 		}
 
 		// 메시지를 DB에 저장
-		Chat chat = Chat.builder().content(dto.getContent()).sendAdmin(dto.isSendAdmin()).date(dto.getDate())
-				.chatuser(ChatUser.builder().no(chatNo).build()).build();
+		Chat chat = Chat.builder()
+				.content(dto.getContent())
+				.sendAdmin(dto.isSendAdmin())
+				.date(dto.getDate())
+				.chatuser(ChatUser.builder().no(chatNo).build())
+				.build();
 		crps.save(chat);
 
 		// 채팅방 ID 생성 (관리자 ID와 유저 ID를 조합)
@@ -45,6 +53,7 @@ public class ChatController {
 		
 		// 메시지를 채팅방 구독자에게 전송
 		msgt.convertAndSend("/sub/chat/room/" + chatRoomId, Chat.toDto(chat));
+		
 
 	}
 

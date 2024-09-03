@@ -72,10 +72,10 @@ public class KakaoController {
 						user.setIdK(kakaoId);
 						urps.save(user);
 					}
-					result = Map.of("status", "login", "user", user);
+					result = Map.of("status", "login", "user", user.getNo());
 				} else if (userOptional.isPresent()) {
 					user = userOptional.get();
-					result = Map.of("status", "login", "user", user);
+					result = Map.of("status", "login", "user", user.getNo());
 				} else {
 					user = User.builder()
 							.id(kakaoId)
@@ -84,7 +84,7 @@ public class KakaoController {
 							.pic(profilePic)
 							.build();
 					urps.save(user);
-					result = Map.of("status", "signup", "user", user);
+					result = Map.of("status", "signup", "user", user.getNo());
 				}
 				return ResponseEntity.ok(result);
 			} else {
