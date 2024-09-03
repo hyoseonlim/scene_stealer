@@ -38,7 +38,7 @@ public class CharacterDto {
         return Character.builder()
                 .no(dto.getNo())
                 .name(dto.getName())
-                .likesCount(dto.getLikesCount())
+                .likesCount(dto.getLikesCount() != null ? dto.getLikesCount() : 0) // null 체크
                 .pic(dto.getPic())
                 .actor(Actor.builder().no(dto.getActorNo()).build())
                 .show(Show.builder().no(dto.getShowNo()).build()) 
