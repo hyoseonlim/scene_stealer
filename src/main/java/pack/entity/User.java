@@ -37,7 +37,6 @@ public class User {
     private String email;
     private String zipcode;
     private String address;
-    private Integer reward;
     private String nickname;
     private String bio;
     
@@ -92,7 +91,6 @@ public class User {
                 .email(entity.getEmail())
                 .zipcode(entity.getZipcode())
                 .address(entity.getAddress())
-                .reward(entity.getReward())
                 .nickname(entity.getNickname())
                 .bio(entity.getBio())
                 .pic(entity.getPic())

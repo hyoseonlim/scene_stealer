@@ -32,7 +32,6 @@ public class UserDto {
     private String email;
     private String zipcode;
     private String address;
-    private Integer reward;
     private String nickname;
     private String bio;
     private String pic;
@@ -63,7 +62,6 @@ public class UserDto {
                 .email(dto.getEmail())
                 .zipcode(dto.getZipcode())
                 .address(dto.getAddress())
-                .reward(dto.getReward())
                 .nickname(dto.getNickname())
                 .bio(dto.getBio())
                 .pic(dto.getPic())
