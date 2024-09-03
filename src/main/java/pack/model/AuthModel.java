@@ -9,7 +9,10 @@ import org.springframework.stereotype.Service;
 
 import pack.config.CustomUserDetails;
 import pack.dto.UserDto;
+import pack.entity.Coupon;
+import pack.entity.CouponUser;
 import pack.entity.User;
+import pack.repository.CouponUserRepository;
 import pack.repository.UsersRepository;
 
 @Service
@@ -20,6 +23,10 @@ public class AuthModel implements UserDetailsService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    
+    @Autowired
+    private CouponUserRepository curps;
+
 
     // 로그인
     @Override
@@ -45,6 +52,13 @@ public class AuthModel implements UserDetailsService {
 
         // 사용자 정보를 저장합니다.
         usersRepository.save(user);
+        
+        CouponUser cu = CouponUser.builder()
+                .user(User.builder().no(user.getNo()).build())
+                .coupon(Coupon.builder().no(1).build())
+                .build();
+          curps.save(cu);
+
     }
 
     public void saveUserFromDto(UserDto userDto) {
