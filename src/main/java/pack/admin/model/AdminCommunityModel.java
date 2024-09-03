@@ -37,7 +37,7 @@ public class AdminCommunityModel {
     private PostLikeRepository postLikeRepository;
 
     public Page<PostDto> getAllPosts(Pageable pageable) {
-        return postsRepository.findAll(pageable).map(this::convertToPostDto);
+        return postsRepository.findAll(pageable).map(Post::toDto);
     }
 
     public Page<PostDto> getAllReportedPosts(Pageable pageable) {

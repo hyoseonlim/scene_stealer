@@ -3,6 +3,7 @@ package pack.admin.controller;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -10,9 +11,11 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -98,13 +101,6 @@ public class AdminPromotionController {
         }
 	}
 	
-	// 쿠폰 목록
-	@GetMapping("/admin/coupons")
-	public Page<CouponDto> getAllCoupons(Pageable pageable) {
-		Page<Coupon> couponPage = couponsRepo.findAll(pageable);
-		return couponPage.map(Coupon::toDto);
-	}
-	
 	// 광고 알림 추가 (테이블 처리: alerts)
 	@PostMapping("/admin/advertise")
 	public Map<String, Object> insertAd(@RequestBody AlertDto_a alertDto) { // content, path 설정됨
@@ -117,7 +113,6 @@ public class AdminPromotionController {
 		return Map.of("isSuccess", true);
 	}
 	
-	
 	// 팝업 등록
 	@PostMapping("/admin/popup")
 	public void addPopup(@RequestParam("path") String path, @RequestPart("pic") MultipartFile pic) {
@@ -129,16 +124,39 @@ public class AdminPromotionController {
 			PopupDto dto = new PopupDto();
 			dto.setPic("/images/" + pic.getOriginalFilename());
 			dto.setPath(path);
+			dto.setIsShow(true);
 			promotionDao.addPopup(dto);
 		} catch (Exception e) {
 			System.out.println("에러: " + e);
 		}
 	}
 	
+	// 쿠폰 목록
+	@GetMapping("/admin/coupons")
+	public Page<CouponDto> getAllCoupons(Pageable pageable) {
+		Page<Coupon> couponPage = couponsRepo.findAll(pageable);
+		return couponPage.map(Coupon::toDto);
+	}
+	
 	// 팝업 목록
 	@GetMapping("/admin/popups")
-	public List<PopupDto> getAllPopups() {
-		return popupRepo.findAll().stream().map(Popup::toDto).toList();
+	public Page<PopupDto> getAllPopups(Pageable pageable) {
+		Page<Popup> popupPage = popupRepo.findAll(pageable);
+		return popupPage.map(Popup::toDto);
 	}
+	
+	// 팝업 상태 변경
+	@PutMapping("/admin/popup/{no}/status")
+    public void updatePopupStatus(@PathVariable("no") Integer no,
+                                    @RequestBody Map<String, Object> requestBody) {
+        Boolean status = (Boolean) requestBody.get("status");
+        promotionDao.updatePopupStatus(no, status);
+    }
+	
+	// 팝업 삭제
+    @DeleteMapping("/admin/popup/{no}")
+    public void deletePopup(@PathVariable("no") int no) {
+        popupRepo.deleteById(no);
+    }
 
 }

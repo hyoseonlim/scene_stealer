@@ -33,11 +33,10 @@ public class AdminCommunityController {
     public ResponseEntity<Page<PostDto>> getAllPosts(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
-
         // 최신순으로 정렬
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "date"));
         Page<PostDto> postPage = adminCommunityModel.getAllPosts(pageable);
-        
+        System.out.println("hi3");
         return ResponseEntity.ok(postPage);
     }
 
@@ -48,15 +47,17 @@ public class AdminCommunityController {
             @RequestParam(value = "size", defaultValue = "10") int size,
             @RequestParam(value = "sort", defaultValue = "latest") String sort) {
 
+    	System.out.println("hi4");
         Page<PostDto> reportedPostsPage;
         Pageable pageable = PageRequest.of(page, size);
 
+        System.out.println("hi5");
         if ("mostReported".equals(sort)) {
             reportedPostsPage = adminCommunityModel.getMostReportedPosts(pageable);
         } else {
             reportedPostsPage = adminCommunityModel.getAllReportedPosts(pageable);
         }
-
+        System.out.println("hi6");
         return ResponseEntity.ok(reportedPostsPage);
     }
     

@@ -9,8 +9,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import pack.dto.PopupDto;
 
+@Setter
 @Getter
 @Builder
 @NoArgsConstructor
