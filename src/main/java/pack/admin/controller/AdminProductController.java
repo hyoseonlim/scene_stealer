@@ -138,7 +138,6 @@ public class AdminProductController {
     // 자동완성 - 입력값이 없을 때) 등록된 상품 전체
  	@GetMapping("/autocomplete")
  	public List<ProductDto> autocompleteallProduct() {
- 		System.out.println("하이하이");
  	     return productRepo.findAll().stream().map(Product::toDto).toList();
  	}
  		
@@ -147,7 +146,8 @@ public class AdminProductController {
  	public List<ProductDto> autocompleteProduct(@PathVariable("term") String term) {
  		return productRepo.findByNameContaining(term).stream().map(Product::toDto).toList();
  	}
- 	// 특정 상품의 리뷰를 페이징된 형태로 조회하는 API
+ 	
+ 	// 특정 상품의 리뷰를 페이징된 형태로 조회
     @GetMapping("/{productId}/reviews")
     public ResponseEntity<Page<ReviewDto>> getProductReviews(
             @PathVariable("productId") int productId,

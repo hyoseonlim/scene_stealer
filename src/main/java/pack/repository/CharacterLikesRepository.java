@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import pack.entity.Character;
 import pack.entity.CharacterLike;
 
 public interface CharacterLikesRepository extends JpaRepository<CharacterLike, Integer>{
@@ -12,4 +13,6 @@ public interface CharacterLikesRepository extends JpaRepository<CharacterLike, I
 	public List<CharacterLike> findByUserNo(int no);
 	
 	public int deleteByCharacterNoAndUserNo(int cno, int uno);
+	
+	public void deleteByCharacter(Character character);
 }

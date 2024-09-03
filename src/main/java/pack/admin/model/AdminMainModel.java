@@ -23,6 +23,7 @@ import pack.entity.Item;
 import pack.entity.Style;
 import pack.entity.StyleItem;
 import pack.repository.ActorsRepository;
+import pack.repository.CharacterLikesRepository;
 import pack.repository.CharactersRepository;
 import pack.repository.ItemsRepository;
 import pack.repository.ShowActorRepository;
@@ -46,6 +47,8 @@ public class AdminMainModel {
 		ItemsRepository itemsRepo;
 		@Autowired
 		StyleItemRepository styleItemRepo;
+		@Autowired
+		CharacterLikesRepository characterLikeRepo;
 		
 		// 전체 작품 목록
 		public List<ShowDto> searchShows() {
@@ -193,6 +196,7 @@ public class AdminMainModel {
 			stylesRepo.deleteAll(character.getStyles()); // Style
 			showActorRepo.deleteByShow(character.getShow()); // Show_Actor
 			charactersRepo.delete(character); // Character
+			characterLikeRepo.deleteByCharacter(character); // Character_Like
 		}
 		
 		private ShowDto toShowDto_a(Show show) {

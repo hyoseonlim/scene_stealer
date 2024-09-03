@@ -39,6 +39,7 @@ public class AdminProductModel {
             ProductDto dto = Product.toDto(product);
             int reviewCount = repositoryl.countByProductNo(product.getNo());  // 리뷰 갯수 조회
             dto.setReviewCount(reviewCount);  // 리뷰 갯수 설정 (null이 아닌 0 이상 값이 설정되도록 보장)
+            dto.setScore(repositoryl.findAverageRatingByProduct(product.getNo()));
             return dto;
         });
     }
@@ -68,6 +69,7 @@ public class AdminProductModel {
             ProductDto dto = Product.toDto(product);
             int reviewCount = repositoryl.countByProductNo(product.getNo());  // 리뷰 갯수 조회
             dto.setReviewCount(reviewCount);  // 리뷰 갯수 설정
+            dto.setScore(repositoryl.findAverageRatingByProduct(product.getNo()));
             return dto;
         });
     }
