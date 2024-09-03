@@ -1,5 +1,8 @@
 package pack.controller;
 
+import java.util.Collections;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -63,6 +66,17 @@ public class UserController {
 			e.printStackTrace(); // 예외 스택 트레이스 기록
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류가 발생했습니다.");
 		}
+	}
+	
+	@PostMapping("/user/validate-password")
+	public ResponseEntity<Map<String, Boolean>> validateCurrentPassword(@RequestBody UserDto userDto) {
+	    try {
+	        boolean isValid = um.validateCurrentPassword(userDto.getNo(), userDto.getPwd()); // userDto의 pwd를 현재 비밀번호로 사용
+	        return ResponseEntity.ok(Collections.singletonMap("isValid", isValid));
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("isValid", false));
+	    }
 	}
 
 	@PostMapping("/password-reset")

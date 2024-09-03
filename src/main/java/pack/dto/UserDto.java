@@ -26,7 +26,8 @@ public class UserDto {
     private String idN;
     private String idG;
     
-    private String pwd;
+    private String currentPwd; // 현재 비밀번호 추가
+    private String pwd;        // 새 비밀번호
     private String name;
     private String tel;
     private String email;

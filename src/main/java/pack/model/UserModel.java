@@ -38,6 +38,14 @@ public class UserModel {
 	        .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 	    return User.toDto(user);
 	}
+	
+	public boolean validateCurrentPassword(Integer userNo, String currentPassword) {
+	    User user = usersRepository.findById(userNo).orElse(null);
+	    if (user != null) {
+	        return passwordEncoder.matches(currentPassword, user.getPwd());
+	    }
+	    return false;
+	}
 
     // 사용자 정보 업데이트
 	public boolean updateUser(Integer userNo, UserDto userDto) {
