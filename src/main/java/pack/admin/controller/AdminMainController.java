@@ -84,6 +84,7 @@ public class AdminMainController {
     	characterDto.setActorNo(actor_no);
     	characterDto.setName(dto.getCharacter());
     	characterDto.setPic(dto.getPic());
+    	characterDto.setLikesCount(0);
 	    return dao.insertCharacter(characterDto); // 추가된 해당 배역의 PK 반환
 	}
 	

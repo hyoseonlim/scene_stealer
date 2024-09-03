@@ -17,5 +17,4 @@ public class ActorInfoDto {
 	private String actor;
 	private String character;
 	private String pic;
-
 }
