@@ -22,7 +22,7 @@ public class Character {
     private Integer no;
 
     private String name;
-    private Integer likesCount;
+    private Integer likesCount = 0;
 
     @Column(name = "pic")
     private String pic;
@@ -47,7 +47,7 @@ public class Character {
         return CharacterDto.builder()
                 .no(entity.getNo())
                 .name(entity.getName())
-                .likesCount(entity.getLikesCount())
+                .likesCount(entity.getLikesCount() != null ? entity.getLikesCount() : 0) // null 체크
                 .pic(entity.getPic())
                 .actorNo(entity.getActor().getNo())
                 .showNo(entity.getShow().getNo())
