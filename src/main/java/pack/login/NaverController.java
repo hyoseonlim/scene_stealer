@@ -18,7 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import pack.entity.Coupon;
+import pack.entity.CouponUser;
 import pack.entity.User;
+import pack.repository.CouponUserRepository;
 import pack.repository.UsersRepository;
 
 @RestController
@@ -42,6 +45,9 @@ public class NaverController {
 
 	@Autowired
 	private UsersRepository urps;
+	
+	@Autowired
+	private CouponUserRepository curps;
 
 	@PostMapping("/token")
 	public ResponseEntity<Map<String, Object>> getNaverToken(@RequestBody Map<String, String> payload) {
@@ -120,14 +126,21 @@ public class NaverController {
 					result = Map.of("status", "login", "user", user.getNo());
 				} else {
 					user = User.builder()
-							.idN(naverId)
-							.email(email)
-							.nickname(nickname)
-							.name(name)
-							.tel(mobile)
-							.pic(profile_image)
-							.build();
-					urps.save(user);
+						.idN(naverId)
+						.email(email)
+						.nickname(nickname)
+						.name(name)
+						.tel(mobile)
+						.pic(profile_image)
+						.build();
+					User userResult = urps.save(user);
+					
+					CouponUser cu = CouponUser.builder()
+												.user(User.builder().no(userResult.getNo()).build())
+												.coupon(Coupon.builder().no(1).build())
+												.build();
+					curps.save(cu);
+					
 					result = Map.of("status", "signup", "user", user.getNo());
 				}
 
@@ -161,6 +174,7 @@ public class NaverController {
 			} else {
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Failed to delete token");
 			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred while deleting token");
