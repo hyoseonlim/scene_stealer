@@ -1,15 +1,14 @@
 package pack.websocket;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
+@CrossOrigin("*")
 @Controller
 public class ChatController {
 
@@ -53,8 +52,6 @@ public class ChatController {
 		
 		// 메시지를 채팅방 구독자에게 전송
 		msgt.convertAndSend("/sub/chat/room/" + chatRoomId, Chat.toDto(chat));
-		
-
 	}
 
 	private String createChatRoomId(Integer chatUserNo) {

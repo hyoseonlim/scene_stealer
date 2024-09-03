@@ -8,7 +8,10 @@ import org.springframework.web.bind.annotation.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import pack.dto.UserDto;
+import pack.entity.Coupon;
+import pack.entity.CouponUser;
 import pack.entity.User;
+import pack.repository.CouponUserRepository;
 import pack.repository.UsersRepository;
 
 import java.net.http.HttpRequest;
@@ -28,6 +31,9 @@ public class KakaoController {
 
 	@Autowired
 	private UsersRepository urps;
+	
+	@Autowired
+	private CouponUserRepository curps;
 
 	@PostMapping
 	public ResponseEntity<Map<String, Object>> handleKakaoLogin(@RequestBody Map<String, String> payload) {
@@ -78,12 +84,19 @@ public class KakaoController {
 					result = Map.of("status", "login", "user", user.getNo());
 				} else {
 					user = User.builder()
-							.id(kakaoId)
+							.idK(kakaoId)
 							.email(email)
 							.nickname(nickname)
 							.pic(profilePic)
 							.build();
-					urps.save(user);
+					User userResult = urps.save(user);
+					
+					CouponUser cu = CouponUser.builder()
+							.user(User.builder().no(userResult.getNo()).build())
+							.coupon(Coupon.builder().no(1).build())
+							.build();
+					curps.save(cu);
+
 					result = Map.of("status", "signup", "user", user.getNo());
 				}
 				return ResponseEntity.ok(result);
