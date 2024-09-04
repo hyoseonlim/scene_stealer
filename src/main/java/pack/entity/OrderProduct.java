@@ -35,6 +35,8 @@ public class OrderProduct {
 	    private Integer price;
 	    private Integer quantity;
 	    
+	    private Boolean isReview;
+	    
 	    public static OrderProductDto toDto(OrderProduct entity) {
 	        // 방어 코드 추가: product와 order가 null일 수 있는 가능성 고려
 	        return OrderProductDto.builder()
@@ -43,6 +45,7 @@ public class OrderProduct {
 	                .productNo(entity.getProduct() != null ? entity.getProduct().getNo() : null)
 	                .price(entity.getPrice())
 	                .quantity(entity.getQuantity())
+	                .isReview(entity.getIsReview())
 	                .build();
 	    }
 

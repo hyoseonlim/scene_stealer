@@ -25,6 +25,8 @@ public class OrderProductDto {
 	    
 	    private Integer orderNo, productNo;
 	    
+	    private Boolean isReview;
+	    
 		public static OrderProduct toEntity (OrderProductDto dto) {
 	    	return OrderProduct.builder()
 	    			.no(dto.getNo())
@@ -32,6 +34,7 @@ public class OrderProductDto {
 	    			.product(ProductDto.toEntity(dto.getProduct()))
 	    			.price(dto.getPrice())
 	    			.quantity(dto.getQuantity())
+	    			.isReview(dto.getIsReview())
 	    			.build();
 	    }
 
