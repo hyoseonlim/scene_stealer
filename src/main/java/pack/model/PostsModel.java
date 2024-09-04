@@ -1,8 +1,10 @@
 package pack.model;
 
+import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,13 +32,10 @@ import pack.dto.ReportedPostDto;
 import pack.dto.UserDto;
 import pack.entity.Comment;
 import pack.entity.CommentLike;
-import pack.entity.Follow;
 import pack.entity.Order;
-import pack.entity.OrderProduct;
 import pack.entity.Post;
 import pack.entity.PostLike;
 import pack.entity.Product;
-import pack.entity.ReportedPost;
 import pack.entity.User;
 import pack.repository.AdminsRepository;
 import pack.repository.CommentLikeRepository;
@@ -47,18 +46,6 @@ import pack.repository.OrdersRepository;
 import pack.repository.PostLikeRepository;
 import pack.repository.PostsRepository;
 import pack.repository.ReportedPostsRepository;
-import pack.repository.UsersRepository;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.UUID;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-import jakarta.transaction.Transactional;
-import pack.dto.UserDto;
-import pack.entity.User;
 import pack.repository.UsersRepository;
 
 @Repository
@@ -142,9 +129,9 @@ public class PostsModel {
 
 	// 한 유저에 대한 팔로잉, 팔로워 정보 가져오기
 	public Map<String, List<Integer>> followInfo(int no) {
-		List<Integer> followerList = frps.findByFolloweeNo(no).stream().map(f -> f.getFollower().getNo())
+		List<Integer> followerList = frps.findByFolloweeNoAndFollowerEmailIsNotNull(no).stream().map(f -> f.getFollower().getNo())
 				.collect(Collectors.toList());
-		List<Integer> followeeList = frps.findByFollowerNo(no).stream().map(f -> f.getFollowee().getNo())
+		List<Integer> followeeList = frps.findByFollowerNoAndFolloweeEmailIsNotNull(no).stream().map(f -> f.getFollowee().getNo())
 				.collect(Collectors.toList());
 		Map<String, List<Integer>> result = new HashMap<String, List<Integer>>();
 		result.put("followerList", followerList);
@@ -154,7 +141,7 @@ public class PostsModel {
 
 	// 팔로잉 정보 가져오기
 	public Page<UserDto> followeeInfo(int no, Pageable pageable) {
-		List<Integer> followList = frps.findByFollowerNo(no).stream().map((res) -> res.getFollowee().getNo())
+		List<Integer> followList = frps.findByFollowerNoAndFolloweeEmailIsNotNull(no).stream().map((res) -> res.getFollowee().getNo())
 				.collect(Collectors.toList());
 		Page<User> followPage = urps.findByNoIn(followList, pageable);
 		List<UserDto> followDtoList = followPage.stream().map(User::toDto).collect(Collectors.toList());
@@ -165,7 +152,7 @@ public class PostsModel {
 	// 팔로워 정보 가져오기
 	public Page<UserDto> followerInfo(int no, Pageable pageable) {
 
-		List<Integer> followList = frps.findByFolloweeNo(no).stream().map((res) -> res.getFollower().getNo())
+		List<Integer> followList = frps.findByFolloweeNoAndFollowerEmailIsNotNull(no).stream().map((res) -> res.getFollower().getNo())
 				.collect(Collectors.toList());
 		Page<User> followPage = urps.findByNoIn(followList, pageable);
 		List<UserDto> followDtoList = followPage.stream().map(User::toDto).collect(Collectors.toList());
@@ -208,31 +195,11 @@ public class PostsModel {
 			return false;
 		}
 	}
-
-//	// 팔로우한 사람 글 모아보기 또는 좋아요 순으로 게시글 가져오기
-//    public Page<PostDto> followPostListOrPopular(int userNo, Pageable pageable) {
-//        // 팔로우한 사용자의 번호를 가져옴
-//        List<Integer> followeeList = frps.findByFollowerNo(userNo).stream()
-//            .map(f -> f.getFollowee().getNo())
-//            .collect(Collectors.toList());
-//
-//        Page<Post> postPage;
-//
-//        if (followeeList.isEmpty()) {
-//            // 팔로우한 사용자가 없으면 좋아요 순으로 게시글을 가져옴
-//            Pageable sortedByLikes = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "likesCount"));
-//            postPage = prps.findAll(sortedByLikes);
-//        } else {
-//            // 팔로우한 사용자가 있으면 해당 사용자의 게시글을 가져옴
-//            postPage = prps.findByUserNoIn(followeeList, pageable);
-//        }
-//
-//        return postPage.map(Post::toDto);
-//    }
+	
 	// 팔로우한 사람 글 모아보기 또는 좋아요 순으로 게시글 가져오기 메소드 수정
 	public Page<PostDto> followPostListOrPopular(int userNo, Pageable pageable) {
 		// 팔로우한 사용자의 번호를 가져옴
-		List<Integer> followeeList = frps.findByFollowerNo(userNo).stream().map(f -> f.getFollowee().getNo())
+		List<Integer> followeeList = frps.findByFollowerNoAndFolloweeEmailIsNotNull(userNo).stream().map(f -> f.getFollowee().getNo())
 				.collect(Collectors.toList());
 
 		Page<Post> postPage;
