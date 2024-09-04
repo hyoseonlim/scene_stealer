@@ -1,4 +1,7 @@
 package pack.controller;
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +21,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import pack.dto.CouponDto;
 import pack.dto.OrderDto;
@@ -142,18 +149,52 @@ public class ShopController {
 	    
 	    
 	    // 리뷰 글쓰기 // putmapping - update
-	    // 상품별 리뷰 insert
+//	   
+	    // 리뷰 작성 API (이미지 포함)
 	    @PostMapping("/list/review/{productNo}")
-	    public ResponseEntity<String> writeReview(
-	            @PathVariable("productNo") int no, 
-	            @RequestBody ReviewDto reviewDto) {
+	    public ResponseEntity<String> writeReviewWithImage(
+	            @PathVariable("productNo") int productNo, 
+	            @RequestPart("reviewDto") String reviewDtoJson,  // reviewDto JSON으로 수신
+	            @RequestPart(value = "pic", required = false) MultipartFile pic) {
+
+	        // JSON 데이터를 객체로 변환
+	        ObjectMapper objectMapper = new ObjectMapper();
+	        ReviewDto reviewDto;
+	        try {
+	            reviewDto = objectMapper.readValue(reviewDtoJson, ReviewDto.class);
+	        } catch (Exception e) {
+	            return ResponseEntity.status(400).body("잘못된 요청입니다: " + e.getMessage());
+	        }
 
 	        // reviewDto의 productNo 필드에 @PathVariable에서 받은 값을 설정
-	        reviewDto.setProductNo(no);
+	        reviewDto.setProductNo(productNo);
+
+	        // 이미지가 있는 경우 처리
+	        if (pic != null && !pic.isEmpty()) {
+	            try {
+	                // 이미지 파일을 저장할 경로 설정
+	                String staticDirectory = System.getProperty("user.dir") + "/src/main/resources/static/images/";
+	                Path imagePath = Paths.get(staticDirectory, pic.getOriginalFilename());
+	                File dest = imagePath.toFile();
+
+	                // 경로가 존재하지 않으면 폴더 생성
+	                if (!dest.getParentFile().exists()) {
+	                    dest.getParentFile().mkdirs();
+	                }
+
+	                // 이미지 파일 저장
+	                pic.transferTo(dest);
+
+	                // 이미지 경로를 ReviewDto에 설정
+	                reviewDto.setPic("/images/" + pic.getOriginalFilename());
+	            } catch (Exception e) {
+	                return ResponseEntity.status(500).body("이미지 업로드에 실패했습니다: " + e.getMessage());
+	            }
+	        }
 
 	        // 리뷰 작성 처리
 	        boolean success = smodel.writeReview(reviewDto);
-	        
+
 	        if (success) {
 	            return ResponseEntity.ok("리뷰 작성이 완료되었습니다.");
 	        } else {
