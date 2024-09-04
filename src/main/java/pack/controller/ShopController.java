@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,6 +36,7 @@ import pack.model.ShopModel;
 import pack.repository.ProductsRepository;
 import pack.repository.UsersRepository;
 
+@CrossOrigin(origins = "http://localhost:3000") 
 @RestController
 public class ShopController {
 	@Autowired
@@ -107,16 +109,30 @@ public class ShopController {
 	    	return result;
 	    }
 	    
-	    // 주문 생성 API
-//	    @PostMapping("/purchase")
-//	    public ResponseEntity<String> createOrder(@RequestBody OrderDto orderDto, @PathVariable("userNo") Integer userNo, Pageable pageable) {
-//	        try {
-//	            smodel.myorder(userNo, pageable);// 서비스 계층의 주문 생성 로직 호출
-//	            return ResponseEntity.ok("Purchase successful");
-//	        } catch (Exception e) {
-//	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Purchase failed: " + e.getMessage());
-//	        }
-//	    }
+	    // 결제하기
+	    @PostMapping("/purchase")
+	    public ResponseEntity<ShopDto> checkout(@RequestBody OrderDto orderDto) {
+	    	
+	    	System.out.println(orderDto);  // 로그 출력으로 확인
+	        try {
+	            // 1. 결제 처리
+	            boolean paymentSuccess = smodel.processPayment(orderDto);
+	            if (!paymentSuccess) {
+	                return ResponseEntity.status(HttpStatus.PAYMENT_REQUIRED).body(null);  // 결제 실패 시 응답
+	            }
+
+	            // 2. 주문 저장 
+	            smodel.saveOrder(orderDto);
+
+	            // 3. 저장된 주문 내역 상세 보기로 리다이렉트
+	            ShopDto orderDetail = smodel.myorderDetail(orderDto.getNo());
+	            return ResponseEntity.ok(orderDetail);
+	        } catch (Exception e) {
+	            // 예외 처리
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+	        }
+	    }
+	    
 	    
 	    // 리뷰 디테일 보기
 	    @GetMapping("/mypage/review/detail/{reviewNo}")

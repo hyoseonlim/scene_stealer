@@ -171,6 +171,28 @@ public class ShopModel {
 				.build();
 	}
 	
+	// 주문 저장 메서드
+    public void saveOrder(OrderDto orderDto) {
+        Order order = orderDto.toEntity(orderDto);// OrderDto를 Order 엔티티로 변환
+        ordersRepository.save(order);
+
+        List<OrderProduct> orderProducts = orderDto.getOrderProducts().stream()
+            .map(OrderProductDto::toEntity)
+            .collect(Collectors.toList());
+        
+        orderProducts.forEach(orderProductRepository::save);
+    }
+    
+    public boolean processPayment(OrderDto orderDto) {
+        // 결제 처리 로직을 구현
+        // 결제 성공 여부를 반환
+        return true; // 예: 결제가 성공했다고 가정
+    }
+
+    public UserDto getUserInfo(int userNo) {
+        // 사용자 정보 가져오기 로직
+        return new UserDto(); // 실제로는 사용자 정보 반환
+    }
 	// 리뷰 작성 기능
 	@Transactional
 	public boolean writeReview(ReviewDto reviewDto) {
