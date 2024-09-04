@@ -5,6 +5,7 @@ import lombok.*;
 import pack.dto.CouponDto;
 
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
