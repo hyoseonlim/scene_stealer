@@ -1,19 +1,15 @@
 package pack.dto;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pack.entity.Character;
 import pack.entity.Actor;
+import pack.entity.Character;
 import pack.entity.Show;
-import pack.entity.Style;
-import pack.entity.CharacterLike; // Ensure CharacterLike is imported
 
 @Getter
 @Setter

@@ -66,6 +66,8 @@ public class AuthController {
         userDto.setNickname(userDto.getId());
         
         try {
+        	
+        	
             // UserDto를 User 엔티티로 변환
             User user = UserDto.toEntity(userDto);
             

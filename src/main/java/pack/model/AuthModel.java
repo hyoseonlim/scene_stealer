@@ -1,5 +1,7 @@
 package pack.model;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -49,16 +51,26 @@ public class AuthModel implements UserDetailsService {
 
         // 암호화된 비밀번호를 User 엔티티에 설정
         user.setPwd(encodedPassword);
-
-        // 사용자 정보를 저장합니다.
-        usersRepository.save(user);
         
-        CouponUser cu = CouponUser.builder()
-                .user(User.builder().no(user.getNo()).build())
-                .coupon(Coupon.builder().no(1).build())
-                .build();
-          curps.save(cu);
+        Optional<User> userCheck = usersRepository.findByEmail(user.getEmail());
+        if(userCheck.isPresent()) {
+        	// 이미 등록된 이메일
+        	User preUser = userCheck.get();
+        	if(preUser.getId() == null) {
+        		preUser.setId(user.getId());
+        	}
+        	usersRepository.save(preUser);
+        } else {
+        	// 최초 가입자
+        	usersRepository.save(user);
 
+        	CouponUser cu = CouponUser.builder()
+                   .user(User.builder().no(user.getNo()).build())
+                   .coupon(Coupon.builder().no(1).build())
+                   .build();
+        	
+            curps.save(cu);
+        }
     }
 
     public void saveUserFromDto(UserDto userDto) {
