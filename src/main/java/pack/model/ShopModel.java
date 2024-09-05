@@ -309,7 +309,8 @@ public class ShopModel {
 		}
 		return list;
 	}
-
+	
+	// 재고량 체크
 	public List<Map<String, Object>> stockCheck(List<Integer> productNos) {
 		List<Map<String, Object>> result = new ArrayList<>();
 
@@ -374,6 +375,7 @@ public class ShopModel {
 				
 				Product product = productsRepository.findById(orderProduct.getProduct().getNo()).get();
 				product.setStock(product.getStock() - quantity);
+				product.setCount(product.getCount() + quantity); // 판매량 증가
 				productsRepository.save(product);
 			}
 			
@@ -396,5 +398,7 @@ public class ShopModel {
 
 		return b;
 	}
+	
+	
 
 }
