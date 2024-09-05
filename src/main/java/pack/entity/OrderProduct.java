@@ -6,6 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,11 +32,12 @@ public class OrderProduct {
 	    @ManyToOne
 	    @JoinColumn(name = "product_no")
 	    private Product product;
+	    
+	    @OneToOne(mappedBy = "orderProduct")
+	    private Review review;
 
 	    private Integer price;
 	    private Integer quantity;
-	    
-	    private Boolean isReview;
 	    
 	    public static OrderProductDto toDto(OrderProduct entity) {
 	        // 방어 코드 추가: product와 order가 null일 수 있는 가능성 고려
@@ -44,8 +46,8 @@ public class OrderProduct {
 	                .orderNo(entity.getOrder() != null ? entity.getOrder().getNo() : null)
 	                .productNo(entity.getProduct() != null ? entity.getProduct().getNo() : null)
 	                .price(entity.getPrice())
+	                .review(Review.toDto(entity.getReview()))
 	                .quantity(entity.getQuantity())
-	                .isReview(entity.getIsReview())
 	                .build();
 	    }
 

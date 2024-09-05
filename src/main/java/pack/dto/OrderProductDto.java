@@ -1,11 +1,13 @@
 package pack.dto;
 
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pack.entity.OrderProduct;
+import pack.entity.Review;
 
 
 @Getter
@@ -25,7 +27,7 @@ public class OrderProductDto {
 	    
 	    private Integer orderNo, productNo;
 	    
-	    private Boolean isReview;
+	    private ReviewDto review;
 	    
 		public static OrderProduct toEntity (OrderProductDto dto) {
 	    	return OrderProduct.builder()
@@ -34,7 +36,7 @@ public class OrderProductDto {
 	    			.product(ProductDto.toEntity(dto.getProduct()))
 	    			.price(dto.getPrice())
 	    			.quantity(dto.getQuantity())
-	    			.isReview(dto.getIsReview())
+	    			.review(ReviewDto.toEntity(dto.getReview()))
 	    			.build();
 	    }
 

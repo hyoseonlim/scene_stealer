@@ -81,7 +81,7 @@ public class ShopModel {
 
 	}
 	public Page<ReviewDto> getPagedReviewsForProduct(Integer productNo, Pageable pageable) {
-	    return reviewsRepository.findByProductNo(productNo, pageable)
+	    return reviewsRepository.findByProduct(productNo, pageable)
 	                            .map(Review::toDto); // Review 엔티티를 ReviewDto로 변환
 	}
 
@@ -106,7 +106,7 @@ public class ShopModel {
 	                                              .orElseThrow(() -> new IllegalArgumentException("Invalid product ID"));
 
 	    // 리뷰 페이징 처리
-	    Page<Review> reviewPage = reviewsRepository.findByProductNo(no, pageable);
+	    Page<Review> reviewPage = reviewsRepository.findByProduct(no, pageable);
 
 	    // 리뷰를 DTO로 변환
 	    List<ReviewDto> reviewDtoList = reviewPage.getContent().stream()
@@ -245,13 +245,16 @@ public class ShopModel {
 	@Transactional
 	public boolean writeReview(ReviewDto reviewDto) {
 		try {
-			Review review = Review.builder().contents(reviewDto.getContents()).score(reviewDto.getScore())
-					.pic(reviewDto.getPic())
-					.product(productsRepository.findById(reviewDto.getProductNo())
-							.orElseThrow(() -> new IllegalArgumentException("Invalid product ID")))
-					.user(usersRepository.findById(reviewDto.getUserNo())
-							.orElseThrow(() -> new IllegalArgumentException("Invalid user ID")))
-					.build();
+			Review review = Review.builder()
+				    .contents(reviewDto.getContents())
+				    .score(reviewDto.getScore())
+				    .pic(reviewDto.getPic())
+				    .orderProduct(OrderProductDto.toEntity(reviewDto.getOrderProduct()))
+				    .user(usersRepository.findById(reviewDto.getUserNo())
+				        .orElseThrow(() -> new IllegalArgumentException("Invalid user ID")))
+				    .build();
+
+
 
 			reviewsRepository.save(review);
 			return true;
@@ -269,8 +272,12 @@ public class ShopModel {
 					.orElseThrow(() -> new IllegalArgumentException("Invalid review ID"));
 
 			// 새로운 Review 객체를 생성
-			Review updatedReview = Review.builder().contents(reviewDto.getContents()).score(reviewDto.getScore())
-					.pic(reviewDto.getPic()).product(existingReview.getProduct()).user(existingReview.getUser())
+			Review updatedReview = Review.builder()
+					.contents(reviewDto.getContents())
+					.score(reviewDto.getScore())
+					.pic(reviewDto.getPic())
+					.orderProduct(existingReview.getOrderProduct())
+					.user(existingReview.getUser())
 					.build();
 
 			// 변경된 리뷰 엔티티를 저장
@@ -369,7 +376,7 @@ public class ShopModel {
 						.product(Product.builder().no(item.getProductNo()).build()) // Product 참조
 						.quantity(quantity) // 수량 설정
 						.price(finalPrice) // 할인된 상품 가격 적용
-						.isReview(false).build();
+						.build();
 
 				orderProduct = orderProductRepository.save(orderProduct); // OrderProduct 저장
 				

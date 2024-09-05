@@ -45,10 +45,6 @@ public class Product {
 
     @OneToMany(mappedBy = "product")
     @Builder.Default
-    private List<Review> reviews = new ArrayList<>();
-
-    @OneToMany(mappedBy = "product")
-    @Builder.Default
     private List<OrderProduct> orderProducts = new ArrayList<>();
     
     @OneToMany(mappedBy = "product" )
@@ -67,7 +63,6 @@ public class Product {
     			.count(entity.getCount())
     			.discountRate(entity.getDiscountRate())
     			.score(entity.getScore())
-    			.reviewNoList(entity.getReviews().stream().map(Review::getNo).collect(Collectors.toList()))
     			.orderProductNoList(entity.getOrderProducts().stream().map(OrderProduct::getNo).collect(Collectors.toList()))
 //    			.reviews(entity.getReviews().stream().map(Review::toDto).collect(Collectors.toList()))
 //    			.orderProducts(entity.getOrderProducts().stream().map(OrderProduct::toDto).collect(Collectors.toList()))

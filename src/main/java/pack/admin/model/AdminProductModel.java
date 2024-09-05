@@ -37,7 +37,7 @@ public class AdminProductModel {
         Page<Product> products = productReposi.findAll(pageable);
         return products.map(product -> {
             ProductDto dto = Product.toDto(product);
-            int reviewCount = repositoryl.countByProductNo(product.getNo());  // 리뷰 갯수 조회
+            int reviewCount = repositoryl.countByProduct(product.getNo());  // 리뷰 갯수 조회
             dto.setReviewCount(reviewCount);  // 리뷰 갯수 설정 (null이 아닌 0 이상 값이 설정되도록 보장)
             dto.setScore(repositoryl.findAverageRatingByProduct(product.getNo()));
             return dto;
@@ -67,7 +67,7 @@ public class AdminProductModel {
 
         return products.map(product -> {
             ProductDto dto = Product.toDto(product);
-            int reviewCount = repositoryl.countByProductNo(product.getNo());  // 리뷰 갯수 조회
+            int reviewCount = repositoryl.countByProduct(product.getNo());  // 리뷰 갯수 조회
             dto.setReviewCount(reviewCount);  // 리뷰 갯수 설정
             dto.setScore(repositoryl.findAverageRatingByProduct(product.getNo()));
             return dto;
@@ -108,7 +108,7 @@ public class AdminProductModel {
         Product product = productReposi.findByNo(no);
         if (product != null) {
             ProductDto dto = Product.toDto(product);
-            int reviewCount = repositoryl.countByProductNo(no);  // 리뷰 갯수 조회
+            int reviewCount = repositoryl.countByProduct(no);  // 리뷰 갯수 조회
             dto.setReviewCount(reviewCount);  // 리뷰 갯수 설정
             return dto;
         }
@@ -162,7 +162,7 @@ public class AdminProductModel {
     }
     // 특정 상품의 리뷰를 페이징된 형태로 조회하는 메서드
     public Page<ReviewDto> getProductReviews(int productId, Pageable pageable) {
-        Page<Review> reviews = repositoryl.findByProductNo(productId, pageable);
+        Page<Review> reviews = repositoryl.findByProduct(productId, pageable);
         return reviews.map(Review::toDto);
     }
 }

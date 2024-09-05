@@ -16,12 +16,17 @@ import pack.entity.Review;
 public interface ReviewsRepository extends JpaRepository<Review, Integer>{
 
 	public List<Review> findTop3ByOrderByNoDesc();
-	public Page<Review> findByProductNo(int productNo, Pageable pageable);  // 상품 ID로 리뷰 조회
-	int countByProductNo(int productNo); // 상품 ID로 리뷰 수를 세는 메서드
+	
+	@Query("SELECT r FROM Review r WHERE r.orderProduct.product.no = :productNo")
+	Page<Review> findByProduct(@Param("productNo") Integer productNo, Pageable pageable); //상품 번호로 리뷰 조회
+	
+	@Query("SELECT COUNT(r) FROM Review r WHERE r.orderProduct.product.no = :productNo")
+	int countByProduct(@Param("productNo") Integer productNo); // 상품 ID로 리뷰 수를 세는 메서드
 	
 	public Page<Review> findByUserNo(int userNo, Pageable pageable);// user당 리뷰 불러오기
 	//	public Page<Review> findByUserNo(int userNo);// user당 리뷰 불러오기
-	@Query("SELECT AVG(r.score) FROM Review r WHERE r.product.no = :no")
-	BigDecimal findAverageRatingByProduct(@Param("no") Integer productId);
-	Page<Review> findByProductNo(Integer productNo, Pageable pageable);
-	}
+	
+	// 특정 상품에 대한 평균 평점 조회
+    @Query("SELECT AVG(r.score) FROM Review r WHERE r.orderProduct.product.no = :productNo")
+    public BigDecimal findAverageRatingByProduct(@Param("productNo") Integer productNo);
+}

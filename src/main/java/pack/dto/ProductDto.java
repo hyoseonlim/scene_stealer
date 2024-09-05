@@ -39,8 +39,6 @@ public class ProductDto {
     
     private List<Integer> reviewNoList, orderProductNoList;
 
-    private List<ReviewDto> reviews = new ArrayList<>();
-
     private List<OrderProductDto> orderProducts = new ArrayList<>();
     
     // 엔티티로 변환 메서드
@@ -58,7 +56,6 @@ public class ProductDto {
                 .count(dto.getCount())
                 .discountRate(dto.getDiscountRate())
                 .score(dto.getScore())
-                .reviews(dto.getReviews().stream().map(ReviewDto::toEntity).collect(Collectors.toList()))
                 .orderProducts(dto.getOrderProducts().stream().map(OrderProductDto::toEntity).collect(Collectors.toList()))
                 .build();
     }
