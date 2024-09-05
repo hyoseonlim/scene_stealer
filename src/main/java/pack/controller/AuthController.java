@@ -220,7 +220,7 @@ public class AuthController {
     @GetMapping("/user/info")
     public ResponseEntity<Map<String, Object>> getUserInfo(HttpServletRequest request) {
         String token = request.getHeader("Authorization");
-        if (token == null) {
+        if (token == null || !token.startsWith("Bearer ")) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.singletonMap("message", "Unauthorized"));
         }
 

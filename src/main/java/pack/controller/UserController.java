@@ -1,6 +1,7 @@
 package pack.controller;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import pack.config.CustomUserDetails;
 import pack.dto.FindPassDto;
 import pack.dto.NoticeDto;
 import pack.dto.UserDto;
@@ -29,6 +33,12 @@ public class UserController {
 
 	@Autowired
 	private PasswordResetService passwordResetService;
+	
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    
+//    @Autowired
+//    private CustomUserDetails userDetailsService;
 
 	@GetMapping("/user/notice")
 	public ResponseEntity<Page<NoticeDto>> getNoticeList(Pageable pageable) {
@@ -90,4 +100,51 @@ public class UserController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("비밀번호 재설정 요청에 실패했습니다.");
 		}
 	}
+	
+//    @PutMapping("/user/mypage/delete")
+//    public Map<String, Object> delete(@RequestBody UserDto userDto) {
+//        Map<String, Object> response = new HashMap<>();
+//
+//        try {
+//            // 사용자 정보 로드
+////            UserDetails userDetails = model.loadUserByUsername(id);
+//            
+//            // 사용자 번호를 기반으로 UserDetails 객체를 가져옵니다.
+//            UserDetails userDetails = um.getUserByNo(userDto.getNo());
+//
+//            // 비밀번호 검증
+//            if (passwordEncoder.matches(userDto.getPwd(), userDetails.getPassword())) {
+//               response.put("result", um.deleteUser(userDto.getNo()));
+//            }
+//            
+//        } catch (Exception e) {
+//        	System.out.println("delete ERROR : " + e.getMessage());
+//        }
+//        
+//        return response;
+//    }
+	@PutMapping("/user/mypage/delete")
+    public Map<String, Object> delete(@RequestBody Map<String, Object> requestBody) {
+        Map<String, Object> response = new HashMap<>();
+        Integer userNo = Integer.parseInt((String)requestBody.get("userNo")) ;
+        String password = (String) requestBody.get("password");
+
+        try {
+            // 사용자 정보 로드
+            UserDto userDto = um.getUserByNo(userNo);
+            if (passwordEncoder.matches(password, userDto.getPwd())) {
+                boolean result = um.deleteUser(userNo);
+                response.put("result", result);
+            } else {
+                response.put("result", false);
+                response.put("message", "비밀번호가 일치하지 않습니다.");
+            }
+        } catch (Exception e) {
+            response.put("result", false);
+            response.put("message", "오류가 발생했습니다.");
+            e.printStackTrace();
+        }
+
+        return response;
+    }
 }

@@ -33,7 +33,7 @@ public class AuthModel implements UserDetailsService {
     // 로그인
     @Override
     public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
-        pack.entity.User user = usersRepository.findByLoginId(id)
+        pack.entity.User user = usersRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + id));
 
         // 사용자 no 값을 추가하여 CustomUserDetails 객체를 반환
@@ -81,7 +81,7 @@ public class AuthModel implements UserDetailsService {
     // 회원가입 아이디 체크
     public boolean idCheck(String id) {
         try {
-            return usersRepository.findByLoginId(id).isPresent();
+            return usersRepository.findById(id).isPresent();
         } catch (Exception e) {
             // 예외 처리: 예외를 기록하고 적절한 처리를 합니다.
             System.err.println("Error checking ID: " + e.getMessage());

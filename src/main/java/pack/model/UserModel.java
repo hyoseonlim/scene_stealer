@@ -1,11 +1,14 @@
 package pack.model;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 
+import jakarta.transaction.Transactional;
 import pack.dto.NoticeDto;
 import pack.dto.UserDto;
 import pack.entity.Notice;
@@ -67,5 +70,34 @@ public class UserModel {
 	        return true;
 	    }
 	    return false;
+	}
+	
+	@Transactional
+	public Boolean deleteUser(Integer userNo) {
+		boolean b = false;
+		try {
+	        User user = usersRepository.findById(userNo).orElse(null);
+	        if (user != null) {
+	            user.setPwd(null);
+	            user.setName(null);
+	            user.setTel(null);
+	            user.setEmail(null);
+	            user.setZipcode(null);
+	            user.setAddress(null);
+	            user.setNickname(null);
+	            user.setBio(null);
+	            user.setPic(null);
+	            user.setIdK(null);
+	            user.setIdN(null);
+	            user.setIdG(null);
+
+	            usersRepository.save(user);
+	        }
+			b = true;
+	    } catch (Exception e) {
+	        System.out.println(e.getMessage());
+	    }
+
+		return b;
 	}
 }
