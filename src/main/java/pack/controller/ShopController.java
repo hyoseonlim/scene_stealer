@@ -36,8 +36,10 @@ import pack.dto.PersonalCouponDto;
 import pack.dto.ProductDto;
 import pack.dto.ReviewDto;
 import pack.dto.ShopDto;
+import pack.dto.StyleItemDto;
 import pack.dto.SubDto;
 import pack.dto.UserDto;
+import pack.entity.Item;
 import pack.entity.Product;
 import pack.entity.User;
 import pack.model.PostsModel;
@@ -213,16 +215,43 @@ public class ShopController {
 	// 리뷰 수정
 	@PutMapping("/review/update/{reviewNo}")
 	public ResponseEntity<String> updateReview(@PathVariable("reviewNo") int reviewNo,
-			@RequestBody ReviewDto reviewDto) {
-		boolean success = smodel.updateReview(reviewNo, reviewDto);
-		if (success) {
-			return ResponseEntity.ok("리뷰 수정이 완료되었습니다.");
-		} else {
-			return ResponseEntity.status(500).body("리뷰 수정에 실패했습니다.");
-		}
+	                                           @RequestPart("reviewDto") String reviewDtoJson,
+	                                           @RequestPart(value = "pic", required = false) MultipartFile pic) {
+	    try {
+	        // JSON 문자열을 ReviewDto 객체로 변환
+	        ObjectMapper objectMapper = new ObjectMapper();
+	        ReviewDto reviewDto = objectMapper.readValue(reviewDtoJson, ReviewDto.class);
+	        
+	        // 리뷰 업데이트 로직
+	        boolean success = smodel.updateReview(reviewNo, reviewDto);
+	        
+	        // 파일 업로드 처리
+	        if (pic != null && !pic.isEmpty()) {
+	            String staticDirectory = System.getProperty("user.dir") + "/src/main/resources/static/images/";
+	            Path uploadPath = Paths.get(staticDirectory, pic.getOriginalFilename());
+	            
+	            pic.transferTo(uploadPath); // 파일을 지정된 경로에 저장
+	            reviewDto.setPic("/images/" + pic.getOriginalFilename()); // 파일 경로를 리뷰 DTO에 설정   
+	        }
+	       
+	        // 파일 업로드 후 다시 리뷰 업데이트
+	        smodel.updateReview(reviewNo, reviewDto);
+	        
+	        // 성공 여부에 따른 응답 처리
+	        if (success) {
+	            return ResponseEntity.ok("리뷰 수정이 완료되었습니다.");
+	        } else {
+	            return ResponseEntity.status(500).body("리뷰 수정에 실패했습니다.");
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return ResponseEntity.status(500).body("오류 발생: " + e.getMessage());
+	    }
 	}
 
-//	    // 리뷰 삭제
+
+
+	// 리뷰 삭제
 	@DeleteMapping("/review/delete/{reviewNo}")
 	public ResponseEntity<String> deleteReview(@PathVariable("reviewNo") int reviewNo) {
 		boolean success = smodel.deleteReview(reviewNo);
