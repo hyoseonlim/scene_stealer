@@ -100,29 +100,7 @@ public class UserController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("비밀번호 재설정 요청에 실패했습니다.");
 		}
 	}
-	
-//    @PutMapping("/user/mypage/delete")
-//    public Map<String, Object> delete(@RequestBody UserDto userDto) {
-//        Map<String, Object> response = new HashMap<>();
-//
-//        try {
-//            // 사용자 정보 로드
-////            UserDetails userDetails = model.loadUserByUsername(id);
-//            
-//            // 사용자 번호를 기반으로 UserDetails 객체를 가져옵니다.
-//            UserDetails userDetails = um.getUserByNo(userDto.getNo());
-//
-//            // 비밀번호 검증
-//            if (passwordEncoder.matches(userDto.getPwd(), userDetails.getPassword())) {
-//               response.put("result", um.deleteUser(userDto.getNo()));
-//            }
-//            
-//        } catch (Exception e) {
-//        	System.out.println("delete ERROR : " + e.getMessage());
-//        }
-//        
-//        return response;
-//    }
+
 	@PutMapping("/user/mypage/delete")
     public Map<String, Object> delete(@RequestBody Map<String, Object> requestBody) {
         Map<String, Object> response = new HashMap<>();
