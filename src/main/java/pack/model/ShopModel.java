@@ -254,8 +254,6 @@ public class ShopModel {
 				        .orElseThrow(() -> new IllegalArgumentException("Invalid user ID")))
 				    .build();
 
-
-
 			reviewsRepository.save(review);
 			return true;
 		} catch (Exception e) {
