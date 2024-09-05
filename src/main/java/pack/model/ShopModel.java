@@ -405,6 +405,24 @@ public class ShopModel {
       return b;
    }
    
+   // 주문 취소 메서드
+   @Transactional
+   public boolean cancelOrder(Integer orderNo) {
+       // 주문 찾기
+       Optional<Order> optionalOrder = ordersRepository.findById(orderNo);
+       if (optionalOrder.isPresent()) {
+           Order order = optionalOrder.get();
+           // 상태가 "주문접수"일 때만 취소 가능
+           if ("주문접수".equals(order.getState())) {
+               // 주문 상태를 "주문취소"로 업데이트
+               order.setState("주문취소");
+               ordersRepository.save(order); // 상태 업데이트 후 저장
+               return true;
+           }
+       }
+       return false;
+   }
+   
    
 
 }

@@ -162,8 +162,8 @@ public class ShopController {
 	// 리뷰 글쓰기 // putmapping - update
 //	   
 	// 리뷰 작성 API (이미지 포함)
-	@PostMapping("/list/review/{productNo}")
-	public ResponseEntity<String> writeReviewWithImage(@PathVariable("productNo") int productNo,
+	@PostMapping("/list/review/{orderProductNo}")
+	public ResponseEntity<String> writeReviewWithImage(@PathVariable("orderProductNo") int orderProductNo,
 			@RequestPart("reviewDto") String reviewDtoJson, // reviewDto JSON으로 수신
 			@RequestPart(value = "pic", required = false) MultipartFile pic) {
 
@@ -177,7 +177,7 @@ public class ShopController {
 		}
 
 		// reviewDto의 productNo 필드에 @PathVariable에서 받은 값을 설정
-		reviewDto.setProductNo(productNo);
+		reviewDto.setOrderProductNo(orderProductNo);
 
 		// 이미지가 있는 경우 처리
 		if (pic != null && !pic.isEmpty()) {
@@ -286,5 +286,16 @@ public class ShopController {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);  // 실패 시 500 오류 응답
 	    }
 	}
+	
+	 // 주문 취소 API
+    @DeleteMapping("/cancel/{orderNo}")
+    public String cancelOrder(@PathVariable("orderNo") Integer orderNo) {
+        boolean isCancelled = smodel.cancelOrder(orderNo);
+        if (isCancelled) {
+            return "주문이 성공적으로 취소되었습니다.";
+        } else {
+            return "주문을 취소할 수 없습니다.";
+        }
+    }
 
 }
