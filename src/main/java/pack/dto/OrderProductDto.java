@@ -25,6 +25,8 @@ public class OrderProductDto {
 	    private Integer price;
 	    private Integer quantity;
 	    
+	    private Integer reviewNo;
+	    
 	    private Integer orderNo, productNo;
 	    
 	    private ReviewDto review;
@@ -36,7 +38,7 @@ public class OrderProductDto {
 	    			.product(ProductDto.toEntity(dto.getProduct()))
 	    			.price(dto.getPrice())
 	    			.quantity(dto.getQuantity())
-	    			.review(ReviewDto.toEntity(dto.getReview()))
+	    			.review(Review.builder().no(dto.getReviewNo()).build())
 	    			.build();
 	    }
 

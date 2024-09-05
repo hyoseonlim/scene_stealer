@@ -27,6 +27,7 @@ public class ReviewDto {
 	 private String pic;  // URL or file path
 
 	 private Integer score;
+	 private Integer orderProductNo;
 	 
 	 private Integer userNo, productNo;
 	 private String userNickname,userid, productName;
@@ -38,7 +39,7 @@ public class ReviewDto {
 			return Review.builder()
 					.no(dto.getNo())
 	    			.user(User.builder().no(dto.getUserNo()).build())
-	    			.orderProduct(OrderProductDto.toEntity(dto.getOrderProduct()))
+	    			.orderProduct(OrderProduct.builder().no(dto.getOrderProductNo()).build())
 	    			.contents(dto.getContents())
 	    			.pic(dto.getPic() == null ? null : dto.getPic())
 	    			.score(dto.getScore())

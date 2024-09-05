@@ -46,7 +46,8 @@ public class OrderProduct {
 	                .orderNo(entity.getOrder() != null ? entity.getOrder().getNo() : null)
 	                .productNo(entity.getProduct() != null ? entity.getProduct().getNo() : null)
 	                .price(entity.getPrice())
-	                .review(Review.toDto(entity.getReview()))
+	                .reviewNo(entity.getReview() == null ? null : entity.getReview().getNo())
+//	                .review(Review.toDto(entity.getReview()))
 	                .quantity(entity.getQuantity())
 	                .build();
 	    }
