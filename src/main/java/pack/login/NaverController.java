@@ -4,6 +4,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import pack.dto.UserDto;
 import pack.entity.Coupon;
 import pack.entity.CouponUser;
 import pack.entity.User;
@@ -180,4 +182,56 @@ public class NaverController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred while deleting token");
 		}
 	}
+	
+	@PostMapping("/user-info")
+	public ResponseEntity<Map<String, Object>> getNaverUserInfo(@RequestBody Map<String, String> payload) {
+	    String accessToken = payload.get("accessToken");
+
+	    try {
+	        // 액세스 토큰으로 사용자 정보 요청
+	        HttpClient client = HttpClient.newHttpClient();
+	        HttpRequest request = HttpRequest.newBuilder()
+	                .uri(URI.create(naverUserInfoUrl))
+	                .header("Authorization", "Bearer " + accessToken)
+	                .GET()
+	                .build();
+
+	        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+	        if (response.statusCode() == 200) {
+	            String content = response.body();
+	            ObjectMapper mapper = new ObjectMapper();
+	            Map<String, Object> userInfo = mapper.readValue(content, Map.class);
+	            System.out.println("User Info from Naver: " + userInfo);
+
+	            Map<String, Object> userInfoResponse = (Map<String, Object>) userInfo.get("response");
+	            String id = (String) userInfoResponse.get("id");
+
+	            boolean exists = false;
+	            Integer userNo = null;
+
+	            // 네이버 ID가 DB에 있는지 확인
+	            Optional<User> userOptional = urps.findByIdN(id);
+	            if (userOptional.isPresent()) {
+	                User user = userOptional.get();
+	                userNo = user.getNo(); // DB에서 해당 유저의 userNo를 가져옴
+	                exists = true;
+	            }
+
+	            // 결과 생성 및 반환
+	            Map<String, Object> result = new HashMap<>();
+	            result.put("result", exists);
+	            result.put("userNo", userNo); // userNo 추가
+
+	            return ResponseEntity.ok(result);
+	        } else {
+	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	        }
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    }
+	}
+
 }

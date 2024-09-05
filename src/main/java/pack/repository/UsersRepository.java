@@ -14,6 +14,8 @@ import pack.entity.User;
 public interface UsersRepository extends JpaRepository<User, Integer> {
 	@Query("SELECT u FROM User u WHERE u.nickname LIKE %:name%")
 	List<User> findByNicknameContaining(@Param("name") String name);
+	
+	Optional<User> findByIdKAndNo(String id, int userNo);
 
 	@Query("SELECT u FROM User u WHERE u.nickname LIKE %:name%")
 	Page<User> findByNicknameContaining(@Param("name") String name, Pageable pageable);

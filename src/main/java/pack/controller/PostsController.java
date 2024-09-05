@@ -364,6 +364,13 @@ public class PostsController {
 	public List<ProductDto> getOrderProductList(@PathVariable("userNo") int userNo) {
 		return pm.getOrderProductList(userNo);
 	}
+	
+	@GetMapping("/user/check/{id}/{userNo}")
+	public Map<String, Boolean> userInfoCheck(@PathVariable("id") String id, @PathVariable("userNo") int userNo) {
+		Map<String, Boolean> result = new HashMap<String, Boolean>();
+		result.put("result", pm.userInfoCheck(id, userNo));
+		return result;
+	}
 
 	
 }

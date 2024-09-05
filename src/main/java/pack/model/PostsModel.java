@@ -8,6 +8,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -499,6 +500,15 @@ public class PostsModel {
 		
 		List<Product> productList = oprps.findByOrderNoIn(orderNoList).stream().map(op -> op.getProduct()).collect(Collectors.toList());
 		return productList.stream().map(Product::toDto).collect(Collectors.toList());
+	}
+	
+	public boolean userInfoCheck(String id, int userNo) {
+		boolean b = false;
+		Optional<User> dto = urps.findByIdKAndNo(id, userNo);
+		if(dto.isPresent()) {
+			b = true;
+		}
+		return b;
 	}
 
 }
