@@ -373,7 +373,7 @@ public class ShopModel {
 				OrderProduct orderProduct = OrderProduct.builder().order(order) // 저장된 Order 객체 참조
 						.product(Product.builder().no(item.getProductNo()).build()) // Product 참조
 						.quantity(quantity) // 수량 설정
-						.price(finalPrice) // 할인된 상품 가격 적용
+						.price(finalPrice / quantity) // 할인된 상품 가격 적용
 						.build();
 
 				orderProduct = orderProductRepository.save(orderProduct); // OrderProduct 저장
