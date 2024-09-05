@@ -1,6 +1,7 @@
 package pack.controller;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,9 +18,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.servlet.http.HttpServletRequest;
 import pack.config.CustomUserDetails;
 import pack.dto.UserDto;
 import pack.entity.User;
+import pack.login.JwtUtil;
 import pack.model.AuthModel;
 import pack.service.EmailService;
 
@@ -30,6 +33,9 @@ public class AuthController {
     @Autowired
     private AuthModel model; // 사용자 인증 관련 작업을 수행하는 모델
 
+    @Autowired
+    private JwtUtil jwtUtil;
+    
     @Autowired
     private PasswordEncoder passwordEncoder; // 비밀번호 암호화 및 검증을 위한 PasswordEncoder
 
@@ -66,8 +72,6 @@ public class AuthController {
         userDto.setNickname(userDto.getId());
         
         try {
-        	
-        	
             // UserDto를 User 엔티티로 변환
             User user = UserDto.toEntity(userDto);
             
@@ -93,38 +97,47 @@ public class AuthController {
     // 로그인 처리 메소드
     @PostMapping("/user/auth/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody UserDto userDto) {
-        String id = userDto.getId(); // 사용자 ID
-        String pwd = userDto.getPwd(); // 사용자 비밀번호
+        String id = userDto.getId();
+        String pwd = userDto.getPwd();
 
         Map<String, Object> response = new HashMap<>();
         
-        UserDetails userDetails;
-        
         try {
-            // ID를 기준으로 사용자 정보를 로드
-            userDetails = model.loadUserByUsername(id);
-        } catch (UsernameNotFoundException e) {
-            // 사용자 정보가 없는 경우: 401 Unauthorized 응답 반환
-            response.put("success", false);
-            response.put("message", "계정이 존재하지 않습니다."); // 사용자 없음 메시지
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-        }
+            // 사용자 정보 로드
+            UserDetails userDetails = model.loadUserByUsername(id);
+            
+            // 비밀번호 검증
+            if (passwordEncoder.matches(pwd, userDetails.getPassword())) {
+                // JWT 생성
+                String jwtToken = jwtUtil.generateToken(userDetails.getUsername());
 
-        // 비밀번호가 일치하는지 확인
-        if (passwordEncoder.matches(pwd, userDetails.getPassword())) {
-            CustomUserDetails customUserDetails = (CustomUserDetails) userDetails;
-            response.put("success", true);
-            response.put("user", Map.of(
-                "id", customUserDetails.getUsername(), 
-                "no", customUserDetails.getNo() // 사용자 no 반환
-            ));
-            return ResponseEntity.ok(response);
-        } else {
-            // 비밀번호가 일치하지 않는 경우: 401 Unauthorized 응답 반환
+                CustomUserDetails customUserDetails = (CustomUserDetails) userDetails;
+                
+                // 응답에 JWT 포함
+                response.put("success", true);
+                response.put("user", Map.of(
+                        "id", customUserDetails.getUsername(), 
+                        "no", customUserDetails.getNo() // 사용자 no 반환
+                    ));
+                response.put("token", jwtToken);
+                return ResponseEntity.ok(response);
+            } else {
+                // 비밀번호가 틀렸을 때
+                response.put("success", false);
+                response.put("message", "비밀번호를 확인해주세요."); // 적절한 오류 메시지
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            }
+        } catch (UsernameNotFoundException e) {
+            // 사용자 정보가 없을 때
             response.put("success", false);
-            response.put("message", "비밀번호를 확인해주세요."); // 비밀번호 불일치 메시지
+            response.put("message", "계정이 존재하지 않습니다."); // 사용자 계정이 없을 때 메시지
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-        }
+        } catch (Exception e) {
+            // 기타 예외 처리
+            response.put("success", false);
+            response.put("message", "로그인에 실패했습니다."); // 일반적인 로그인 실패 메시지
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }  
     }
     
     @GetMapping("/user/auth/check")
@@ -201,5 +214,31 @@ public class AuthController {
         response.put("status", "error");
         response.put("message", "인증번호가 일치하지 않습니다");
         return ResponseEntity.badRequest().body(response);
+    }
+    
+    // JWT로 정보 얻기
+    @GetMapping("/user/info")
+    public ResponseEntity<Map<String, Object>> getUserInfo(HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
+        if (token == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.singletonMap("message", "Unauthorized"));
+        }
+
+        try {
+            token = token.substring(7); // Remove "Bearer " prefix
+            String username = jwtUtil.extractUsername(token);
+
+            if (username != null && jwtUtil.validateToken(token, username)) {
+                UserDetails userDetails = model.loadUserByUsername(username);
+                Map<String, Object> response = new HashMap<>();
+                response.put("userNo", ((CustomUserDetails) userDetails).getNo());
+                return ResponseEntity.ok(response);
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.singletonMap("message", "Invalid token"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace(); // Print the stack trace for debugging
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("message", "Server error"));
+        }
     }
 }
