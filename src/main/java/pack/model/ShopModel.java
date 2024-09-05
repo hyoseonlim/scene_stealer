@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
@@ -79,36 +80,89 @@ public class ShopModel {
 		return Product.toDto(productsRepository.findById(no).get());
 
 	}
-
-	// 리뷰 연결
-	public ShopDto reviewshow(Integer no) {
-		ProductDto dto = productsRepository.findById(no).stream().map(Product::toDto).toList().get(0);
-		List<ReviewDto> rlist = new ArrayList<>();
-
-		for (Integer i : dto.getReviewNoList()) {
-			ReviewDto rdto = new ReviewDto();
-			rdto = Review.toDto(reviewsRepository.findById(i).get());
-			rlist.add(rdto);
-		}
-
-		return ShopDto.builder().product(dto).reviews(rlist).build();
+	public Page<ReviewDto> getPagedReviewsForProduct(Integer productNo, Pageable pageable) {
+	    return reviewsRepository.findByProductNo(productNo, pageable)
+	                            .map(Review::toDto); // Review 엔티티를 ReviewDto로 변환
 	}
 
-	// 내가 쓴 리뷰만 모아보기
-	public ShopDto mybuyreviews(int userNo) {
-		List<ReviewDto> rlist = reviewsRepository.findByUserNo(userNo).stream().map(Review::toDto)
-				.collect(Collectors.toList());
+//
+//	// 리뷰 연결
+//	public ShopDto reviewshow(Integer no) {
+//		ProductDto dto = productsRepository.findById(no).stream().map(Product::toDto).toList().get(0);
+//		List<ReviewDto> rlist = new ArrayList<>();
+//
+//		for (Integer i : dto.getReviewNoList()) {
+//			ReviewDto rdto = new ReviewDto();
+//			rdto = Review.toDto(reviewsRepository.findById(i).get());
+//			rlist.add(rdto);
+//		}
+//
+//		return ShopDto.builder().product(dto).reviews(rlist).build();
+//	}
+	public ShopDto reviewshow(Integer no, Pageable pageable) {
+	    // 상품 정보 가져오기
+	    ProductDto productDto = productsRepository.findById(no)
+	                                              .map(Product::toDto)
+	                                              .orElseThrow(() -> new IllegalArgumentException("Invalid product ID"));
 
-		// 리뷰에 해당하는 제품 리스트 조회
-		List<ProductDto> plist = new ArrayList<>();
-		for (ReviewDto review : rlist) {
-			ProductDto product = Product.toDto(productsRepository.findById(review.getProductNo()).get());
-			if (product != null) {
-				plist.add(product);
-			}
-		}
-		return ShopDto.builder().reviews(rlist).mybuyProducts(plist).build();
+	    // 리뷰 페이징 처리
+	    Page<Review> reviewPage = reviewsRepository.findByProductNo(no, pageable);
+
+	    // 리뷰를 DTO로 변환
+	    List<ReviewDto> reviewDtoList = reviewPage.getContent().stream()
+	                                              .map(Review::toDto)
+	                                              .collect(Collectors.toList());
+
+	    // Page<ReviewDto>로 변환
+	    Page<ReviewDto> reviewDtoPage = new PageImpl<>(reviewDtoList, pageable, reviewPage.getTotalElements());
+
+	    // ShopDto에 상품 정보와 리뷰 목록을 함께 포함
+	    return ShopDto.builder()
+	                  .product(productDto)
+	                  .reviews(reviewDtoPage) // 페이징된 리뷰 데이터 전달
+	                  .build();
 	}
+//	// 내가 쓴 리뷰만 모아보기
+//	public ShopDto mybuyreviews(int userNo,Pageable pageable) {
+//		Page<ReviewDto> rlist = reviewsRepository.findByUserNo(userNo).stream().map(Review::toDto)
+//				.collect(Collectors.toList());
+//
+//		// 리뷰에 해당하는 제품 리스트 조회
+//		List<ProductDto> plist = new ArrayList<>();
+//		for (ReviewDto review : rlist) {
+//			ProductDto product = Product.toDto(productsRepository.findById(review.getProductNo()).get());
+//			if (product != null) {
+//				plist.add(product);
+//			}
+//		}
+//		return ShopDto.builder().reviews(rlist).mybuyProducts(plist).build();
+//	}
+	 public ShopDto mybuyreviews(int userNo, Pageable pageable) {
+		    // 사용자가 작성한 리뷰 목록을 가져옵니다.
+		    Page<Review> reviewPage = reviewsRepository.findByUserNo(userNo, pageable);
+		    
+		    // 리뷰를 ReviewDto로 변환합니다.
+		    List<ReviewDto> rlist = reviewPage.getContent().stream()
+		                                      .map(Review::toDto)
+		                                      .collect(Collectors.toList());
+
+		    // 제품 정보를 조회하여 List<ProductDto> 생성
+		    List<ProductDto> plist = rlist.stream()
+		                                  .map(review -> productsRepository.findById(review.getProductNo())
+		                                                                    .map(Product::toDto)
+		                                                                    .orElse(null))
+		                                  .filter(product -> product != null)
+		                                  .collect(Collectors.toList());
+
+		    // ReviewDto 리스트를 PageImpl로 감싸서 Page<ReviewDto>로 변환
+		    Page<ReviewDto> reviewDtoPage = new PageImpl<>(rlist, pageable, reviewPage.getTotalElements());
+
+		    // ShopDto에 페이징된 리뷰 및 제품 목록을 담아 반환합니다.
+		    return ShopDto.builder()
+		                  .reviews(reviewDtoPage) // 페이징된 리뷰
+		                  .mybuyProducts(plist) // 사용자가 구매한 제품 목록
+		                  .build();
+		}
 
 	// 내가 산 주문 내역 보기
 	public OrderProductDto mybuyorder(Integer no) {

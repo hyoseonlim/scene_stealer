@@ -19,8 +19,9 @@ public interface ReviewsRepository extends JpaRepository<Review, Integer>{
 	public Page<Review> findByProductNo(int productNo, Pageable pageable);  // 상품 ID로 리뷰 조회
 	int countByProductNo(int productNo); // 상품 ID로 리뷰 수를 세는 메서드
 	
-	public List<Review> findByUserNo(int userNo);// user당 리뷰 불러오기
-	
+	public Page<Review> findByUserNo(int userNo, Pageable pageable);// user당 리뷰 불러오기
+	//	public Page<Review> findByUserNo(int userNo);// user당 리뷰 불러오기
 	@Query("SELECT AVG(r.score) FROM Review r WHERE r.product.no = :no")
 	BigDecimal findAverageRatingByProduct(@Param("no") Integer productId);
-}
+	Page<Review> findByProductNo(Integer productNo, Pageable pageable);
+	}

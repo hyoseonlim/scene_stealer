@@ -84,17 +84,27 @@ public class ShopController {
 		return smodel.list2(no);
 	}
 
-	// 상품별 리뷰보기(제품, 리뷰 일 대 다)
-	@GetMapping("/list/review/{no}")
-	public ShopDto reviewData(@PathVariable("no") Integer no) {
-		return smodel.reviewshow(no);
-	}
-
+//	// 상품별 리뷰보기(제품, 리뷰 일 대 다)
+//	@GetMapping("/list/review/{no}")
+//	public ShopDto reviewData(@PathVariable("no") Integer no) {
+//		return smodel.reviewshow(no);
+//	}
+	// 상품별 리뷰보기 (페이징 처리)
+    @GetMapping("/list/review/{no}")
+    public ResponseEntity<ShopDto> reviewData(@PathVariable("no") Integer no, Pageable pageable) {
+        ShopDto shopDto = smodel.reviewshow(no, pageable); // pageable을 전달하여 페이징 처리
+        return ResponseEntity.ok(shopDto);
+    }
 	// 내가 쓴 리뷰 보기
-	@GetMapping("/mypage/review/{userNo}")
-	public ShopDto myreviewOnly(@PathVariable("userNo") int userNo) {
-		return smodel.mybuyreviews(userNo);
-	}
+//	@GetMapping("/mypage/review/{userNo}")
+//	public ShopDto myreviewOnly(@PathVariable("userNo") int userNo) {
+//		return smodel.mybuyreviews(userNo);
+//	}
+    @GetMapping("/mypage/review/{userNo}")
+    public ResponseEntity<ShopDto> myreviewOnly(@PathVariable("userNo") int userNo, Pageable pageable) {
+        ShopDto shopDto = smodel.mybuyreviews(userNo, pageable); // 페이징 정보를 함께 전달
+        return ResponseEntity.ok(shopDto);
+    }
 
 	// 주문 내역 보기
 	@GetMapping("/order/orderlist/{userNo}")

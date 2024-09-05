@@ -2,6 +2,8 @@ package pack.dto;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,9 +18,11 @@ import lombok.Setter;
 public class ShopDto {
 	private ProductDto product;
 	private ReviewDto myreviews;//
-	private List<ReviewDto> reviews; // 상품별 리뷰 나열하기
+	//private List<ReviewDto> reviews; // 상품별 리뷰 나열하기
 	private List<ProductDto> mybuyProducts;
 	
+	// 페이징 처리된 리뷰 리스트 추가
+    private Page<ReviewDto> reviews; // 페이징 처리된 리뷰 나열하기
 	private OrderDto myorder;
 	private List<OrderProductDto> orderproducts;
 	private List<OrderDto> orders;
