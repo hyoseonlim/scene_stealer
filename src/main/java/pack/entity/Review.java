@@ -34,8 +34,8 @@ public class Review {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "product_no")
-    private Product product;
+    @JoinColumn(name = "order_product_no")
+    private OrderProduct orderProduct;
 
     private String contents;
 
@@ -51,8 +51,8 @@ public class Review {
     			.userNo(entity.getUser().getNo())
     			.userid(entity.getUser().getId())
     			.userNickname(entity.getUser().getNickname())
-    			.productNo(entity.getProduct().getNo())
-    			.productName(entity.getProduct().getName())
+    			.productNo(entity.getOrderProduct().getNo())
+    			.productName(entity.getOrderProduct().getProduct().getName())
 //    			.user(User.toDto(entity.getUser()))
 //    			.product(Product.toDto(entity.getProduct()))
     			.contents(entity.getContents())

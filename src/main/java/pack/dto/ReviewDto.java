@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pack.entity.OrderProduct;
 import pack.entity.Product;
 import pack.entity.Review;
 import pack.entity.User;
@@ -19,7 +20,7 @@ public class ReviewDto {
 	 
 	 private UserDto user;
 
-	 private ProductDto product;
+	 private OrderProductDto orderProduct;
 	 
 	 private String contents;
 	    
@@ -37,7 +38,7 @@ public class ReviewDto {
 			return Review.builder()
 					.no(dto.getNo())
 	    			.user(User.builder().no(dto.getUserNo()).build())
-	    			.product(Product.builder().no(dto.getProductNo()).build())
+	    			.orderProduct(OrderProductDto.toEntity(dto.getOrderProduct()))
 	    			.contents(dto.getContents())
 	    			.pic(dto.getPic() == null ? null : dto.getPic())
 	    			.score(dto.getScore())
