@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -252,7 +253,8 @@ public class ShopModel {
                 .contents(reviewDto.getContents())
                 .score(reviewDto.getScore())
                 .pic(reviewDto.getPic())
-                .orderProduct(OrderProductDto.toEntity(reviewDto.getOrderProduct()))
+                .orderProduct(orderProductRepository.findById(reviewDto.getOrderProductNo())
+                        .orElseThrow(() -> new NoSuchElementException("해당 주문 상품을 찾을 수 없습니다.")))
                 .user(usersRepository.findById(reviewDto.getUserNo())
                     .orElseThrow(() -> new IllegalArgumentException("Invalid user ID")))
                 .build();
