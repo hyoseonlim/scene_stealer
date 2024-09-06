@@ -36,13 +36,16 @@ public interface OrderProductRepository extends JpaRepository<OrderProduct, Inte
 
 	// 반품 비율
 	@Query("SELECT p.no AS productNo, p.name AS productName, " +
-	           "SUM(CASE WHEN o.state = '배송완료' THEN op.quantity ELSE 0 END) AS deliveredQuantity, " +
-	           "SUM(CASE WHEN o.state = '주문취소' THEN op.quantity ELSE 0 END) AS canceledQuantity " +
-	           "FROM OrderProduct op " +
-	           "JOIN op.product p " +
-	           "JOIN op.order o " +
-	           "WHERE o.state IN ('배송완료', '주문취소') " +
-	           "GROUP BY p.no, p.name")
+		       "SUM(CASE WHEN o.state = '배송완료' THEN op.quantity ELSE 0 END) AS deliveredQuantity, " +
+		       "SUM(CASE WHEN o.state = '주문취소' THEN op.quantity ELSE 0 END) AS canceledQuantity, " +
+		       "(SUM(CASE WHEN o.state = '주문취소' THEN op.quantity ELSE 0 END) * 1.0 / " +
+		       "(SUM(CASE WHEN o.state IN ('배송완료', '주문취소') THEN op.quantity ELSE 0 END))) AS returnRate " +
+		       "FROM OrderProduct op " +
+		       "JOIN op.product p " +
+		       "JOIN op.order o " +
+		       "WHERE o.state IN ('배송완료', '주문취소') " +
+		       "GROUP BY p.no, p.name " +
+		       "ORDER BY returnRate DESC")
 	    List<Object[]> findProductReturnRates(Pageable pageable);
 	
 }

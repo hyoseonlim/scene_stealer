@@ -70,7 +70,7 @@ public class AdminStatisticsController {
 	
 	@GetMapping("/products/best")
 	public ResponseEntity<List<Map<String, Object>>> getTopSellingProducts() {
-        Pageable pageable = PageRequest.of(0, 3); // 페이지 사이즈를 10으로 설정       
+        Pageable pageable = PageRequest.of(0, 5); // 페이지 사이즈를 10으로 설정       
         List<Object[]> results = orderProductRepository.findTopSellingProducts(pageable);
         
         List<Map<String, Object>> bestsellers = results.stream().map(result -> {
