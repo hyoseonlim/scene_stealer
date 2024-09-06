@@ -88,5 +88,9 @@ public class AuthModel implements UserDetailsService {
             throw new RuntimeException("Error checking ID", e);
         }
     }
+    
+    public boolean existsByEmail(String email) {
+        return usersRepository.findByEmail(email).isPresent();
+    }
 
 }

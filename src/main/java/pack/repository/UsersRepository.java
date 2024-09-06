@@ -45,4 +45,6 @@ public interface UsersRepository extends JpaRepository<User, Integer> {
     
     @Query("SELECT o.state FROM Order o WHERE o.user.no = :userNo")
     List<String> findOrderStatesByUserNo(@Param("userNo") Integer userNo);
+//    Optional<User> findByEmail(String email);
+//	boolean existsByEmail(String email);
 }

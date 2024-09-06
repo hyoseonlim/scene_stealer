@@ -102,30 +102,34 @@ public class UserController {
 		}
 	}
 
+	// 회원탈퇴
 	@PutMapping("/user/mypage/delete")
-    public Map<String, Object> delete(@RequestBody Map<String, Object> requestBody) {
-        Map<String, Object> response = new HashMap<>();
-        Integer userNo = Integer.parseInt((String)requestBody.get("userNo")) ;
-        String password = (String) requestBody.get("password");
+	public Map<String, Object> delete(@RequestBody Map<String, Object> requestBody) {
+	    Map<String, Object> response = new HashMap<>();
+	    try {
+	        // 사용자 번호와 이메일을 안전하게 추출
+	        Integer userNo = Integer.parseInt((String) requestBody.get("userNo"));
+	        String email = (String) requestBody.get("email");
 
-        try {
-            // 사용자 정보 로드
-            UserDto userDto = um.getUserByNo(userNo);
-            if (passwordEncoder.matches(password, userDto.getPwd())) {
-                boolean result = um.deleteUser(userNo);
-                response.put("result", result);
-            } else {
-                response.put("result", false);
-                response.put("message", "비밀번호가 일치하지 않습니다.");
-            }
-        } catch (Exception e) {
-            response.put("result", false);
-            response.put("message", "오류가 발생했습니다.");
-            e.printStackTrace();
-        }
+	        // 사용자 정보 로드
+	        UserDto userDto = um.getUserByNo(userNo);
+	        
+	        // 이메일 비교
+	        if (email.equals(userDto.getEmail())) {
+	            boolean result = um.deleteUser(userNo);
+	            response.put("result", result);
+	        } else {
+	            response.put("result", false);
+	            response.put("message", "이메일이 일치하지 않습니다.");
+	        }
+	    } catch (Exception e) {
+	        response.put("result", false);
+	        response.put("message", "오류가 발생했습니다.");
+	        e.printStackTrace(); // 실제 배포에서는 스택 트레이스를 로깅으로 대체하는 것이 좋습니다.
+	    }
 
-        return response;
-    }
+	    return response;
+	}
 	
 	@GetMapping("/user/passwordCheck")
 	public ResponseEntity<Boolean> passwordCheck(@RequestParam(name = "no") Integer no) {

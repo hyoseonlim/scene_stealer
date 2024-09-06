@@ -197,7 +197,6 @@ public class AuthController {
         try {
             int verificationCode = emailService.sendMail(email); // 인증 코드 발송
             LocalDateTime expiryTime = LocalDateTime.now().plusMinutes(10); // 10분 유효 시간 설정
-            //LocalDateTime expiryTime = LocalDateTime.now().plusSeconds(10); // 10분 유효 시간 설정
             emailVerificationCodes.put(email, new VerificationCode(verificationCode, expiryTime)); // 인증 코드와 만료 시간 저장
             System.out.println("발송된 인증번호: " + verificationCode); // 로그 추가
             response.put("status", "success");
@@ -208,6 +207,17 @@ public class AuthController {
             response.put("message", "인증번호 발송 실패: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
+    }
+    
+    @GetMapping("/user/emailCheck")
+    public ResponseEntity<Map<String, Object>> emailCheck(@RequestParam(name = "email") String email) {
+        System.out.println("수신된 이메일: " + email);  // 수신된 이메일 확인
+        boolean exists = model.existsByEmail(email);
+        System.out.println("이메일 존재 여부: " + exists);  // 이메일 존재 여부 확인
+        Map<String, Object> response = new HashMap<>();
+        response.put("exists", exists);
+        
+        return ResponseEntity.ok(response);
     }
 
     // 이메일 인증 코드 검증
