@@ -68,6 +68,22 @@ public class AdminMainController {
 	    return dao.insertShow(showdto); // 작품 추가 후 PK 반환
 	}
 	
+	// 작품 직접 추가
+	@PostMapping("/admin/show/diy") // 스타일 PK
+	public int insertShowDIY(@RequestParam("title") String title, @RequestPart("file") MultipartFile pic) {
+		ShowDto dto = new ShowDto();
+		dto.setTitle(title);
+		String staticDirectory = System.getProperty("user.dir") + "/src/main/resources/static/images/";
+		Path uploadPath = Paths.get(staticDirectory, pic.getOriginalFilename());
+		try {
+			pic.transferTo(uploadPath); // 파일을 지정된 경로에 저장
+			dto.setPic("/images/" + pic.getOriginalFilename());
+		}catch (Exception e) {
+			System.out.println("작품 사진 업로드 실패 " + e);
+		}
+		return dao.insertShow(dto);
+	}
+
 	// 배우 & 배역 추가
 	@PostMapping("/admin/show/{no}/character")
 	public int insertActorAndCharacter(@RequestBody ActorInfoDto dto, @PathVariable("no") int no) {
@@ -87,6 +103,35 @@ public class AdminMainController {
     	characterDto.setLikesCount(0);
 	    return dao.insertCharacter(characterDto); // 추가된 해당 배역의 PK 반환
 	}
+	
+	// 배우 & 배역 직접 추가
+	@PostMapping("/admin/show/{no}/character/diy")
+	public ActorInfoDto insertActorAndCharacterDIY(@PathVariable("no") int no, @RequestParam("actorName") String actor, 
+			@RequestParam("characterName") String character, @RequestPart("file") MultipartFile pic) {
+			// 배우
+			int actor_no = dao.checkActor(actor); // 존재여부 확인 (있으면 해당 배우 PK를 바로 받고, 없으면 0)
+			if(actor_no == 0) actor_no = dao.insertActor(actor); // 없으면 배우 추가 후 PK 받기
+			
+			// 작품-배우
+			dao.insertShowActor(no, actor_no);
+			
+			// 배역
+			CharacterDto characterDto = new CharacterDto();
+			characterDto.setShowNo(no);
+			characterDto.setActorNo(actor_no);
+			characterDto.setName(character + " 역");
+			
+			String staticDirectory = System.getProperty("user.dir") + "/src/main/resources/static/images/";
+			Path uploadPath = Paths.get(staticDirectory, pic.getOriginalFilename());
+			try {
+				pic.transferTo(uploadPath); // 파일을 지정된 경로에 저장
+				characterDto.setPic("/images/" + pic.getOriginalFilename());
+			}catch (Exception e) {
+				System.out.println("캐릭터 사진 업로드 실패 " + e);
+			}
+	    	characterDto.setLikesCount(0);
+		    return dao.insertCharacterDIY(characterDto); // 추가된 해당 배역의 PK 반환
+		}
 	
 	// 작품의 배우, 배역 목록 조회
 	@GetMapping("/admin/fashion/show/{no}")

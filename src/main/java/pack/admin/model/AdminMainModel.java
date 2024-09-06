@@ -94,6 +94,13 @@ public class AdminMainModel {
 			return charactersRepo.save(CharacterDto.toEntity(dto)).getNo();
 		}
 		
+		// 배역 직접 추가
+		public ActorInfoDto insertCharacterDIY(CharacterDto dto) {
+			Character c = charactersRepo.save(CharacterDto.toEntity(dto));
+			ActorInfoDto actorInfoDto = new ActorInfoDto(c.getNo(), c.getActor().getName(), c.getName(), c.getPic());
+			return actorInfoDto;
+		}
+		
 		// Show-PK로 작품 조회
 		public ShowDto searchShow(int no) {
 			Optional<Show> optionalShow = showsRepo.findById(no);
