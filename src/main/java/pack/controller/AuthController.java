@@ -24,6 +24,7 @@ import pack.dto.UserDto;
 import pack.entity.User;
 import pack.login.JwtUtil;
 import pack.model.AuthModel;
+import pack.model.UserModel;
 import pack.service.EmailService;
 
 @RestController
@@ -33,6 +34,9 @@ public class AuthController {
     @Autowired
     private AuthModel model; // 사용자 인증 관련 작업을 수행하는 모델
 
+	@Autowired
+	private UserModel um;
+
     @Autowired
     private JwtUtil jwtUtil;
     
@@ -41,6 +45,7 @@ public class AuthController {
 
     @Autowired
     private EmailService emailService;
+    
     
     // 이메일 인증 코드 저장
     private Map<String, VerificationCode> emailVerificationCodes = new HashMap<>();
@@ -150,6 +155,33 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+    // 비밀번호 확인
+    @PostMapping("/user/passwordCheck")
+    public ResponseEntity<Map<String, Object>> passwordCheck(@RequestBody Map<String, Object> requestBody) {
+        Map<String, Object> response = new HashMap<>();
+        Integer userNo = Integer.parseInt((String) requestBody.get("userNo"));
+        String password = (String) requestBody.get("pwd");
+
+        try {
+            // 사용자 정보 로드
+            UserDto userDto = um.getUserByNo(userNo);
+            // 암호화된 비밀번호와 입력된 비밀번호 비교
+            if (passwordEncoder.matches(password, userDto.getPwd())) {
+                response.put("result", true);
+                return ResponseEntity.ok(response);
+            } else {
+                response.put("result", false);
+                response.put("message", "비밀번호가 일치하지 않습니다.");
+                return ResponseEntity.status(401).body(response);
+            }
+        } catch (Exception e) {
+            response.put("result", false);
+            response.put("message", "오류가 발생했습니다.");
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(response);
+        }
+    }
+    
     // 이메일 인증 코드 발송
     @PostMapping("/user/auth/send-verification-code")
     public ResponseEntity<Map<String, Object>> sendVerificationCode(@RequestBody Map<String, String> request) {

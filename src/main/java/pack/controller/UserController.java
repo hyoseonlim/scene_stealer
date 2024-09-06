@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import pack.config.CustomUserDetails;
@@ -125,4 +126,11 @@ public class UserController {
 
         return response;
     }
+	
+	@GetMapping("/user/passwordCheck")
+	public ResponseEntity<Boolean> passwordCheck(@RequestParam(name = "no") Integer no) {
+	    boolean allCompleted = um.orderStatus(no);
+	    
+	    return ResponseEntity.ok(allCompleted);
+	}
 }

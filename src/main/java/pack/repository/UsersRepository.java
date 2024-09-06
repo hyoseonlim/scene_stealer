@@ -42,4 +42,7 @@ public interface UsersRepository extends JpaRepository<User, Integer> {
     Optional<User> findByNo(Integer no);
     
     Optional<User> findByIdAndEmail(String id, String email);
+    
+    @Query("SELECT o.state FROM Order o WHERE o.user.no = :userNo")
+    List<String> findOrderStatesByUserNo(@Param("userNo") Integer userNo);
 }

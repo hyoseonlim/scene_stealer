@@ -1,5 +1,6 @@
 package pack.model;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,5 +100,19 @@ public class UserModel {
 	    }
 
 		return b;
+	}
+	
+	// 주문 상태 조회
+	public boolean orderStatus(Integer userNo) {
+	    List<String> states = usersRepository.findOrderStatesByUserNo(userNo);
+	    if (states.isEmpty()) {
+	        return true; // 주문이 없는 경우 true 반환
+	    }
+	    for (String state : states) {
+	        if (!"주문완료".equals(state)) {
+	            return false;
+	        }
+	    }
+	    return true;
 	}
 }

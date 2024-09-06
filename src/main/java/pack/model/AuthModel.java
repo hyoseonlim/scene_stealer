@@ -88,10 +88,5 @@ public class AuthModel implements UserDetailsService {
             throw new RuntimeException("Error checking ID", e);
         }
     }
-//    
-//    
-//    // 이메일로 사용자 찾기
-//    public User findByEmail(String email) {
-//        return usersRepository.findByEmail(email).orElse(null);
-//    }
+
 }
