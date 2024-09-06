@@ -47,7 +47,6 @@ public class AdminProductModel {
                     ? BigDecimal.ZERO
                     : repositoryl.findAverageRatingByProduct(product.getNo());
             dto.setScore(averageRating);
-
             return dto;
         });
     }
@@ -69,7 +68,7 @@ public class AdminProductModel {
                 products = productReposi.findByCategoryContainingIgnoreCase(searchTerm, pageable);
                 break;
             default:
-                products = productReposi.findAll(pageable);
+                products = productReposi.findAllByOrderByDateDesc(pageable);
                 break;
         }
 
@@ -77,7 +76,10 @@ public class AdminProductModel {
             ProductDto dto = Product.toDto(product);
             int reviewCount = repositoryl.countByProduct(product.getNo());  // 리뷰 갯수 조회
             dto.setReviewCount(reviewCount);  // 리뷰 갯수 설정
-            dto.setScore(repositoryl.findAverageRatingByProduct(product.getNo()));
+            BigDecimal averageRating = repositoryl.findAverageRatingByProduct(product.getNo()) == null 
+                    ? BigDecimal.ZERO
+                    : repositoryl.findAverageRatingByProduct(product.getNo());
+            dto.setScore(averageRating);
             return dto;
         });
     }
