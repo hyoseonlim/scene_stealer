@@ -20,10 +20,10 @@ public interface FollowsRepository extends JpaRepository<Follow, Integer> {
 
 	public int deleteByFolloweeNoAndFollowerNo(int fno, int no);
 	
-	@Query("SELECT f FROM Follow f WHERE f.followee.no = :no AND f.follower.email IS NOT NULL")
+	@Query("SELECT f FROM Follow f WHERE f.followee.no = :no AND f.follower.email IS NOT NULL ORDER BY f.no DESC")
 	public List<Follow> findByFolloweeNoAndFollowerEmailIsNotNull(@Param("no") int no);
 
-	@Query("SELECT f FROM Follow f WHERE f.follower.no = :no AND f.followee.email IS NOT NULL")
+	@Query("SELECT f FROM Follow f WHERE f.follower.no = :no AND f.followee.email IS NOT NULL ORDER BY f.no DESC")
 	public List<Follow> findByFollowerNoAndFolloweeEmailIsNotNull(@Param("no") int no);
 
 

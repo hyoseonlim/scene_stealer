@@ -61,6 +61,7 @@ public class PostsController {
         result.put("result", pm.userInfoUpdate(no, dto));
         return result;
     }
+    
 	// 팔로우 정보 (팔로잉, 팔로워) 가져오기
 	@GetMapping("/posts/user/follow/{no}")
 	public Map<String, List<Integer>> followInfo(@PathVariable("no") int no) {

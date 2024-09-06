@@ -127,10 +127,11 @@ public class NaverController {
 					user = userOptional.get();
 					result = Map.of("status", "login", "user", user.getNo());
 				} else {
+					String finalNick = nickname + naverId;
 					user = User.builder()
 						.idN(naverId)
 						.email(email)
-						.nickname(nickname)
+						.nickname(finalNick.length() > 10 ? finalNick.substring(0, 9) : finalNick)
 						.name(name)
 						.tel(mobile)
 						.pic(profile_image)

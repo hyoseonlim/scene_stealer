@@ -231,7 +231,7 @@ public class PostsModel {
 		UserDto userInfo = User.toDto(urps.findById(postInfo.getUserNo()).get());
 
 		// 부모 댓글을 페이징으로 가져옴
-		Page<Comment> parentCommentsPage = crps.findByPostNoAndParentCommentNoIsNull(postNo, pageable);
+		Page<Comment> parentCommentsPage = crps.findByPostNoAndParentCommentNoIsNullOrderByNoDesc(postNo, pageable);
 
 		// 각 부모 댓글에 대해 자식 댓글을 함께 가져옴
 		List<CommentDto> commentsWithReplies = parentCommentsPage.getContent().stream().map(parentComment -> {

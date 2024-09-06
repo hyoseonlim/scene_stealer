@@ -86,10 +86,11 @@ public class KakaoController {
 					user = userOptional.get();
 					result = Map.of("status", "login", "user", user.getNo());
 				} else {
+					String finalNick = nickname + kakaoId;
 					user = User.builder()
 							.idK(kakaoId)
 							.email(email)
-							.nickname(nickname)
+							.nickname(finalNick.length() > 10 ? finalNick.substring(0, 9) : finalNick)
 							.pic(profilePic)
 							.build();
 					User userResult = urps.save(user);

@@ -66,7 +66,7 @@ public class MyPageModel {
 	}
 
 	public Page<AlertDto> myAlert(int userNo, Pageable pageable) {
-		Page<Alert> alertPage = arps.findByUserNo(userNo, pageable);
+		Page<Alert> alertPage = arps.findByUserNoOrderByNoDesc(userNo, pageable);
 		return alertPage.map(Alert::toDto);
 	}
 

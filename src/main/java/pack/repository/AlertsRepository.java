@@ -14,5 +14,5 @@ public interface AlertsRepository extends JpaRepository<Alert, Integer>{
 	
 	public int deleteByNo(int alertNo);
 	
-	public Page<Alert> findByUserNo(int userNo, Pageable pageable);
+	public Page<Alert> findByUserNoOrderByNoDesc(int userNo, Pageable pageable);
 }
