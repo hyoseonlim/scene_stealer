@@ -16,6 +16,9 @@ public interface ProductsRepository extends JpaRepository<Product, Integer> {
     // 전체 자료 읽기
     Page<Product> findAll(Pageable pageable);
     
+    // 최신순
+    Page<Product> findAllByOrderByDateDesc(Pageable pageable);
+    
     // ID로 제품 찾기
     Product findByNo(Integer no);
     

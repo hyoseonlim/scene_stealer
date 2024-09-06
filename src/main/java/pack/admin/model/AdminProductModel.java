@@ -35,7 +35,7 @@ public class AdminProductModel {
 //    }
 // // 페이징된 상품 리스트 조회 메서드
     public Page<ProductDto> listAll(Pageable pageable) {
-        Page<Product> products = productReposi.findAll(pageable);
+        Page<Product> products = productReposi.findAllByOrderByDateDesc(pageable);
         return products.map(product -> {
             ProductDto dto = Product.toDto(product);
             int reviewCount = repositoryl.countByProduct(product.getNo());  // 리뷰 갯수 조회
@@ -44,7 +44,7 @@ public class AdminProductModel {
             // findAverageRatingByProduct 메서드가 반환하는 값이 null일 경우 BigDecimal.ZERO를 사용하고, 
             // 그렇지 않으면 반환된 값을 BigDecimal로 캐스팅하여 사용
             BigDecimal averageRating = repositoryl.findAverageRatingByProduct(product.getNo()) == null 
-                    ? BigDecimal.ZERO 
+                    ? BigDecimal.ZERO
                     : repositoryl.findAverageRatingByProduct(product.getNo());
             dto.setScore(averageRating);
 
