@@ -159,4 +159,10 @@ public class AdminProductController {
 
         return ResponseEntity.ok(reviewsPage);
     }
+    
+    // 품절 처리
+    @PutMapping("/soldout/{no}")
+    public void toSoldOut(@PathVariable("no") Integer no) {
+    	productRepo.updateStockToZeroByNo(no);
+    }
 }

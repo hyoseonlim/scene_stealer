@@ -6,9 +6,11 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import jakarta.transaction.Transactional;
 import pack.entity.Product;
 
 public interface ProductsRepository extends JpaRepository<Product, Integer> {
@@ -56,4 +58,9 @@ public interface ProductsRepository extends JpaRepository<Product, Integer> {
     Page<Product> findByDateBetween(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, Pageable pageable);
     
     List<Product> findByNoIn(List<Integer> list);
+    
+    @Modifying
+    @Transactional
+    @Query("UPDATE Product p SET p.stock = 0 WHERE p.no = :no")
+    void updateStockToZeroByNo(@Param("no") Integer no);
 }
