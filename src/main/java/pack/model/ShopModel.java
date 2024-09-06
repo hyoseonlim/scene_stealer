@@ -200,9 +200,12 @@ public class ShopModel {
       List<ProductDto> productList = productsRepository.findByNoIn(productNoList).stream().map(Product::toDto)
             .collect(Collectors.toList());
 
-      return ShopDto.builder().orderList(orderList.stream().map(Order::toDto).collect(Collectors.toList()))
-            .productList(productList).totalPages(orderList.getTotalPages()).currentPage(orderList.getNumber())
-            .totalElements(orderList.getTotalElements()).build();
+      return ShopDto.builder()
+    		  .orderList(orderList.stream().map(Order::toDto).collect(Collectors.toList()))
+    		  .productList(productList).totalPages(orderList.getTotalPages()).currentPage(orderList.getNumber())
+    		  .totalElements(orderList.getTotalElements())
+    		  .orderProductList(orderProductList)
+    		  .build();
 
    }
 
