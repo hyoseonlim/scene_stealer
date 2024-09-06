@@ -37,7 +37,7 @@ public class AdminCommunityModel {
     private PostLikeRepository postLikeRepository;
 
     public Page<PostDto> getAllPosts(Pageable pageable) {
-        return postsRepository.findAll(pageable).map(Post::toDto);
+        return postsRepository.findByDeletedIsFalse(pageable).map(Post::toDto);
     }
 
     public Page<PostDto> getAllReportedPosts(Pageable pageable) {
@@ -51,6 +51,15 @@ public class AdminCommunityModel {
     public List<ReportedPostDto> getReportedInfos(){
     	return reportedPostsRepository.findAll().stream().map(ReportedPost::toDto).toList();
     }
+    public PostDto getPostDetail(int no) {
+        Optional<Post> postOptional = postsRepository.findById(no);
+        if (postOptional.isPresent()) {
+            Post post = postOptional.get();
+            return convertToPostDto(post);
+        }
+        return null; // 게시물이 없을 경우
+    }
+
 
     // Post 엔티티를 PostDto로 변환하는 메서드
     private PostDto convertToPostDto(Post post) {

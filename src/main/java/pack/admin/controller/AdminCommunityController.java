@@ -74,4 +74,13 @@ public class AdminCommunityController {
         response.put("isSuccess", true);
         return response;
     }
+    @GetMapping("/posts/detail/{no}")
+    public ResponseEntity<PostDto> getPostDetail(@PathVariable("no") int no) {
+        PostDto postDto = adminCommunityModel.getPostDetail(no);
+        if (postDto != null) {
+            return ResponseEntity.ok(postDto);
+        }
+        return ResponseEntity.notFound().build(); // 게시물이 없을 경우
+    }
+
 }

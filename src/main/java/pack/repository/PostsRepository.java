@@ -20,7 +20,7 @@ public interface PostsRepository extends JpaRepository<Post, Integer> {
 
 	Page<Post> findByReportsCountGreaterThanOrderByReportsCountDesc(int count, Pageable pageable);
 
-	public List<Post> findTop3ByOrderByNoDesc();
+	public List<Post> findTop3ByDeletedIsFalseOrderByNoDesc();
 
 	public List<Post> findByUserNo(int no);
 	
@@ -33,6 +33,8 @@ public interface PostsRepository extends JpaRepository<Post, Integer> {
 	@Query("SELECT p FROM Post AS p JOIN p.user AS u WHERE u.no = :userNo AND p.reportsCount < 4 ORDER BY p.no DESC")
 	Page<Post> findByUserNo(@Param("userNo") int userNo, Pageable pageable);
 
+    // 좋아요 순으로 모든 게시글 가져오기
+    Page<Post> findByDeletedIsFalse(Pageable pageable);
 	
     // 좋아요 순으로 모든 게시글 가져오기
     Page<Post> findAll(Pageable pageable);
