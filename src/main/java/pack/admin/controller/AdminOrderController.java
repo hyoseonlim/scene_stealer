@@ -39,7 +39,6 @@ public class AdminOrderController {
         // 각 주문의 총 수량을 로그로 출력
         orderPage.forEach(order -> {
             int totalQuantity = order.getTotalQuantity();
-            System.out.println("Order No: " + order.getNo() + ", Total Quantity: " + totalQuantity);
         });
 
         return orderPage;
