@@ -226,7 +226,7 @@ public class PostsModel {
 
 	// 게시글 세부 보기
 	public PostDetailDto postDetail(int postNo, Pageable pageable) {
-
+		
 		PostDto postInfo = Post.toDto(prps.findById(postNo).get());
 		UserDto userInfo = User.toDto(urps.findById(postInfo.getUserNo()).get());
 
