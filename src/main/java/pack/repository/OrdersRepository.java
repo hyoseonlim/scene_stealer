@@ -18,8 +18,8 @@ public interface OrdersRepository extends JpaRepository<Order, Integer> {
     Order findByNo(Integer no);
 
     // 전체 자료 읽기
-    @Query("SELECT o FROM Order o ORDER BY o.no DESC")
-    Page<Order> findAll(Pageable pageable);
+    @Query("SELECT o FROM Order o ORDER BY o.date DESC")
+    Page<Order> findAllByOrderDESC(Pageable pageable);
 
     // 사용자 ID로 주문 찾기 (부분 문자열)
     @Query("SELECT o FROM Order o JOIN o.user u WHERE LOWER(u.id) LIKE LOWER(CONCAT('%', :userId, '%')) ORDER BY o.no DESC")

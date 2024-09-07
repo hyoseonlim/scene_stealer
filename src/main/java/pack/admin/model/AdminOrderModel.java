@@ -3,8 +3,9 @@ package pack.admin.model;
 import org.springframework.stereotype.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-
+import org.springframework.data.domain.Sort;
 import jakarta.transaction.Transactional;
 import pack.dto.OrderDto;
 import pack.entity.Order;
@@ -27,29 +28,33 @@ public class AdminOrderModel {
     @Autowired
     private ProductsRepository productsRepository;
 
+    // 최신순 정렬된 전체 주문 목록
     public Page<OrderDto> listAll(Pageable pageable) {
-        Page<Order> orders = ordersRepository.findAll(pageable);
+        Pageable sortedByDateDesc = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "date"));
+        Page<Order> orders = ordersRepository.findAllByOrderDESC(sortedByDateDesc);
         return orders.map(Order::toDto);
     }
 
+    // 검색 조건에 따라 주문 목록 불러오기 (최신순 정렬)
     public Page<OrderDto> searchOrders(Pageable pageable, String searchTerm, String searchField, String startDate, String endDate) {
+        Pageable sortedByDateDesc = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "date"));
         Page<Order> orders;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         switch (searchField) {
             case "userId":
-                orders = ordersRepository.findByUserIdContainingIgnoreCase(searchTerm, pageable);
+                orders = ordersRepository.findByUserIdContainingIgnoreCase(searchTerm, sortedByDateDesc);
                 break;
             case "state":
-                orders = ordersRepository.findByStateContainingIgnoreCase(searchTerm, pageable);
+                orders = ordersRepository.findByStateContainingIgnoreCase(searchTerm, sortedByDateDesc);
                 break;
             case "date":
                 LocalDateTime start = LocalDateTime.parse(startDate + " 00:00:00", formatter);
                 LocalDateTime end = LocalDateTime.parse(endDate + " 23:59:59", formatter);
-                orders = ordersRepository.findByDateBetween(start, end, pageable);
+                orders = ordersRepository.findByDateBetween(start, end, sortedByDateDesc);
                 break;
             default:
-                orders = ordersRepository.findAll(pageable);
+                orders = ordersRepository.findAll(sortedByDateDesc);
                 break;
         }
 

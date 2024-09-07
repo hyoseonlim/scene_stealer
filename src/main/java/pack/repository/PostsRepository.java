@@ -64,5 +64,7 @@ public interface PostsRepository extends JpaRepository<Post, Integer> {
     Page<Post> findByDeletedFalse(Pageable pageable); // 삭제되지 않은 게시물 가져오기
     Page<Post> findByUserNoInAndDeletedFalse(List<Integer> userNos, Pageable pageable); // 특정 유저들의 삭제되지 않은 게시물 가져오기
 
+    Page<Post> findByDeletedFalseAndReportsCountLessThanEqual(int reportsCount, Pageable pageable);
+    Page<Post> findByUserNoInAndDeletedFalseAndReportsCountLessThanEqual(List<Integer> userNos, int reportsCount, Pageable pageable);
 
 }
