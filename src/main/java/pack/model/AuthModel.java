@@ -89,8 +89,8 @@ public class AuthModel implements UserDetailsService {
         }
     }
     
-    public boolean existsByEmail(String email) {
-        return usersRepository.findByEmail(email).isPresent();
+    public Optional<User> findByEmail(String email) {
+        return usersRepository.findByEmail(email);
     }
 
 }

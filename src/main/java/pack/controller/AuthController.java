@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -75,26 +76,47 @@ public class AuthController {
         Map<String, Object> response = new HashMap<>();
         userDto.setPic("/images/default.png");  // 기본 이미지 경로
         userDto.setNickname(userDto.getId());
-        
+
         try {
-            // UserDto를 User 엔티티로 변환
-            User user = UserDto.toEntity(userDto);
-            
-            // 사용자 정보를 데이터베이스에 저장
-            model.saveUser(user);
-            
-            // 환영 이메일 발송
-            emailService.sendWelcomeEmail(user);
-            
-            // 성공 응답 구성
-            response.put("status", "success");
-            response.put("message", "회원가입 성공");
-            return new ResponseEntity<>(response, HttpStatus.CREATED);
-            
+            // ID로 사용자가 존재하는지 확인
+            Optional<User> existingUser = model.findByEmail(userDto.getEmail());
+
+            if (existingUser.isPresent()) {
+                // 사용자가 이미 존재하는 경우 업데이트 처리
+                User user = existingUser.get();
+                
+                // userDto의 필드들을 user 엔티티에 덮어쓰기
+                user.setId(userDto.getId());
+                user.setName(userDto.getName());
+                user.setPwd(userDto.getPwd());
+                user.setTel(userDto.getTel());
+                user.setEmail(userDto.getEmail());
+                user.setZipcode(userDto.getZipcode());
+                user.setAddress(userDto.getAddress());
+
+                model.saveUser(user); // 업데이트된 사용자 저장
+                response.put("status", "success");
+                response.put("message", "회원 정보 업데이트 성공");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            } else {
+                // 새로운 사용자 등록 처리
+                User user = UserDto.toEntity(userDto);
+                String encodedPwd = passwordEncoder.encode(userDto.getPwd());
+                user.setPwd(encodedPwd);
+
+                model.saveUser(user);
+
+                // 환영 이메일 발송
+                emailService.sendWelcomeEmail(user);
+
+                response.put("status", "success");
+                response.put("message", "회원가입 성공");
+                return new ResponseEntity<>(response, HttpStatus.CREATED);
+            }
+
         } catch (Exception e) {
-            // 예외 발생 시 실패 응답 구성
             response.put("status", "error");
-            response.put("message", "회원가입 실패: " + e.getMessage());
+            response.put("message", "처리 실패: " + e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
     }
@@ -212,10 +234,25 @@ public class AuthController {
     @GetMapping("/user/emailCheck")
     public ResponseEntity<Map<String, Object>> emailCheck(@RequestParam(name = "email") String email) {
         System.out.println("수신된 이메일: " + email);  // 수신된 이메일 확인
-        boolean exists = model.existsByEmail(email);
-        System.out.println("이메일 존재 여부: " + exists);  // 이메일 존재 여부 확인
+        
+        Optional<User> userOptional = model.findByEmail(email);
+        boolean exists = userOptional.isPresent();
+        
         Map<String, Object> response = new HashMap<>();
         response.put("exists", exists);
+        
+        if(exists) {
+        	User user = userOptional.get();
+        	response.put("id_n", user.getIdN() != null);
+            response.put("id_k", user.getIdK() != null);
+            response.put("id_g", user.getIdG() != null);
+            
+            response.put("name", user.getName());
+            response.put("tel", user.getTel());
+            response.put("zipcode", user.getZipcode());
+            response.put("addrStart", user.getAddress());
+//            response.put("addrEnd", user.getAddrEnd());
+        }
         
         return ResponseEntity.ok(response);
     }
