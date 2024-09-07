@@ -29,7 +29,7 @@ public class MyPageController {
 	@GetMapping("/myScrapPage/{no}")
 	public ResponseEntity<Page<CharacterDto>> myScrapPage(@PathVariable("no") int no, Pageable pageable) {
 		Page<CharacterDto> scrapPage = mm.myScrapPage(no, pageable);
-	    return ResponseEntity.ok(scrapPage);
+		return ResponseEntity.ok(scrapPage);
 	}
 
 	@GetMapping("/alert/{no}")
@@ -44,25 +44,26 @@ public class MyPageController {
 		result.put("result", mm.deleteAlert(alertNo));
 		return result;
 	}
-	
+
 	@PutMapping("/alert/{alertNo}")
 	public Map<String, Boolean> updateAlert(@PathVariable("alertNo") int alertNo) {
 		Map<String, Boolean> result = new HashMap<String, Boolean>();
 		result.put("result", mm.updateAlert(alertNo));
 		return result;
-	} 
-	
+	}
+
 	@PostMapping("/alert/{category}/{value}/{userNo}")
-	public Map<String, Boolean> insertAlert(@PathVariable("category") String category, @PathVariable("value") String value, @PathVariable("userNo") int userNo, @RequestBody AlertDto dto) {
+	public Map<String, Boolean> insertAlert(@PathVariable("category") String category,
+			@PathVariable("value") String value, @PathVariable("userNo") int userNo, @RequestBody AlertDto dto) {
 		Map<String, Boolean> result = new HashMap<String, Boolean>();
-			result.put("result", mm.insertAlert(category, value, userNo, dto));			
-		
+		result.put("result", mm.insertAlert(category, value, userNo, dto));
+
 		return result;
 	}
 
 	@GetMapping("/coupon/{userNo}")
 	public ResponseEntity<Map<String, Object>> getCouponData(@PathVariable("userNo") int userNo, Pageable pageable) {
- 
+
 		Page<CouponDto> couponPage = mm.getCouponData(userNo, pageable);
 		Map<String, Object> response = new HashMap<String, Object>();
 		response.put("content", couponPage.getContent());
@@ -70,6 +71,13 @@ public class MyPageController {
 		response.put("currentPage", couponPage.getNumber());
 		response.put("totalElements", couponPage.getTotalElements());
 		return ResponseEntity.ok(response);
+	}
+
+	@GetMapping("/nickname/check/{nickname}")
+	public Map<String, Boolean> nicknameCheck(@PathVariable("nickname") String nn) {
+		Map<String, Boolean> result = new HashMap<String, Boolean>();
+		result.put("result", mm.nicknameCheck(nn));
+		return result;
 	}
 
 }

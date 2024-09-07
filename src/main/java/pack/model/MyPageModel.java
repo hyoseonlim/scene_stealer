@@ -5,6 +5,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -136,5 +138,14 @@ public class MyPageModel {
 		Page<Coupon> couponPage = cprps.findByNoIn(couponNoList, pageable);
 		List<CouponDto> couponDtoList = couponPage.stream().map(Coupon::toDto).collect(Collectors.toList());
 		return new PageImpl<>(couponDtoList, pageable, couponPage.getTotalElements());
+	}
+	
+	public boolean nicknameCheck(String nick) {
+		boolean b = false;
+		Optional<User> user = urps.findByNickname(nick);
+		if (user.isPresent()) {
+			b = true;
+		}
+		return b;
 	}
 }
