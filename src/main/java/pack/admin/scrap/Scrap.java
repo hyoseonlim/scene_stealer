@@ -60,6 +60,26 @@ public class Scrap {
 					actorDatalist.add(dto);
 				}
 			}
+			
+			// 정보를 찾지 못하면 영화임을 간주하여 주연/조연으로 불러오기 시도
+			if(actorDatalist.isEmpty()) {
+				Elements castbox = doc.select(".cast_box");
+				for(Element maincharacters : castbox) {
+						 Elements actor = maincharacters.select("div > div > div > ul > li");
+						 for (Element actor2 : actors) {
+								Element actorname = actor2.selectFirst(".title_box>strong>span");
+								Element character = actor2.selectFirst(".title_box>span>span");
+								Element actorpic = actor2.selectFirst(".thumb>img");
+								if (actorname != null) {
+									ActorInfoDto dto = new ActorInfoDto();
+									dto.setActor(actorname.text());
+									dto.setCharacter(character.text());
+									dto.setPic(actorpic.attr("src"));
+									if(!character.text().equals("감독"))actorDatalist.add(dto); // 감독은 제외
+								}
+						}
+				}
+			}
 
 		} catch (Exception e) {
 			System.out.println("err: " + e);
