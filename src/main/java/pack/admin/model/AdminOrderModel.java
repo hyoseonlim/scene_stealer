@@ -30,34 +30,31 @@ public class AdminOrderModel {
 
     // 최신순 정렬된 전체 주문 목록
     public Page<OrderDto> listAll(Pageable pageable) {
-        Pageable sortedByDateDesc = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "date"));
-        Page<Order> orders = ordersRepository.findAllByOrderDESC(sortedByDateDesc);
+        Page<Order> orders = ordersRepository.findAll(pageable);
         return orders.map(Order::toDto);
     }
 
     // 검색 조건에 따라 주문 목록 불러오기 (최신순 정렬)
     public Page<OrderDto> searchOrders(Pageable pageable, String searchTerm, String searchField, String startDate, String endDate) {
-        Pageable sortedByDateDesc = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "date"));
         Page<Order> orders;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         switch (searchField) {
             case "userId":
-                orders = ordersRepository.findByUserIdContainingIgnoreCase(searchTerm, sortedByDateDesc);
+                orders = ordersRepository.findByUserIdContainingIgnoreCase(searchTerm, pageable);
                 break;
             case "state":
-                orders = ordersRepository.findByStateContainingIgnoreCase(searchTerm, sortedByDateDesc);
+                orders = ordersRepository.findByStateContainingIgnoreCase(searchTerm, pageable);
                 break;
             case "date":
                 LocalDateTime start = LocalDateTime.parse(startDate + " 00:00:00", formatter);
                 LocalDateTime end = LocalDateTime.parse(endDate + " 23:59:59", formatter);
-                orders = ordersRepository.findByDateBetween(start, end, sortedByDateDesc);
+                orders = ordersRepository.findByDateBetween(start, end, pageable);
                 break;
             default:
-                orders = ordersRepository.findAll(sortedByDateDesc);
+                orders = ordersRepository.findAll(pageable);
                 break;
         }
-
         return orders.map(Order::toDto);
     }
 
