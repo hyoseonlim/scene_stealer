@@ -105,7 +105,7 @@ public class SearchModel {
     }
 
     public Page<ProductDto> searchProducts(String term, Pageable pageable) {
-        Page<Product> productsPage = productsRepository.findByNameContaining(term, pageable);
+        Page<Product> productsPage = productsRepository.findByNameContainingOrderByNoDesc(term, pageable);
         return productsPage.map(Product::toDto);
     }
 

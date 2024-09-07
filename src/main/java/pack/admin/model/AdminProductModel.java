@@ -35,7 +35,7 @@ public class AdminProductModel {
 //    }
 // // 페이징된 상품 리스트 조회 메서드
     public Page<ProductDto> listAll(Pageable pageable) {
-        Page<Product> products = productReposi.findAllByOrderByDateDesc(pageable);
+        Page<Product> products = productReposi.findAllByOrderByNoDesc(pageable);
         return products.map(product -> {
             ProductDto dto = Product.toDto(product);
             int reviewCount = repositoryl.countByProduct(product.getNo());  // 리뷰 갯수 조회
@@ -57,7 +57,7 @@ public class AdminProductModel {
 
         switch (searchField) {
             case "name":
-                products = productReposi.findByNameContainingIgnoreCase(searchTerm, pageable);
+                products = productReposi.findByNameContainingIgnoreCaseOrderByNoDesc(searchTerm, pageable);
                 break;
             case "date":
                 LocalDateTime start = LocalDateTime.parse(startDate + " 00:00:00", formatter);
@@ -65,10 +65,10 @@ public class AdminProductModel {
                 products = productReposi.findByDateBetween(start, end, pageable);
                 break;
             case "category":
-                products = productReposi.findByCategoryContainingIgnoreCase(searchTerm, pageable);
+                products = productReposi.findByCategoryContainingIgnoreCaseOrderByNoDesc(searchTerm, pageable);
                 break;
             default:
-                products = productReposi.findAllByOrderByDateDesc(pageable);
+                products = productReposi.findAllByOrderByNoDesc(pageable);
                 break;
         }
 

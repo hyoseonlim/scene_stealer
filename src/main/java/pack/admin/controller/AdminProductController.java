@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,9 +36,9 @@ public class AdminProductController {
             @RequestParam(value = "searchTerm", defaultValue = "") String searchTerm,
             @RequestParam(value = "searchField", defaultValue = "name") String searchField,
             @RequestParam(value = "startDate", required = false) String startDate,
-            @RequestParam(value = "endDate", required = false) String endDate) {
+            @RequestParam(value = "endDate", required = false) String endDate, Pageable pageable) {
 
-        Pageable pageable = PageRequest.of(page, size);
+        pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "date"));
         Page<ProductDto> productPage;
 
         if (searchTerm.isEmpty() && (startDate == null || endDate == null)) {

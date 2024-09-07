@@ -18,8 +18,8 @@ public interface ProductsRepository extends JpaRepository<Product, Integer> {
     // 전체 자료 읽기
     Page<Product> findAll(Pageable pageable);
     
-    // 최신순
-    Page<Product> findAllByOrderByDateDesc(Pageable pageable);
+    // 최신순 (PK 내림차순)
+    Page<Product> findAllByOrderByNoDesc(Pageable pageable);
     
     // ID로 제품 찾기
     Product findByNo(Integer no);
@@ -29,18 +29,17 @@ public interface ProductsRepository extends JpaRepository<Product, Integer> {
     
     // 카테고리로 제품 찾기
     //List<Product> findByCategory(String category);
-    Page<Product> findByCategory(String category, Pageable pageable);
-    
-    
+    Page<Product> findByCategoryOrderByNoDesc(String category, Pageable pageable);
+        
     @Query("SELECT p FROM Product p WHERE p.name LIKE %:name%")
     List<Product> findByNameContaining(@Param("name") String name);
 
     @Query("SELECT p FROM Product p WHERE p.name LIKE %:name%")
-    Page<Product> findByNameContaining(@Param("name") String name, Pageable pageable);
+    Page<Product> findByNameContainingOrderByNoDesc(@Param("name") String name, Pageable pageable);
     
     // 이름으로 제품 찾기 (부분 문자열)
     @Query("SELECT p FROM Product p WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%'))")
-    Page<Product> findByNameContainingIgnoreCase(@Param("name") String name, Pageable pageable);
+    Page<Product> findByNameContainingIgnoreCaseOrderByNoDesc(@Param("name") String name, Pageable pageable);
 
     // 날짜로 제품 찾기 (날짜 형식에 맞게 쿼리 수정)
     // 아래 쿼리는 문자열 형식으로 날짜를 비교하는 방법을 보여줍니다. 실제 사용 시 날짜를 직접 비교하는 것이 좋습니다.
@@ -50,7 +49,7 @@ public interface ProductsRepository extends JpaRepository<Product, Integer> {
     
     // 카테고리로 제품 찾기 (부분 문자열)
     @Query("SELECT p FROM Product p WHERE LOWER(p.category) LIKE LOWER(CONCAT('%', :category, '%'))")
-    Page<Product> findByCategoryContainingIgnoreCase(@Param("category") String category, Pageable pageable);
+    Page<Product> findByCategoryContainingIgnoreCaseOrderByNoDesc(@Param("category") String category, Pageable pageable);
     
     
  // 날짜로 제품 찾기 (내림차순 정렬 포함)
