@@ -171,17 +171,6 @@ public class ShopModel {
       return order;
    }
 
-   // 주문과 상품을 연결
-   public OrderProductDto createOrderProduct(Integer orderId, Integer productId) {
-      // Order 및 Product 엔티티 조회
-      Order order = ordersRepository.findById(orderId).get();
-      Product product = productsRepository.findById(productId).get();
-
-      // OrderProduct 엔티티 생성 및 저장
-      OrderProduct orderProduct = OrderProduct.builder().order(order).product(product).build();
-      OrderProduct savedOrderProduct = opRepository.save(orderProduct);
-      return OrderProduct.toDto(savedOrderProduct);
-   }
 
    // 리뷰 디테일
    public ReviewDto getReviewDetail(int reviewNo) {
@@ -410,23 +399,53 @@ public class ShopModel {
       return b;
    }
    
-   // 주문 취소 메서드
-   @Transactional
-   public boolean cancelOrder(Integer orderNo) {
-       // 주문 찾기
-       Optional<Order> optionalOrder = ordersRepository.findById(orderNo);
-       if (optionalOrder.isPresent()) {
-           Order order = optionalOrder.get();
-           // 상태가 "주문접수"일 때만 취소 가능
-           if ("주문접수".equals(order.getState())) {
-               // 주문 상태를 "주문취소"로 업데이트
-               order.setState("주문취소");
-               ordersRepository.save(order); // 상태 업데이트 후 저장
-               return true;
-           }
-       }
-       return false;
-   }
+// 주문 취소 메서드
+@Transactional
+public boolean cancelOrder(Integer orderNo) {
+    // 주문 찾기
+    Optional<Order> optionalOrder = ordersRepository.findById(orderNo);
+    if (optionalOrder.isPresent()) {
+        Order order = optionalOrder.get();
+        // 상태가 "주문접수"일 때만 취소 가능
+        if ("주문접수".equals(order.getState())) {
+
+            // 주문에 포함된 상품의 재고와 판매량 업데이트
+            List<OrderProduct> orderItems = order.getOrderProducts(); // 주문 아이템 목록 가져오기
+
+            for (OrderProduct item : orderItems) {
+                Product product = item.getProduct(); // 주문 상품 가져오기
+                if (product != null) {
+                    // 재고량 증가
+                    product.setStock(product.getStock() + item.getQuantity());
+                    // 판매량 감소
+                    product.setCount(product.getCount() - item.getQuantity());
+                    // 상품 정보 저장
+                    productsRepository.save(product);
+                }
+            }
+            
+//         // 사용자 정보 -> 쿠폰 정보
+//            User user = order.getUser(); // 주문한 사용자 
+//            List<CouponUser> couponUsers = user.getCouponUsers(); // 사용자의 쿠폰 목록 가져오기
+//
+//            // 사용된 쿠폰 중 주문에 사용된 쿠폰을 다시 사용할 수 있도록 업데이트
+//            for (CouponUser couponUser : couponUsers) {
+//                if (couponUser.getIsUsed()) {
+//                    couponUser.setIsUsed(false); // 쿠폰을 다시 사용할 수 있게 만듦
+//                    couponUserRepo.save(couponUser); // 쿠폰 정보 저장
+//                }
+//            }
+            
+
+            // 주문 상태를 "주문취소"로 업데이트
+            order.setState("주문취소");
+            ordersRepository.save(order); // 상태 업데이트 후 저장
+            return true;
+        }
+    }
+    return false;
+}
+
    
    
 
