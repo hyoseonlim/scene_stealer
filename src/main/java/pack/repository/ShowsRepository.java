@@ -8,16 +8,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import pack.entity.Actor;
 import pack.entity.Character;
 import pack.entity.Show;
 
 public interface ShowsRepository extends JpaRepository<Show, Integer>{
 
-	@Query("SELECT s FROM Show AS s JOIN Character AS c ON s.no = c.show.no GROUP BY s.title ORDER BY SUM(c.likesCount) DESC")
+	@Query("SELECT s FROM Show AS s LEFT JOIN s.characters AS c LEFT JOIN c.characterLikes AS cl GROUP BY s ORDER BY COALESCE(COUNT(cl), 0) DESC")
 	public List<Show> findShowAll(Pageable pageable);
 	
-	@Query("SELECT s FROM Show AS s JOIN Character AS c ON s.no = c.show.no GROUP BY s.title ORDER BY SUM(c.likesCount) DESC")
 	public Page<Show> findAll(Pageable pageable);
 //	
     @Query("SELECT a FROM Show a WHERE a.title LIKE %:term%")
