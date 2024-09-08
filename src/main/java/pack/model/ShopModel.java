@@ -239,6 +239,7 @@ public class ShopModel {
    public boolean writeReview(ReviewDto reviewDto) {
       try {
          Review review = Review.builder()
+        		.no(reviewDto.getNo())
                 .contents(reviewDto.getContents())
                 .score(reviewDto.getScore())
                 .pic(reviewDto.getPic())
@@ -399,7 +400,7 @@ public class ShopModel {
       return b;
    }
    
-// 주문 취소 메서드
+// 주문 취소일 때 
 @Transactional
 public boolean cancelOrder(Integer orderNo) {
     // 주문 찾기
@@ -424,17 +425,18 @@ public boolean cancelOrder(Integer orderNo) {
                 }
             }
             
-//         // 사용자 정보 -> 쿠폰 정보
-//            User user = order.getUser(); // 주문한 사용자 
-//            List<CouponUser> couponUsers = user.getCouponUsers(); // 사용자의 쿠폰 목록 가져오기
-//
-//            // 사용된 쿠폰 중 주문에 사용된 쿠폰을 다시 사용할 수 있도록 업데이트
-//            for (CouponUser couponUser : couponUsers) {
-//                if (couponUser.getIsUsed()) {
-//                    couponUser.setIsUsed(false); // 쿠폰을 다시 사용할 수 있게 만듦
-//                    couponUserRepo.save(couponUser); // 쿠폰 정보 저장
-//                }
-//            }
+            // 사용자 정보 -> 쿠폰 정보
+            User user = order.getUser(); // 주문한 사용자 
+            List<CouponUser> couponUsers = user.getCouponUsers(); // 사용자의 쿠폰 목록 가져오기
+
+            // 사용된 쿠폰 중 주문에 사용된 쿠폰을 다시 사용할 수 있도록 업데이트
+            for (CouponUser couponUser : couponUsers) {
+                Boolean isUsed = couponUser.getIsUsed(); // null일 수 있으므로 Boolean 타입으로 받아옴
+                if (isUsed != null && isUsed) { // null이 아니고, true일 경우만 처리
+                    couponUser.setIsUsed(null); // 쿠폰을 다시 사용할 수 있게 만듦
+                    couponUserRepo.save(couponUser); // 쿠폰 정보 저장
+                }
+            }
             
 
             // 주문 상태를 "주문취소"로 업데이트

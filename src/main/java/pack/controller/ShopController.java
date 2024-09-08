@@ -268,10 +268,49 @@ public class ShopController {
 		return smodel.getCouponListByUser(no);
 	}
 
-	@PostMapping("/cart/stock")
-	public List<Map<String, Object>> stockCheck(@RequestBody List<Integer> productNos) {
-		return smodel.stockCheck(productNos);
-	}
+//	@PostMapping("/cart/stock")
+//	public List<Map<String, Object>> stockCheck(@RequestBody List<Integer> productNos) {
+//		return smodel.stockCheck(productNos);
+//	}
+	
+	// 재고량 체크 API
+		@PostMapping("/cart/stock")
+		public List<Map<String, Object>> stockCheck(@RequestBody Map<String, Object> requestData) {
+		    // 요청 데이터에서 productNos와 userNo를 추출
+		    List<Object> productNosRaw = (List<Object>) requestData.get("productNos");
+		    List<Integer> productNos = new ArrayList<>();
+		    
+		    // productNos를 String에서 Integer로 변환
+		    for (Object productNoRaw : productNosRaw) {
+		        try {
+		            productNos.add(Integer.parseInt(productNoRaw.toString())); // String을 Integer로 변환
+		        } catch (NumberFormatException e) {
+		            throw new IllegalArgumentException("Invalid productNo format: " + productNoRaw);
+		        }
+		    }
+		    
+		    Integer userNo;
+		    try {
+		        userNo = Integer.parseInt(requestData.get("userNo").toString()); // String을 Integer로 변환
+		    } catch (NumberFormatException e) {
+		        throw new IllegalArgumentException("Invalid userNo format");
+		    }
+
+		    // 재고 확인 로직
+		    List<Map<String, Object>> result = new ArrayList<>();
+
+		    for (Integer productNo : productNos) {
+		        Product product = productsRepository.findById(productNo).orElse(null);
+		        if (product != null) {
+		            Map<String, Object> productStock = new HashMap<>();
+		            productStock.put("productNo", productNo);
+		            productStock.put("stock", product.getStock()); // 상품의 재고량을 반환
+		            result.add(productStock);
+		        }
+		    }
+
+		    return result; // 재고 정보를 클라이언트로 반환
+		}
 	
 	@PostMapping("/order")
 	public ResponseEntity<Map<String, Boolean>> newOrder(@RequestBody OrderProductAllDto dto) {
