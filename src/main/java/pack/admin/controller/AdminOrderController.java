@@ -8,6 +8,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import pack.admin.model.AdminOrderModel;
 import pack.dto.OrderDto;
+import pack.entity.User;
+import pack.repository.UsersRepository;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +20,9 @@ public class AdminOrderController {
 
     @Autowired
     private AdminOrderModel adminOrderModel;
-
+    
+    @Autowired
+    private UsersRepository userRepository;
     @GetMapping
     public Page<OrderDto> getOrders(
             @RequestParam(value = "page", defaultValue = "0") int page,
@@ -62,7 +66,8 @@ public class AdminOrderController {
         result.put("order", orderDto);
         result.put("product", productInfo);
         result.put("totalQuantity", orderDto.getTotalQuantity());  // 추가: 총 수량
-
+        result.put("user", User.toDto(userRepository.findById(orderDto.getUserNo()).get()));
+        
         return result;
     }
 }
