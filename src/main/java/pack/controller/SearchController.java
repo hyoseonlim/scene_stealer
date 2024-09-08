@@ -24,10 +24,8 @@ public class SearchController {
     
     @Autowired
     private SearchModel model;
-    /**
-     * 자동완성 기능을 제공하는 메서드입니다.
-     * 카테고리와 검색어를 기반으로 자동완성 결과를 반환합니다.
-     */
+
+	// 자동완성
     @GetMapping("/user/search/{category}")
     public List<?> autocomplete(
         @PathVariable("category") String category, // URL 경로에서 카테고리를 받습니다.
@@ -36,10 +34,8 @@ public class SearchController {
         // 모델에서 자동완성 결과를 가져옵니다.
         return model.autocomplete(category, term);
     }
-    /**
-     * 카테고리와 검색어에 따른 검색 결과를 반환하는 메서드입니다.
-     * 카테고리와 검색어를 기반으로 다양한 검색 결과를 반환합니다.
-     */
+
+    // 검색 결과 반환
     @GetMapping("/user/search/{category}/{term}")
     public Map<String, Object> search(
         @PathVariable("category") String category,
