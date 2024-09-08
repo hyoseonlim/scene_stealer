@@ -10,7 +10,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -134,6 +136,7 @@ public class AdminPromotionController {
 	// 쿠폰 목록
 	@GetMapping("/admin/coupons")
 	public Page<CouponDto> getAllCoupons(Pageable pageable) {
+		pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "no"));
 		Page<Coupon> couponPage = couponsRepo.findAll(pageable);
 		return couponPage.map(Coupon::toDto);
 	}
@@ -141,6 +144,7 @@ public class AdminPromotionController {
 	// 팝업 목록
 	@GetMapping("/admin/popups")
 	public Page<PopupDto> getAllPopups(Pageable pageable) {
+		pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "no"));
 		Page<Popup> popupPage = popupRepo.findAll(pageable);
 		return popupPage.map(Popup::toDto);
 	}
