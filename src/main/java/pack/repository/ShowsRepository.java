@@ -38,4 +38,7 @@ public interface ShowsRepository extends JpaRepository<Show, Integer>{
     Page<Character> findCharactersByShowTitle(@Param("term") String term, Pageable pageable);
 
     
+    @Query("SELECT s FROM Show s JOIN s.showActor sa WHERE sa.actor.no = :actorNo")
+    List<Show> findShowsByActorNo(@Param("actorNo") Integer actorNo);
+    
 }

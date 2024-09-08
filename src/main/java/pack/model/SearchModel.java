@@ -78,10 +78,9 @@ public class SearchModel {
             Actor actor = (Actor) objects[0];
             Show show = (Show) objects[1];
 
-            // Null check for show
             List<String> showDetails = new ArrayList<>();
-            
             if (show != null) {
+            	showDetails.add(show.getNo() != null ? show.getNo().toString() : "Unknown No");
                 showDetails.add(show.getTitle() != null ? show.getTitle() : "Unknown Title");
                 showDetails.add(show.getPic() != null ? show.getPic() : ""); // Handling null picture URL
             } else {
