@@ -78,7 +78,6 @@ public class AuthController {
         userDto.setNickname(userDto.getId());
 
         try {
-            // ID로 사용자가 존재하는지 확인
             Optional<User> existingUser = model.findByEmail(userDto.getEmail());
 
             if (existingUser.isPresent()) {
