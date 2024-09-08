@@ -81,6 +81,7 @@ public class AdminPromotionController {
 		
 		// 3. 알림 테이블 (유저 PK, 카테고리 = '프로모션', content = 쿠폰명 + 할인율 + '발급완료!')
 		AlertDto_a alertDto = new AlertDto_a();
+		alertDto.setPath("/user/mypage/coupon");
 		alertDto.setCategory("프로모션");
 		alertDto.setContent("(" + couponDto.getDiscountRate() +"% 할인!)" + couponDto.getName() + "쿠폰이 발급되었습니다.");
 		
