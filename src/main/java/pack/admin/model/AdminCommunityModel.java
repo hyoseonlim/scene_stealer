@@ -9,9 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import pack.dto.PostDto;
 import pack.dto.ReportedPostDto;
+import pack.entity.Alert;
 import pack.entity.Comment;
 import pack.entity.Post;
 import pack.entity.ReportedPost;
+import pack.entity.User;
 import pack.repository.CommentLikeRepository;
 import pack.repository.CommentsRepository;
 import pack.repository.PostLikeRepository;
@@ -84,7 +86,7 @@ public class AdminCommunityModel {
     }
     
     @Transactional
-    public void deletePostData(int no) { // Post PK로 5개 테이블 처리
+    public void deletePostData(int no) { // Post PK로 6개 테이블 처리
     	// Comment_like
     	commentsRepository.findByPostNo(no).stream()
         	.map(Comment::getNo) // 각 댓글의 no 값 추출
@@ -97,5 +99,10 @@ public class AdminCommunityModel {
     	reportedPostsRepository.deleteByPostNo(no);
     	// Post
     	postsRepository.deleteById(no);
+    	// Alert (작성자에게 경고알림 전송)
+    	User writer = postsRepository.findUserByPostNo(no);
+    	Alert alert = new Alert();
+    	alert.setCategory("커뮤니티");
+    	alert.setContent("작성하신 게시물이 커뮤니티 이용 규칙을 위반하여 삭제 조치되었습니다. 앞으로는 잘좀해라어쩌고");
     }
 }

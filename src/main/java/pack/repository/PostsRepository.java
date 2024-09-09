@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import pack.entity.Post;
+import pack.entity.User;
 
 public interface PostsRepository extends JpaRepository<Post, Integer> {
 
@@ -67,4 +68,7 @@ public interface PostsRepository extends JpaRepository<Post, Integer> {
     Page<Post> findByDeletedFalseAndReportsCountLessThanEqual(int reportsCount, Pageable pageable);
     Page<Post> findByUserNoInAndDeletedFalseAndReportsCountLessThanEqual(List<Integer> userNos, int reportsCount, Pageable pageable);
 
+    // 작성자
+    @Query("SELECT p.user FROM Post p WHERE p.no = :no")
+    User findUserByPostNo(@Param("no") Integer no);
 }
