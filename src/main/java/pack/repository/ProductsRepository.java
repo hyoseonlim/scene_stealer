@@ -62,4 +62,10 @@ public interface ProductsRepository extends JpaRepository<Product, Integer> {
     @Transactional
     @Query("UPDATE Product p SET p.stock = 0 WHERE p.no = :no")
     void updateStockToZeroByNo(@Param("no") Integer no);
+    
+    @Modifying
+    @Transactional
+    @Query("UPDATE Product p SET p.available = false WHERE p.no = :no")
+    void setProductUnavailable(@Param("no") Integer no);
+
 }

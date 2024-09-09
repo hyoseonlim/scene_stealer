@@ -78,6 +78,7 @@ public class AdminProductController {
                 dto.setPic("/images/" + pic.getOriginalFilename());
             }
             dto.setCount(0);
+            dto.setAvailable(true);
             String result = adminProductModel.insert(dto);
             response.put("isSuccess", "상품 추가 성공".equals(result));
             response.put("message", result);
@@ -123,15 +124,6 @@ public class AdminProductController {
         }
         return response;
     }
-
-    @DeleteMapping("/{no}")
-    public Map<String, Object> deleteProduct(@PathVariable("no") Integer no) {
-        Map<String, Object> response = new HashMap<>();
-        String result = adminProductModel.deleteProduct(no);
-        response.put("isSuccess", "상품 삭제 성공".equals(result));
-        response.put("message", result);
-        return response;
-    }
     
     @Autowired
     ProductsRepository productRepo;
@@ -166,4 +158,10 @@ public class AdminProductController {
     public void toSoldOut(@PathVariable("no") Integer no) {
     	productRepo.updateStockToZeroByNo(no);
     }
+    
+    @DeleteMapping("/{no}")
+    public void toFinishSelling(@PathVariable("no") Integer no) {
+    	productRepo.setProductUnavailable(no);
+    }
+    
 }
