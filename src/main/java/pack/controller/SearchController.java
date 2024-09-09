@@ -47,12 +47,11 @@ public class SearchController {
         Page<?> searchResults;
 
         try {
-            // 페이지 인덱스가 0 이상인지 확인
             if (page < 0) {
                 throw new IllegalArgumentException("Page index must not be less than zero");
             }
-
-            Pageable pageable = PageRequest.of(page, size); // 페이지는 0부터 시작하므로 수정하지 않음
+        	
+            Pageable pageable = PageRequest.of(page, size); // 페이지는 0부터 시작하므로 -1 처리
 
             switch (category.toLowerCase()) {
                 case "actor":
@@ -65,9 +64,12 @@ public class SearchController {
                     searchResults = model.searchProducts(term, pageable);
                     break;
                 case "user":
+                    // 두 검색 결과를 병합하려면 별도의 처리 필요 (예: 사용자 ID와 닉네임을 별도로 처리 후 병합)
                     Page<?> searchResultsId = model.searchUsersId(term, pageable);
                     Page<?> searchResultsNickname = model.searchUsersNickname(term, pageable);
                     
+                    // 여기서는 단순히 ID와 닉네임 검색 결과를 병합하는 예제
+                    // 실제 구현에서는 필요한 데이터 병합 로직을 작성해야 함
                     List<Object> mergedResults = new ArrayList<>();
                     mergedResults.addAll(searchResultsId.getContent());
                     mergedResults.addAll(searchResultsNickname.getContent());
@@ -81,7 +83,7 @@ public class SearchController {
 
             result.put("results", searchResults.getContent());
             result.put("totalPages", searchResults.getTotalPages());
-            result.put("currentPage", searchResults.getNumber() + 1); // 1 기반 페이지로 표시
+            result.put("currentPage", searchResults.getNumber()+1); // 1 기반 페이지로 표시
             result.put("totalElements", searchResults.getTotalElements());
 
         } catch (IllegalArgumentException e) {
