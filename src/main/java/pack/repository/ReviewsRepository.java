@@ -29,4 +29,7 @@ public interface ReviewsRepository extends JpaRepository<Review, Integer>{
 	// 특정 상품에 대한 평균 평점 조회
     @Query("SELECT AVG(r.score) FROM Review r WHERE r.orderProduct.product.no = :productNo")
     public BigDecimal findAverageRatingByProduct(@Param("productNo") Integer productNo);
+
+ // 특정 사용자와 특정 상품에 대한 리뷰가 이미 존재하는지 확인하는 메서드 
+    boolean existsByUserNoAndOrderProduct_Product_No(int userNo, int productNo);
 }

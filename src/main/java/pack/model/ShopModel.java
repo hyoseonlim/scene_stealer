@@ -448,6 +448,15 @@ public boolean cancelOrder(Integer orderNo) {
     return false;
 }
 
+// 리뷰 작성시 더이상 리뷰 못쓰게 하기
+public boolean userReviewed(int userNo, int productNo) {
+    return reviewsRepository.existsByUserNoAndOrderProduct_Product_No(userNo, productNo);
+}
+
+
+
+
+
    
    
 
