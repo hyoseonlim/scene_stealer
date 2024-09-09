@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -40,10 +41,12 @@ import pack.dto.StyleItemDto;
 import pack.dto.SubDto;
 import pack.dto.UserDto;
 import pack.entity.Item;
+import pack.entity.OrderProduct;
 import pack.entity.Product;
 import pack.entity.User;
 import pack.model.PostsModel;
 import pack.model.ShopModel;
+import pack.repository.OrderProductRepository;
 import pack.repository.ProductsRepository;
 import pack.repository.UsersRepository;
 
@@ -61,6 +64,9 @@ public class ShopController {
 
 	@Autowired
 	private UsersRepository usersRepository;
+	
+	@Autowired
+	private OrderProductRepository orderProductRepository;
 
 	// ----Rest 요청
 	@GetMapping("/list")
@@ -178,6 +184,7 @@ public class ShopController {
 
 		// reviewDto의 productNo 필드에 @PathVariable에서 받은 값을 설정
 		reviewDto.setOrderProductNo(orderProductNo);
+		
 
 		// 이미지가 있는 경우 처리
 		if (pic != null && !pic.isEmpty()) {
