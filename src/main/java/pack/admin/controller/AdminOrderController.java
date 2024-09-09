@@ -32,6 +32,13 @@ public class AdminOrderController {
             @RequestParam(value = "searchField", defaultValue = "userId") String searchField,
             @RequestParam(value = "startDate", required = false) String startDate,
             @RequestParam(value = "endDate", required = false) String endDate) {
+    	
+    	System.out.println("page : " + page);
+    	System.out.println("size : " + size);
+    	System.out.println("searchTerm : " + searchTerm);
+    	System.out.println("searchField : " + searchField);
+    	System.out.println("startDate : " + startDate);
+    	System.out.println("endDate : " + endDate);
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "date"));
         Page<OrderDto> orderPage;

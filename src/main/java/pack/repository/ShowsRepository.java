@@ -13,8 +13,8 @@ import pack.entity.Show;
 
 public interface ShowsRepository extends JpaRepository<Show, Integer>{
 
-	@Query("SELECT s FROM Show AS s LEFT JOIN s.characters AS c LEFT JOIN c.characterLikes AS cl GROUP BY s ORDER BY COALESCE(COUNT(cl), 0) DESC")
-	public List<Show> findShowAll(Pageable pageable);
+	@Query("SELECT s FROM Show s LEFT JOIN s.characters c LEFT JOIN c.characterLikes cl GROUP BY s ORDER BY COALESCE(COUNT(cl), 0) DESC")
+	List<Show> findShowAll(Pageable pageable);
 	
 	public Page<Show> findAll(Pageable pageable);
 //	

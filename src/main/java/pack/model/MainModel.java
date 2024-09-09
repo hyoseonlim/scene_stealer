@@ -33,6 +33,7 @@ import pack.repository.CharactersRepository;
 import pack.repository.ItemsRepository;
 import pack.repository.PopupRepository;
 import pack.repository.PostsRepository;
+import pack.repository.ProductsRepository;
 import pack.repository.ReviewsRepository;
 import pack.repository.ShowsRepository;
 import pack.repository.StyleItemRepository;
@@ -164,6 +165,10 @@ public class MainModel {
 	
 	public List<PopupDto> getMainPopup() {
 		return purps.findByIsShowIsTrue().stream().map(Popup::toDto).collect(Collectors.toList());
+	}
+	
+	public Integer forRandom() {
+		return srps.findAll().size();
 	}
 
 }

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.checkerframework.checker.formatter.qual.ReturnsFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +24,7 @@ import pack.dto.PostDto;
 import pack.dto.ReviewDto;
 import pack.dto.ShowDto;
 import pack.dto.SubDto;
+import pack.entity.Product;
 import pack.model.MainModel;
 import pack.repository.CharacterLikesRepository;
 
@@ -39,10 +41,10 @@ public class MainController {
 	public List<ShowDto> mainShowData() {
 		return mmd.mainShowData();
 	}
-	
+
 	@GetMapping("/main/showDataAll")
 	public ResponseEntity<Page<ShowDto>> mainShowDataAll(Pageable pageable) {
-		 Page<ShowDto> noticePage = mmd.mainShowData(pageable);
+		Page<ShowDto> noticePage = mmd.mainShowData(pageable);
 		return ResponseEntity.ok(noticePage);
 	}
 
@@ -103,4 +105,8 @@ public class MainController {
 		return result;
 	}
 
+	@GetMapping("/main/forRandom")
+	public Integer forRandom() {
+		return mmd.forRandom();
+	}
 }
