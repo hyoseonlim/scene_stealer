@@ -32,7 +32,10 @@ public interface OrdersRepository extends JpaRepository<Order, Integer> {
     public List<Order> findTop5ByUserNoOrderByNoDesc(Integer no);
     
     public Page<Order> findByNoIn(List<Integer> list, Pageable pageable);
-    
+    // 주문자명으로 주문 검색
+    @Query("SELECT o FROM Order o WHERE LOWER(o.user.name) LIKE LOWER(CONCAT('%', :userName, '%'))")
+    Page<Order> findByUserNameContainingIgnoreCase(@Param("userName") String userName, Pageable pageable);
+
     //사용자와 상태로 주문 찾기 (장바구니 확인)
 //    @Query("SELECT o FROM Order o WHERE o.user = :user AND o.state = :status")
 //    Optional<Order> findByUserAndStatus(@Param("user") User user, @Param("status") String status);

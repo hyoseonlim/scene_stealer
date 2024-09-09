@@ -23,6 +23,7 @@ public class AdminOrderController {
     
     @Autowired
     private UsersRepository userRepository;
+
     @GetMapping
     public Page<OrderDto> getOrders(
             @RequestParam(value = "page", defaultValue = "0") int page,
@@ -35,16 +36,12 @@ public class AdminOrderController {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "date"));
         Page<OrderDto> orderPage;
 
-        if (searchField == null) {
+        // 검색 필드에 따라 다른 메서드 호출
+        if (searchField == null || searchField.equals("all")) {
             orderPage = adminOrderModel.listAll(pageable);
         } else {
             orderPage = adminOrderModel.searchOrders(pageable, searchTerm, searchField, startDate, endDate);
         }
-
-        // 각 주문의 총 수량을 로그로 출력
-        orderPage.forEach(order -> {
-            int totalQuantity = order.getTotalQuantity();
-        });
 
         return orderPage;
     }

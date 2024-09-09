@@ -3,9 +3,7 @@ package pack.admin.model;
 import org.springframework.stereotype.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import jakarta.transaction.Transactional;
 import pack.dto.OrderDto;
 import pack.entity.Order;
@@ -42,6 +40,9 @@ public class AdminOrderModel {
         switch (searchField) {
             case "state":
                 orders = ordersRepository.findByStateContainingIgnoreCase(searchTerm, pageable);
+                break;
+            case "userName":  // 주문자명으로 검색
+                orders = ordersRepository.findByUserNameContainingIgnoreCase(searchTerm, pageable);
                 break;
             case "date":
                 LocalDateTime start = LocalDateTime.parse(startDate + " 00:00:00", formatter);
