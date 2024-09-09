@@ -50,6 +50,9 @@ public class Product {
     @OneToMany(mappedBy = "product" )
     private List<Post> post;
     
+    @Column(name = "is_available", nullable = false)
+    private boolean available;
+    
     public static ProductDto toDto(Product entity) {
     	return ProductDto.builder()
     			.no(entity.getNo())
@@ -63,6 +66,7 @@ public class Product {
     			.count(entity.getCount())
     			.discountRate(entity.getDiscountRate())
     			.score(entity.getScore())
+    			.available(entity.isAvailable())
     			.orderProductNoList(entity.getOrderProducts().stream().map(OrderProduct::getNo).collect(Collectors.toList()))
 //    			.reviews(entity.getReviews().stream().map(Review::toDto).collect(Collectors.toList()))
 //    			.orderProducts(entity.getOrderProducts().stream().map(OrderProduct::toDto).collect(Collectors.toList()))

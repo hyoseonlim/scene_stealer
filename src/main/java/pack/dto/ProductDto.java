@@ -41,6 +41,8 @@ public class ProductDto {
 
     private List<OrderProductDto> orderProducts = new ArrayList<>();
     
+    private boolean available;
+    
     // 엔티티로 변환 메서드
     public static Product toEntity(ProductDto dto) {
         return Product.builder()
@@ -56,6 +58,7 @@ public class ProductDto {
                 .count(dto.getCount())
                 .discountRate(dto.getDiscountRate())
                 .score(dto.getScore())
+                .available(dto.isAvailable())
                 .orderProducts(dto.getOrderProducts().stream().map(OrderProductDto::toEntity).collect(Collectors.toList()))
                 .build();
     }
