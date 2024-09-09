@@ -55,7 +55,7 @@ public class Order {
 	    	return OrderDto.builder()
 	    			.no(entity.getNo())
 	    			.userNo(entity.getUser().getNo())
-	    			.userId(entity.getUser().getId())
+	    			.userName(entity.getUser().getName())
 //	    			.user(User.toDto(entity.getUser()))
 	    			.state(entity.getState())
 	    			.date(entity.getDate())

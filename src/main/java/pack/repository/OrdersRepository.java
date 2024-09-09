@@ -20,10 +20,6 @@ public interface OrdersRepository extends JpaRepository<Order, Integer> {
     // 전체 자료 읽기
     Page<Order> findAll(Pageable pageable);
 
-    // 사용자 ID로 주문 찾기 (부분 문자열)
-    @Query("SELECT o FROM Order o JOIN o.user u WHERE LOWER(u.id) LIKE LOWER(CONCAT('%', :userId, '%')) ORDER BY o.no DESC")
-    Page<Order> findByUserIdContainingIgnoreCase(@Param("userId") String userId, Pageable pageable);
-
     // 주문 상태로 찾기 (부분 문자열)
     @Query("SELECT o FROM Order o WHERE LOWER(o.state) LIKE LOWER(CONCAT('%', :state, '%')) ORDER BY o.no DESC")
     Page<Order> findByStateContainingIgnoreCase(@Param("state") String state, Pageable pageable);

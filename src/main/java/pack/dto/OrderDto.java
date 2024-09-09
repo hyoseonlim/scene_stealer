@@ -22,7 +22,7 @@ public class OrderDto {
     private java.util.Date date;
     private Integer price;
     private Integer userNo;
-    private String userId;
+    private String userName;
     private List<Integer> productNoList;
     private List<OrderProductDto> orderProducts;
 

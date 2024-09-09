@@ -40,9 +40,6 @@ public class AdminOrderModel {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         switch (searchField) {
-            case "userId":
-                orders = ordersRepository.findByUserIdContainingIgnoreCase(searchTerm, pageable);
-                break;
             case "state":
                 orders = ordersRepository.findByStateContainingIgnoreCase(searchTerm, pageable);
                 break;
