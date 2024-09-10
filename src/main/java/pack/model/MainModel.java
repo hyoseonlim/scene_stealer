@@ -33,7 +33,6 @@ import pack.repository.CharactersRepository;
 import pack.repository.ItemsRepository;
 import pack.repository.PopupRepository;
 import pack.repository.PostsRepository;
-import pack.repository.ProductsRepository;
 import pack.repository.ReviewsRepository;
 import pack.repository.ShowsRepository;
 import pack.repository.StyleItemRepository;
