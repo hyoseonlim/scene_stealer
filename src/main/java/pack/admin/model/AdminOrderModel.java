@@ -7,9 +7,9 @@ import org.springframework.data.domain.Pageable;
 import jakarta.transaction.Transactional;
 import pack.dto.OrderDto;
 import pack.entity.Order;
-import pack.entity.Product;
 import pack.repository.OrdersRepository;
 import pack.repository.ProductsRepository;
+import pack.repository.UsersRepository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -26,65 +26,83 @@ public class AdminOrderModel {
     @Autowired
     private ProductsRepository productsRepository;
 
-    // 최신순 정렬된 전체 주문 목록
-    public Page<OrderDto> listAll(Pageable pageable) {
-        Page<Order> orders = ordersRepository.findAll(pageable);
-        return orders.map(Order::toDto);
-    }
+    @Autowired
+    private UsersRepository usersRepository;
 
-    // 검색 조건에 따라 주문 목록 불러오기 (최신순 정렬)
-    public Page<OrderDto> searchOrders(Pageable pageable, String searchTerm, String searchField, String startDate, String endDate) {
+    // 검색 필터에 맞는 주문을 찾는 메소드
+    public Page<OrderDto> searchOrders(Pageable pageable, String searchTerm, String searchField, String status, String startDate, String endDate) {
         Page<Order> orders;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-        switch (searchField) {
-            case "state":
-                orders = ordersRepository.findByStateContainingIgnoreCase(searchTerm, pageable);
-                break;
-            case "userName":  // 주문자명으로 검색
-                orders = ordersRepository.findByUserNameContainingIgnoreCase(searchTerm, pageable);
-                break;
-            case "date":
-                LocalDateTime start = LocalDateTime.parse(startDate + " 00:00:00", formatter);
-                LocalDateTime end = LocalDateTime.parse(endDate + " 23:59:59", formatter);
-                orders = ordersRepository.findByDateBetween(start, end, pageable);
-                break;
-            default:
-                orders = ordersRepository.findAll(pageable);
-                break;
+        LocalDateTime start = null;
+        LocalDateTime end = null;
+
+        try {
+            if (startDate != null && !startDate.isEmpty()) {
+                start = LocalDateTime.parse(startDate + " 00:00:00", formatter);
+            }
+            if (endDate != null && !endDate.isEmpty()) {
+                end = LocalDateTime.parse(endDate + " 23:59:59", formatter);
+            }
+        } catch (Exception e) {
+            throw new IllegalArgumentException("날짜 형식이 올바르지 않습니다. 형식은 'yyyy-MM-dd'입니다.");
         }
+
+        // 다양한 조건에 맞는 검색 로직
+        if (!status.isEmpty() && !searchTerm.isEmpty() && start != null && end != null) {
+            orders = ordersRepository.findByStateAndUserNameContainingIgnoreCaseAndDateBetween(status, searchTerm, start, end, pageable);
+        } else if (!status.isEmpty() && !searchTerm.isEmpty()) {
+            orders = ordersRepository.findByStateAndUserNameContainingIgnoreCase(status, searchTerm, pageable);
+        } else if (!status.isEmpty() && start != null && end != null) {
+            orders = ordersRepository.findByStateAndDateBetween(status, start, end, pageable);
+        } else if (!searchTerm.isEmpty() && start != null && end != null) {
+            orders = ordersRepository.findByUserNameContainingIgnoreCaseAndDateBetween(searchTerm, start, end, pageable);
+        } else if (!status.isEmpty()) {
+            orders = ordersRepository.findByStateContainingIgnoreCase(status, pageable);
+        } else if (!searchTerm.isEmpty()) {
+            orders = ordersRepository.findByUserNameContainingIgnoreCase(searchTerm, pageable);
+        } else if (start != null && end != null) {
+            orders = ordersRepository.findByDateBetween(start, end, pageable);
+        } else {
+            orders = ordersRepository.findAll(pageable);
+        }
+
         return orders.map(Order::toDto);
     }
-
     public OrderDto getData(Integer no) {
         return Order.toDto(ordersRepository.findByNo(no));
     }
-
-    public Map<Integer, String> getProductInfo(List<Integer> productNoList) {
-        Map<Integer, String> productInfo = new HashMap<>();
-
-        for (Integer i : productNoList) {
-            String productName = productsRepository.findById(i)
-                    .map(Product::getName)
-                    .orElse("Unknown Product");
-            productInfo.put(i, productName);
-        }
-
-        return productInfo;
-    }
-
+    // 주문 상태 업데이트 메소드
     @Transactional
     public String updateOrderStatus(Integer orderNo, String status) {
-        try {
-            Order order = ordersRepository.findById(orderNo)
-                    .orElseThrow(() -> new IllegalStateException("ID가 " + orderNo + "인 주문을 찾을 수 없습니다."));
+        Order order = ordersRepository.findById(orderNo)
+                .orElseThrow(() -> new IllegalStateException("ID가 " + orderNo + "인 주문을 찾을 수 없습니다."));
+        order.setState(status);
+        ordersRepository.save(order);
+        return "주문 상태가 성공적으로 업데이트되었습니다.";
+    }
 
-            order.setState(status);  // 상태 업데이트
-            ordersRepository.save(order);  // 변경사항 저장
-            return "주문 상태가 성공적으로 업데이트되었습니다.";
-        } catch (Exception e) {
-            System.err.println("주문 상태 업데이트 중 오류 발생: " + e.getMessage());
-            throw e;
+    // 주문 상세 정보를 반환하는 메소드
+    public Map<String, Object> getOrderDetail(Integer orderNo) {
+        OrderDto orderDto = Order.toDto(ordersRepository.findByNo(orderNo));
+        Map<Integer, String> productInfo = getProductInfo(orderDto.getProductNoList());
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("order", orderDto);
+        result.put("product", productInfo);
+        result.put("user", usersRepository.findById(orderDto.getUserNo()).orElse(null));
+
+        return result;
+    }
+
+    // 상품 정보 반환 메소드
+    public Map<Integer, String> getProductInfo(List<Integer> productNoList) {
+        Map<Integer, String> productInfo = new HashMap<>();
+        for (Integer productNo : productNoList) {
+            productInfo.put(productNo, productsRepository.findById(productNo)
+                    .map(product -> product.getName())
+                    .orElse("Unknown Product"));
         }
+        return productInfo;
     }
 }
