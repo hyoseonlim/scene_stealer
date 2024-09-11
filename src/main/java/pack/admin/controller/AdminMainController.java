@@ -218,9 +218,30 @@ public class AdminMainController {
 	    }
 	}
 	
-	@DeleteMapping("/admin/character/{no}") // 배역 PK
+	// 작품 삭제
+	@DeleteMapping("/admin/show/{no}")
+	public void deleteShow(@PathVariable("no") int no) {
+		dao.deleteShowInfo(no);
+	}
+	
+	// 배역 삭제
+	@DeleteMapping("/admin/character/{no}")
 	public void deleteCharacter(@PathVariable("no") int no) {
 		dao.deleteCharacterInfo(no);
 	}
+	
+	// 스타일 삭제
+	@DeleteMapping("/admin/style/{no}")
+	public void deleteStyle(@PathVariable("no") int no) {
+		dao.deleteStyleInfo(no);
+	}
+	
+	// 특정 스타일에서 아이템 연결 삭제
+	@DeleteMapping("/admin/item/{styleNo}/{itemNo}")
+	public void deleteStyleItem(@PathVariable("styleNo") int style, @PathVariable("itemNo") int item) {
+		dao.deleteStyleItem(style, item);
+	}
+	
+	
 	
 }

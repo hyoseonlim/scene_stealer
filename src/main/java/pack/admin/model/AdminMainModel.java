@@ -195,6 +195,17 @@ public class AdminMainModel {
 			styleItemRepo.save(StyleItemDto.toEntity(dto));
 		}
 		
+		// 작품 관련 정보 삭제
+		// 해당 작품에 등록된 모든 배역의 관련 정보를 전체 삭제 (아래 deleteCharacterInfo 메소드 사용) 후, 마지막에 작품 삭제
+		@Transactional
+		public void deleteShowInfo(int no) {
+			Show show = showsRepo.findById(no).get();
+			for(Character c : charactersRepo.findByShowNo(no)) {
+				deleteCharacterInfo(c.getNo());
+			}
+			showsRepo.deleteById(no);
+		}
+				
 		// 배역 관련 정보 삭제
 		@Transactional
 		public void deleteCharacterInfo(int no) {
@@ -205,6 +216,21 @@ public class AdminMainModel {
 			charactersRepo.delete(character); // Character
 			characterLikeRepo.deleteByCharacter(character); // Character_Like
 		}
+		
+		// 스타일 관련 정보 삭제
+		@Transactional
+		public void deleteStyleInfo(int no) {
+			Style style = stylesRepo.findById(no).get();
+			styleItemRepo.deleteByStyle(style); // Style_Item
+			stylesRepo.delete(style); // Style
+		}
+		
+		// 스타일-아이템 관계 삭
+		@Transactional
+		public void deleteStyleItem(int styleNo, int itemNo) {
+			styleItemRepo.deleteByStyleNoAndItemNo(styleNo, itemNo);
+		}
+		
 		
 		private ShowDto toShowDto_a(Show show) {
 			return new ShowDto().builder().no(show.getNo()).title(show.getTitle()).pic(show.getPic()). build();
