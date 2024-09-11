@@ -5,13 +5,17 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import pack.dto.ActorDto;
 import pack.dto.ActorInfoDto;
 import pack.dto.CharacterDto;
+import pack.dto.ItemDto;
 import pack.dto.ItemDto_a;
+import pack.dto.NoticeDto;
 import pack.dto.ShowActorDto;
 import pack.dto.ShowDto;
 import pack.dto.StyleDto;
@@ -20,6 +24,7 @@ import pack.entity.Actor;
 import pack.entity.Show;
 import pack.entity.Character;
 import pack.entity.Item;
+import pack.entity.Notice;
 import pack.entity.Style;
 import pack.entity.StyleItem;
 import pack.repository.ActorsRepository;
@@ -225,11 +230,17 @@ public class AdminMainModel {
 			stylesRepo.delete(style); // Style
 		}
 		
-		// 스타일-아이템 관계 삭
+		// 스타일-아이템 관계 삭제
 		@Transactional
 		public void deleteStyleItem(int styleNo, int itemNo) {
 			styleItemRepo.deleteByStyleNoAndItemNo(styleNo, itemNo);
 		}
+		
+		// 전체 아이템 목록
+		public Page<ItemDto> getItems(Pageable pageable) {
+	        Page<Item> items = itemsRepo.findAll(pageable);
+	        return items.map(Item::toDto);
+	    }
 		
 		
 		private ShowDto toShowDto_a(Show show) {
