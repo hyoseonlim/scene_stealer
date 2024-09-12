@@ -36,7 +36,6 @@ public class AdminCommunityController {
         // 최신순으로 정렬
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "date"));
         Page<PostDto> postPage = adminCommunityModel.getAllPosts(pageable);
-        System.out.println("hi3");
         return ResponseEntity.ok(postPage);
     }
 
