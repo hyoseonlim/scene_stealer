@@ -312,6 +312,7 @@ public class ShopController {
 		            Map<String, Object> productStock = new HashMap<>();
 		            productStock.put("productNo", productNo);
 		            productStock.put("stock", product.getStock()); // 상품의 재고량을 반환
+		            productStock.put("available", product.isAvailable()); // 판매 종료된 상품
 		            result.add(productStock);
 		        }
 		    }
