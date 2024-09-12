@@ -74,11 +74,8 @@ public class PostsModel {
 	private ReportedPostsRepository rprps;
 
 	@Autowired
-	private AdminsRepository arps;
-	
-	@Autowired
 	private OrdersRepository orps;
-	
+
 	@Autowired
 	private OrderProductRepository oprps;
 
@@ -130,10 +127,10 @@ public class PostsModel {
 
 	// 한 유저에 대한 팔로잉, 팔로워 정보 가져오기
 	public Map<String, List<Integer>> followInfo(int no) {
-		List<Integer> followerList = frps.findByFolloweeNoAndFollowerEmailIsNotNull(no).stream().map(f -> f.getFollower().getNo())
-				.collect(Collectors.toList());
-		List<Integer> followeeList = frps.findByFollowerNoAndFolloweeEmailIsNotNull(no).stream().map(f -> f.getFollowee().getNo())
-				.collect(Collectors.toList());
+		List<Integer> followerList = frps.findByFolloweeNoAndFollowerEmailIsNotNull(no).stream()
+				.map(f -> f.getFollower().getNo()).collect(Collectors.toList());
+		List<Integer> followeeList = frps.findByFollowerNoAndFolloweeEmailIsNotNull(no).stream()
+				.map(f -> f.getFollowee().getNo()).collect(Collectors.toList());
 		Map<String, List<Integer>> result = new HashMap<String, List<Integer>>();
 		result.put("followerList", followerList);
 		result.put("followeeList", followeeList);
@@ -142,8 +139,8 @@ public class PostsModel {
 
 	// 팔로잉 정보 가져오기
 	public Page<UserDto> followeeInfo(int no, Pageable pageable) {
-		List<Integer> followList = frps.findByFollowerNoAndFolloweeEmailIsNotNull(no).stream().map((res) -> res.getFollowee().getNo())
-				.collect(Collectors.toList());
+		List<Integer> followList = frps.findByFollowerNoAndFolloweeEmailIsNotNull(no).stream()
+				.map((res) -> res.getFollowee().getNo()).collect(Collectors.toList());
 		Page<User> followPage = urps.findByNoIn(followList, pageable);
 		List<UserDto> followDtoList = followPage.stream().map(User::toDto).collect(Collectors.toList());
 		return new PageImpl<>(followDtoList, pageable, followPage.getTotalElements());
@@ -153,8 +150,8 @@ public class PostsModel {
 	// 팔로워 정보 가져오기
 	public Page<UserDto> followerInfo(int no, Pageable pageable) {
 
-		List<Integer> followList = frps.findByFolloweeNoAndFollowerEmailIsNotNull(no).stream().map((res) -> res.getFollower().getNo())
-				.collect(Collectors.toList());
+		List<Integer> followList = frps.findByFolloweeNoAndFollowerEmailIsNotNull(no).stream()
+				.map((res) -> res.getFollower().getNo()).collect(Collectors.toList());
 		Page<User> followPage = urps.findByNoIn(followList, pageable);
 		List<UserDto> followDtoList = followPage.stream().map(User::toDto).collect(Collectors.toList());
 		return new PageImpl<>(followDtoList, pageable, followPage.getTotalElements());
@@ -196,30 +193,29 @@ public class PostsModel {
 			return false;
 		}
 	}
-	
+
 	// 팔로우한 사람 글 모아보기 또는 좋아요 순으로 게시글 가져오기 메소드 수정
 	// 팔로우한 사람 글 모아보기 또는 좋아요 순으로 게시글 가져오기 메소드 수정
 	public Page<PostDto> followPostListOrPopular(int userNo, Pageable pageable) {
-	    // 팔로우한 사용자의 번호를 가져옴
-	    List<Integer> followeeList = frps.findByFollowerNoAndFolloweeEmailIsNotNull(userNo).stream()
-	        .map(f -> f.getFollowee().getNo())
-	        .collect(Collectors.toList());
+		// 팔로우한 사용자의 번호를 가져옴
+		List<Integer> followeeList = frps.findByFollowerNoAndFolloweeEmailIsNotNull(userNo).stream()
+				.map(f -> f.getFollowee().getNo()).collect(Collectors.toList());
 
-	    Page<Post> postPage;
+		Page<Post> postPage;
 
-	    if (followeeList.isEmpty()) {
-	        // 팔로우한 사용자가 없으면 좋아요 순으로 삭제되지 않고 신고 횟수가 5회 이하인 게시글을 가져옴
-	        Pageable sortedByLikes = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
-	            Sort.by(Sort.Direction.DESC, "likesCount"));
-	        postPage = prps.findByDeletedFalseAndReportsCountLessThanEqual(5, sortedByLikes); // 수정된 부분
-	    } else {
-	        // 팔로우한 사용자가 있으면 해당 사용자의 삭제되지 않고 신고 횟수가 5회 이하인 게시글을 가져옴
-	        postPage = prps.findByUserNoInAndDeletedFalseAndReportsCountLessThanEqual(followeeList, 5, pageable); // 수정된 부분
-	    }
+		if (followeeList.isEmpty()) {
+			// 팔로우한 사용자가 없으면 좋아요 순으로 삭제되지 않고 신고 횟수가 5회 이하인 게시글을 가져옴
+			Pageable sortedByLikes = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+					Sort.by(Sort.Direction.DESC, "likesCount"));
+			postPage = prps.findByDeletedFalseAndReportsCountLessThanEqual(5, sortedByLikes); // 수정된 부분
+		} else {
+			// 팔로우한 사용자가 있으면 해당 사용자의 삭제되지 않고 신고 횟수가 5회 이하인 게시글을 가져옴
+			postPage = prps.findByUserNoInAndDeletedFalseAndReportsCountLessThanEqual(followeeList, 5, pageable); // 수정된
+																													// 부분
+		}
 
-	    return postPage.map(Post::toDto);
+		return postPage.map(Post::toDto);
 	}
-
 
 	// 특정 유저 작성 글 보기
 	public Page<PostDto> postListByUser(int userNo, Pageable pageable) {
@@ -229,7 +225,7 @@ public class PostsModel {
 
 	// 게시글 세부 보기
 	public PostDetailDto postDetail(int postNo, Pageable pageable) {
-		
+
 		PostDto postInfo = Post.toDto(prps.findById(postNo).get());
 		UserDto userInfo = User.toDto(urps.findById(postInfo.getUserNo()).get());
 
@@ -489,29 +485,29 @@ public class PostsModel {
 		return postPage.map(Post::toDto);
 	}
 
-	
 	// 인기 게시글 가져오기 메소드 수정
 	public Page<PostDto> getPopularPosts(Pageable pageable) {
-	    Pageable sortedByLikes = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
-	        Sort.by(Sort.Direction.DESC, "likesCount"));
-	    // 좋아요 수 기준으로 정렬된 삭제되지 않고 신고 횟수가 5회 이하인 게시물만 가져옴
-	    Page<Post> postPage = prps.findByDeletedFalseAndReportsCountLessThanEqual(5, sortedByLikes); // 수정된 부분
-	    return postPage.map(Post::toDto);
+		Pageable sortedByLikes = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+				Sort.by(Sort.Direction.DESC, "likesCount"));
+		// 좋아요 수 기준으로 정렬된 삭제되지 않고 신고 횟수가 5회 이하인 게시물만 가져옴
+		Page<Post> postPage = prps.findByDeletedFalseAndReportsCountLessThanEqual(5, sortedByLikes); // 수정된 부분
+		return postPage.map(Post::toDto);
 	}
 
-	
 	// 주문 상품 불러오기
 	public List<ProductDto> getOrderProductList(int userNo) {
-		List<Integer> orderNoList = orps.findTop5ByUserNoOrderByNoDesc(userNo).stream().map(Order::getNo).collect(Collectors.toList());
-		
-		List<Product> productList = oprps.findByOrderNoIn(orderNoList).stream().map(op -> op.getProduct()).collect(Collectors.toList());
+		List<Integer> orderNoList = orps.findTop5ByUserNoOrderByNoDesc(userNo).stream().map(Order::getNo)
+				.collect(Collectors.toList());
+
+		List<Product> productList = oprps.findByOrderNoIn(orderNoList).stream().map(op -> op.getProduct())
+				.collect(Collectors.toList());
 		return productList.stream().map(Product::toDto).collect(Collectors.toList());
 	}
-	
+
 	public boolean userInfoCheck(String id, int userNo) {
 		boolean b = false;
 		Optional<User> dto = urps.findByIdKAndNo(id, userNo);
-		if(dto.isPresent()) {
+		if (dto.isPresent()) {
 			b = true;
 		}
 		return b;

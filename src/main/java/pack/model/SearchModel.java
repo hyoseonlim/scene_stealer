@@ -66,7 +66,7 @@ public class SearchModel {
     }
     
     public List<ProductDto> autocompleteProducts(String term) {
-        return productsRepository.findByNameContaining(term).stream()
+        return productsRepository.findByNameContainingAndAvailableIsTrue(term).stream()
             .map(Product::toDto)
             .toList();
     }

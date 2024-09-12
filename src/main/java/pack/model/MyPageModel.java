@@ -148,4 +148,16 @@ public class MyPageModel {
 		}
 		return b;
 	}
+	
+	public boolean readCheck(int userNo) {
+		boolean b = false;
+		
+		Optional<Alert> alert = arps.findByUserNoAndIsReadFalse(userNo);
+		
+		if(alert.isPresent()) {
+			b = true;
+		}
+		
+		return b;
+	}
 }

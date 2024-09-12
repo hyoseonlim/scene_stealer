@@ -79,5 +79,12 @@ public class MyPageController {
 		result.put("result", mm.nicknameCheck(nn));
 		return result;
 	}
+	
+	@GetMapping("/alert/Readcheck/{userNo}")
+	public Map<String, Boolean> readCheck(@PathVariable("userNo") int userNo) {
+		Map<String, Boolean> result = new HashMap<String, Boolean>();
+		result.put("result", mm.readCheck(userNo));
+		return result;
+	}
 
 }

@@ -34,6 +34,9 @@ public interface ProductsRepository extends JpaRepository<Product, Integer> {
     @Query("SELECT p FROM Product p WHERE p.name LIKE %:name%")
     List<Product> findByNameContaining(@Param("name") String name);
 
+    List<Product> findByNameContainingAndAvailableIsTrue(@Param("name") String name);
+
+    
     @Query("SELECT p FROM Product p WHERE p.name LIKE %:name%")
     Page<Product> findByNameContainingOrderByNoDesc(@Param("name") String name, Pageable pageable);
     

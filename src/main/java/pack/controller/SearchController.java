@@ -42,7 +42,6 @@ public class SearchController {
         @PathVariable("term") String term,
         @RequestParam("page") int page, 
         @RequestParam("size") int size) {
-
         Map<String, Object> result = new HashMap<>();
         Page<?> searchResults;
 
