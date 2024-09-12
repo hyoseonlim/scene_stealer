@@ -13,6 +13,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.jsonwebtoken.lang.Collections;
 import net.coobird.thumbnailator.Thumbnails;
 import pack.dto.CommentDto;
 import pack.dto.CommentLikeDto;
@@ -121,12 +123,25 @@ public class PostsController {
         Page<PostDto> postPage = pm.followPostListOrPopular(userNo, pageable);
         return ResponseEntity.ok(postPage);
     }
-	// 특정 유저 글 목록 가져오기
-	@GetMapping("/posts/list/{no}")
-	public ResponseEntity<Page<PostDto>> postListByUser(@PathVariable("no") int no, Pageable pageable) {
-		Page<PostDto> postPage = pm.postListByUser(no, pageable);
-		return ResponseEntity.ok(postPage);
-	}
+//	// 특정 유저 글 목록 가져오기
+//	@GetMapping("/posts/list/{no}")
+//	public ResponseEntity<Page<PostDto>> postListByUser(@PathVariable("no") int no, Pageable pageable) {
+//		Page<PostDto> postPage = pm.postListByUser(no, pageable);
+//		return ResponseEntity.ok(postPage);
+//	}
+    @GetMapping("/posts/list/{no}")
+    public ResponseEntity<Page<PostDto>> postListByUser(@PathVariable("no") int no, Pageable pageable) {
+        Page<PostDto> postPage = pm.postListByUser(no, pageable);
+
+        // 게시물이 없으면 totalPages를 1로 처리
+        if (postPage.getContent().isEmpty() && postPage.getTotalPages() > 1) {
+            Page<PostDto> emptyPage = new PageImpl<>(java.util.Collections.emptyList(), pageable, 1); // totalPages를 1로 설정
+            return ResponseEntity.ok(emptyPage);
+        }
+
+        return ResponseEntity.ok(postPage);
+    }
+
 
 	// 게시글 상세 보기
 	@GetMapping("/posts/detail/{no}")

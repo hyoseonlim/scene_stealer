@@ -31,8 +31,13 @@ public interface PostsRepository extends JpaRepository<Post, Integer> {
 
 	public int deleteByNo(int no);
 
-	@Query("SELECT p FROM Post AS p JOIN p.user AS u WHERE u.no = :userNo AND p.reportsCount < 4 ORDER BY p.no DESC")
-	Page<Post> findByUserNo(@Param("userNo") int userNo, Pageable pageable);
+	//	@Query("SELECT p FROM Post AS p JOIN p.user AS u WHERE u.no = :userNo AND p.reportsCount < 4 ORDER BY p.no DESC")
+	//	Page<Post> findByUserNo(@Param("userNo") int userNo, Pageable pageable);
+	@Query(
+		    value = "SELECT p FROM Post AS p JOIN p.user AS u WHERE u.no = :userNo AND p.deleted = false ORDER BY p.no DESC",
+		    countQuery = "SELECT COUNT(p) FROM Post AS p JOIN p.user AS u WHERE u.no = :userNo AND p.deleted = false"
+		)
+		Page<Post> findByUserNo(@Param("userNo") int userNo, Pageable pageable);
 
     // 좋아요 순으로 모든 게시글 가져오기
     Page<Post> findByDeletedIsFalse(Pageable pageable);
