@@ -273,8 +273,7 @@ public class AdminMainModel {
 		        Character character = style.getCharacter();
 		        Actor actor = character.getActor();
 		        Show show = character.getShow();
-		        si.setCharacterName(character.getName());
-		        si.setActorName(actor.getName());
+		        si.setActorInfo(new ActorInfoDto(character.getNo(), actor.getName(), character.getName(), character.getPic()));
 		        si.setShowTitle(show.getTitle());
 		        styleInfos.add(si);
 		    }

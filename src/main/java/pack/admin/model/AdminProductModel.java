@@ -147,7 +147,7 @@ public class AdminProductModel {
             upProduct.setContents(dto.getContents());
             upProduct.setDate(dto.getDate());
             upProduct.setCategory(dto.getCategory());
-            upProduct.setPic(dto.getPic());
+            upProduct.setPic(dto.getPic() == null ? upProduct.getPic() : dto.getPic());
             upProduct.setStock(dto.getStock());
             upProduct.setDiscountRate(dto.getDiscountRate());
             upProduct.setScore(dto.getScore());

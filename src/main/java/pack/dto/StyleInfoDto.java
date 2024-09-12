@@ -20,7 +20,6 @@ import pack.entity.Style;
 public class StyleInfoDto {
     private Integer no; // StyleItem - no    
     private StyleDto style;
-    private String characterName; // Character - name
-    private String actorName; // Actor - name
+    private ActorInfoDto actorInfo;
     private String showTitle; // Show - title
 }
