@@ -28,6 +28,7 @@ import pack.dto.ActorInfoDto;
 import pack.dto.CharacterDto;
 import pack.dto.ItemDto;
 import pack.dto.ItemDto_a;
+import pack.dto.ItemInfoDto;
 import pack.dto.NoticeDto;
 import pack.dto.ShowDto;
 import pack.dto.ShowInfoDto;
@@ -250,11 +251,10 @@ public class AdminMainController {
 	
 	// 전체 아이템 목록
 	@GetMapping("/admin/item")
-	public ResponseEntity<Page<ItemDto>> getAllNotices(@RequestParam(value = "page", defaultValue = "0") int page,
+	public ResponseEntity<Page<ItemInfoDto>> getAllNotices(@RequestParam(value = "page", defaultValue = "0") int page,
 			@RequestParam(value = "size", defaultValue = "10") int size) {
 		Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "no"));
-		Page<ItemDto> items = dao.getItems(pageable);
-
+		Page<ItemInfoDto> items = dao.getItemInfos(pageable);		
 		return ResponseEntity.ok(items);
 	}
 	

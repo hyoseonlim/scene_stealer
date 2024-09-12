@@ -15,7 +15,10 @@ import pack.dto.ActorInfoDto;
 import pack.dto.CharacterDto;
 import pack.dto.ItemDto;
 import pack.dto.ItemDto_a;
+import pack.dto.ItemInfoDto;
+import pack.dto.StyleInfoDto;
 import pack.dto.NoticeDto;
+import pack.dto.ProductDto;
 import pack.dto.ShowActorDto;
 import pack.dto.ShowDto;
 import pack.dto.StyleDto;
@@ -25,6 +28,7 @@ import pack.entity.Show;
 import pack.entity.Character;
 import pack.entity.Item;
 import pack.entity.Notice;
+import pack.entity.Product;
 import pack.entity.Style;
 import pack.entity.StyleItem;
 import pack.repository.ActorsRepository;
@@ -237,13 +241,45 @@ public class AdminMainModel {
 		}
 		
 		// 전체 아이템 목록
-		public Page<ItemDto> getItems(Pageable pageable) {
+		public Page<ItemInfoDto> getItemInfos(Pageable pageable) {
 	        Page<Item> items = itemsRepo.findAll(pageable);
-	        return items.map(Item::toDto);
+	        return items.map(this::toItemInfoDto);
 	    }
 		
 		
 		private ShowDto toShowDto_a(Show show) {
 			return new ShowDto().builder().no(show.getNo()).title(show.getTitle()).pic(show.getPic()). build();
 		}
+		
+		private ItemInfoDto toItemInfoDto(Item item) {
+		    ItemInfoDto itemInfo = new ItemInfoDto();
+		    itemInfo.setNo(item.getNo());
+		    itemInfo.setName(item.getName());
+		    itemInfo.setPic(item.getPic());
+		    
+		    ProductDto product = Product.toDto(item.getProduct());
+		    itemInfo.setProductNo(product.getNo());
+		    itemInfo.setProductName(product.getName());
+		    itemInfo.setProductPic(product.getPic());
+
+		    List<StyleInfoDto> styleInfos = new ArrayList<>();
+		    List<StyleItemDto> styleItems = styleItemRepo.findByItem(item).stream().map(StyleItem::toDto).toList();
+
+		    for (StyleItemDto styleItem : styleItems) {
+		        StyleInfoDto si = new StyleInfoDto();
+		        si.setNo(styleItem.getNo());
+		        Style style = stylesRepo.findById(styleItem.getStyleNo()).get();
+		        si.setStyle(Style.toDto(style));
+		        Character character = style.getCharacter();
+		        Actor actor = character.getActor();
+		        Show show = character.getShow();
+		        si.setCharacterName(character.getName());
+		        si.setActorName(actor.getName());
+		        si.setShowTitle(show.getTitle());
+		        styleInfos.add(si);
+		    }
+		    itemInfo.setStyleInfos(styleInfos);
+		    return itemInfo;
+		}
+
 }
