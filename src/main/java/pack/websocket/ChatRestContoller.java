@@ -46,7 +46,8 @@ public class ChatRestContoller {
 			result.put("chatNo", cud);
 			List<Chat> chats = crps.findByChatuserNo(cud.getNo());
 			result.put("chats", chats.stream().map(Chat::toDto).collect(Collectors.toList()));
-		} else {
+		} 
+		else {
 			ChatUserDto cud = ChatUserDto.builder().userNo(userNo).closeChat(false).build();
 			ChatUser cu = curps.save(ChatUserDto.toEntity(cud));
 			result.put("create", cu);
