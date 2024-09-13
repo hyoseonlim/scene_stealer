@@ -109,7 +109,7 @@ public class UserModel {
 	        return true; // 주문이 없는 경우 true 반환
 	    }
 	    for (String state : states) {
-	        if (!"배송완료".equals(state)) {
+	        if (!"배송완료".equals(state) && !"주문취소".equals(state)) {
 	            return false; // "배송완료"가 아닌 상태가 있으면 false 반환
 	        }
 	    }
