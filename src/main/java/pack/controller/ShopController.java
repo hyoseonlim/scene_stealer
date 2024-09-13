@@ -135,29 +135,6 @@ public class ShopController {
 		return result;
 	}
 
-//	// 결제하기
-//	@PostMapping("/purchase")
-//	public ResponseEntity<ShopDto> checkout(@RequestBody OrderDto orderDto) {
-//
-//		System.out.println(orderDto); // 로그 출력으로 확인
-//		try {
-//			// 1. 결제 처리
-//			boolean paymentSuccess = smodel.processPayment(orderDto);
-//			if (!paymentSuccess) {
-//				return ResponseEntity.status(HttpStatus.PAYMENT_REQUIRED).body(null); // 결제 실패 시 응답
-//			}
-//
-//			// 2. 주문 저장
-//			smodel.saveOrder(orderDto);
-//
-//			// 3. 저장된 주문 내역 상세 보기로 리다이렉트
-//			ShopDto orderDetail = smodel.myorderDetail(orderDto.getNo());
-//			return ResponseEntity.ok(orderDetail);
-//		} catch (Exception e) {
-//			// 예외 처리
-//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-//		}
-//	}
 
 	// 리뷰 디테일 보기
 	@GetMapping("/mypage/review/detail/{reviewNo}")
