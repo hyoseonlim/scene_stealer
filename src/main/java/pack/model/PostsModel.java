@@ -512,5 +512,13 @@ public class PostsModel {
 		}
 		return b;
 	}
+	
 
+    // 최신 게시글 가져오기 (date로 정렬)
+    public Page<PostDto> getLatestPosts(Pageable pageable) {
+        Pageable sortedByDate = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+                Sort.by(Sort.Direction.DESC, "date"));  // date 필드로 정렬
+        Page<Post> postPage = prps.findByDeletedFalseAndReportsCountLessThanEqual(5, sortedByDate); // 신고 5회 이하
+        return postPage.map(Post::toDto);
+    }
 }

@@ -389,4 +389,11 @@ public class PostsController {
 	}
 
 	
+
+    // 최신 글 목록 가져오기 (date로 정렬)
+    @GetMapping("/posts/latest")
+    public ResponseEntity<Page<PostDto>> getLatestPosts(Pageable pageable) {
+        Page<PostDto> latestPosts = pm.getLatestPosts(pageable);
+        return ResponseEntity.ok(latestPosts);
+    }
 }
