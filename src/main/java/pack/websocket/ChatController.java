@@ -48,7 +48,6 @@ public class ChatController {
 
 		// 채팅방 ID 생성 (관리자 ID와 유저 ID를 조합)
 		String chatRoomId = createChatRoomId(dto.getUserNo());
-		System.out.println("\n\n폼폼푸린 : " + chatRoomId + "\n\n");
 		
 		// 메시지를 채팅방 구독자에게 전송
 		msgt.convertAndSend("/sub/chat/room/" + chatRoomId, Chat.toDto(chat));
