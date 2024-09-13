@@ -27,7 +27,7 @@ public class ChatRestContoller {
 
 	@GetMapping("/chat/admin")
 	public List<ChatUserDto> getChatList() {
-		return curps.findAll().stream().map(ChatUser::toDto).collect(Collectors.toList());
+		return curps.findByOrderByNoDesc().stream().map(ChatUser::toDto).collect(Collectors.toList());
 	}
 	
 	@GetMapping("/chat/admin/{chatNo}")
