@@ -258,4 +258,9 @@ public class AdminMainController {
 		return ResponseEntity.ok(items);
 	}
 	
+	@DeleteMapping("/admin/item/{no}")
+	public void deleteItem(@PathVariable("no") int no) {
+		dao.deleteItem(no);
+	}
+	
 }

@@ -237,6 +237,13 @@ public class AdminMainModel {
 			styleItemRepo.deleteByStyleNoAndItemNo(styleNo, itemNo);
 		}
 		
+		// 아이템 삭제 (모든 스타일-아이템 관계 삭제 후 아이템 정보 삭제)
+		@Transactional
+		public void deleteItem(Integer itemNo) {
+			styleItemRepo.deleteByItemNo(itemNo);
+			itemsRepo.deleteById(itemNo);
+		}
+		
 		// 전체 아이템 목록
 		public Page<ItemInfoDto> getItemInfos(Pageable pageable) {
 	        Page<Item> items = itemsRepo.findAll(pageable);

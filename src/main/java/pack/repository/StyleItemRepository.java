@@ -23,8 +23,11 @@ public interface StyleItemRepository extends JpaRepository<StyleItem, Integer> {
 	
 	void deleteByStyleIn(List<Style> list); // 배역의 전체 스타일에 있는 아이템 연결 관계 삭제
 	
-	void deleteByStyle(Style style); // 스타일 삭제
+	void deleteByStyle(Style style); // 특정 스타일의 전체 스타일-아이템 관계 삭제
+	
+	void deleteByItemNo(Integer no); // 특정 아이템의 전체 스타일-아이템 관계 삭제
 	
 	void deleteByStyleNoAndItemNo(Integer styleNo, Integer itemNo); // 스타일-아이템 관계 삭제
+	
 
 }
