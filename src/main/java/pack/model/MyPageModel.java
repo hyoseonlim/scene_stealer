@@ -151,13 +151,17 @@ public class MyPageModel {
 	
 	public boolean readCheck(int userNo) {
 		boolean b = false;
-		
-		List<Alert> alert = arps.findByUserNoAndIsReadFalse(userNo);
-		
-		if(alert.size() > 0) {
-			b = true;
+		try {
+			List<Alert> alert = arps.findByUserNoAndIsReadFalse(userNo);
+			if(!alert.isEmpty()) {
+				b = true;
+			}
+			
+		} catch (Exception e) {
+			System.out.println("readCheck ERROR : " +e.getMessage());
 		}
-		
 		return b;
 	}
+	
+	
 }
