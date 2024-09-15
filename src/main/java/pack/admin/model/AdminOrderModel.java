@@ -6,7 +6,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import jakarta.transaction.Transactional;
 import pack.dto.OrderDto;
+import pack.entity.Alert;
 import pack.entity.Order;
+import pack.repository.AlertsRepository;
 import pack.repository.OrdersRepository;
 import pack.repository.ProductsRepository;
 import pack.repository.UsersRepository;
@@ -28,6 +30,9 @@ public class AdminOrderModel {
 
     @Autowired
     private UsersRepository usersRepository;
+    
+    @Autowired
+    private AlertsRepository alertRepository;
 
     // 검색 필터에 맞는 주문을 찾는 메소드
     public Page<OrderDto> searchOrders(Pageable pageable, String searchTerm, String searchField, String status, String startDate, String endDate) {
@@ -79,6 +84,14 @@ public class AdminOrderModel {
                 .orElseThrow(() -> new IllegalStateException("ID가 " + orderNo + "인 주문을 찾을 수 없습니다."));
         order.setState(status);
         ordersRepository.save(order);
+        // 유저에게 주문 상태 변경 알림
+        Alert alert = new Alert();
+        alert.setUser(order.getUser());
+        alert.setCategory("주문");
+        alert.setContent("주문 상태가 <" + status +"> (으)로 변경되었습니다.");
+        alert.setPath("/user/mypage/order/" + orderNo);
+        alert.setIsRead(false);
+        alertRepository.save(alert);
         return "주문 상태가 성공적으로 업데이트되었습니다.";
     }
 

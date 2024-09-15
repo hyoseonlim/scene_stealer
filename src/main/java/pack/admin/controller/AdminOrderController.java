@@ -50,7 +50,6 @@ public class AdminOrderController {
     }
 
     // 주문 상세 정보를 가져오는 메소드
-
     @GetMapping("/detail/{orderNo}")
     public Map<String, Object> getOrderDetail(@PathVariable("orderNo") Integer orderNo) {
         // 주문 정보를 가져옵니다.
