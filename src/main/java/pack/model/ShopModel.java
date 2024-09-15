@@ -23,6 +23,7 @@ import pack.dto.ProductDto;
 import pack.dto.ReviewDto;
 import pack.dto.ShopDto;
 import pack.dto.UserDto;
+import pack.entity.Alert;
 import pack.entity.Coupon;
 import pack.entity.CouponUser;
 import pack.entity.Order;
@@ -30,6 +31,7 @@ import pack.entity.OrderProduct;
 import pack.entity.Product;
 import pack.entity.Review;
 import pack.entity.User;
+import pack.repository.AlertsRepository;
 import pack.repository.CouponUserRepository;
 import pack.repository.CouponsRepository;
 import pack.repository.OrderProductRepository;
@@ -64,6 +66,9 @@ public class ShopModel {
 
    @Autowired
    private CouponsRepository couponRepo;
+   
+   @Autowired
+   private AlertsRepository alertRepository;
 
 //   public List<ProductDto> list() {// 전체 자료 읽기
 //      List<ProductDto> list = productsRepository.findAll().stream().map(Product::toDto).toList();
@@ -378,6 +383,15 @@ public class ShopModel {
             product.setStock(product.getStock() - quantity);
             product.setCount(product.getCount() + quantity); // 판매량 증가
             productsRepository.save(product);
+            
+            // 주문 접수 완료 알림 전송
+            Alert alert = new Alert();
+            alert.setUser(order.getUser());
+            alert.setCategory("주문");
+            alert.setContent("주문 접수 완료! 최대한 빠르게 보내드릴게요 슝슝!");
+            alert.setPath("/user/mypage/order/" + order.getNo());
+            alert.setIsRead(false);
+            alertRepository.save(alert);
          }
          
          

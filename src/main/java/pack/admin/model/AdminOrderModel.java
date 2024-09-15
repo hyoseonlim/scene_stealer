@@ -88,7 +88,9 @@ public class AdminOrderModel {
         Alert alert = new Alert();
         alert.setUser(order.getUser());
         alert.setCategory("주문");
-        alert.setContent("주문 상태가 <" + status +"> (으)로 변경되었습니다.");
+        if(status.equals("배송중")) alert.setContent("슝슝! 주문하신 상품 배송이 시작되었습니다!");
+        else if(status.equals("배송완료")) alert.setContent("슝슝! 주문하신 상품 배송이 완료되었습니다!");
+        else if(status.equals("주문취소")) alert.setContent("주문이 취소되었습니다.");
         alert.setPath("/user/mypage/order/" + orderNo);
         alert.setIsRead(false);
         alertRepository.save(alert);
