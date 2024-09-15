@@ -109,4 +109,11 @@ public class MainController {
 	public Integer forRandom() {
 		return mmd.forRandom();
 	}
+	
+	@GetMapping("/main/scrap/count/{characterNo}")
+	public  Map<String, Integer> scrapCountNow(@PathVariable("characterNo") int characterNo) {
+		Map<String, Integer> result = new HashMap<String, Integer>();
+		result.put("likesCount", mmd.scrapCountNow(characterNo));
+		return result;
+	}
 }

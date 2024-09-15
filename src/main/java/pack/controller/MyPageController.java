@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import pack.dto.AlertDto;
@@ -32,9 +33,12 @@ public class MyPageController {
 		return ResponseEntity.ok(scrapPage);
 	}
 
+
+
 	@GetMapping("/alert/{no}")
-	public ResponseEntity<Page<AlertDto>> myAlert(@PathVariable("no") int userNo, Pageable pageable) {
-		Page<AlertDto> alertPage = mm.myAlert(userNo, pageable);
+	public ResponseEntity<Page<AlertDto>> myAlert(@PathVariable("no") int userNo,
+			@RequestParam(value = "category", defaultValue = "전체") String category, Pageable pageable) {
+		Page<AlertDto> alertPage = mm.myAlert(userNo, category, pageable);
 		return ResponseEntity.ok(alertPage);
 	}
 
@@ -79,7 +83,7 @@ public class MyPageController {
 		result.put("result", mm.nicknameCheck(nn));
 		return result;
 	}
-	
+
 	@GetMapping("/alert/Readcheck/{userNo}")
 	public Map<String, Boolean> readCheck(@PathVariable("userNo") int userNo) {
 		Map<String, Boolean> result = new HashMap<String, Boolean>();

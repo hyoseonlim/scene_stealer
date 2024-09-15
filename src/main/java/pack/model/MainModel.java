@@ -2,6 +2,7 @@ package pack.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -168,6 +169,15 @@ public class MainModel {
 	
 	public Integer forRandom() {
 		return srps.findAll().size();
+	}
+	
+	public Integer scrapCountNow(int characterNo) {
+		Optional<Character> crt = crps.findById(characterNo);
+		int result = 0;
+		if(crt.isPresent()) {
+			result = crt.get().getLikesCount();
+		}
+		return result;
 	}
 
 }

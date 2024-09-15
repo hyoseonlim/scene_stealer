@@ -19,4 +19,7 @@ public interface AlertsRepository extends JpaRepository<Alert, Integer>{
 	public List<Alert> findByUserNoAndIsReadFalse(int userNo);
 	
 	public Page<Alert> findByUserNoOrderByNoDesc(int userNo, Pageable pageable);
+
+	public Page<Alert> findByUserNoAndCategoryOrderByNoDesc(int userNo, String category, Pageable pageable);
+
 }

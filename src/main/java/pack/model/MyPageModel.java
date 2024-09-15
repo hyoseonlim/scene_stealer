@@ -67,10 +67,17 @@ public class MyPageModel {
 		return new PageImpl<>(characterDtoList, pageable, characterPage.getTotalElements());
 	}
 
-	public Page<AlertDto> myAlert(int userNo, Pageable pageable) {
-		Page<Alert> alertPage = arps.findByUserNoOrderByNoDesc(userNo, pageable);
-		return alertPage.map(Alert::toDto);
+
+	public Page<AlertDto> myAlert(int userNo, String category, Pageable pageable) {
+	    Page<Alert> alertPage;
+	    if (category.equals("전체")) {
+	        alertPage = arps.findByUserNoOrderByNoDesc(userNo, pageable);
+	    } else {
+	        alertPage = arps.findByUserNoAndCategoryOrderByNoDesc(userNo, category, pageable);
+	    }
+	    return alertPage.map(Alert::toDto);
 	}
+
 
 	@Transactional
 	public boolean deleteAlert(int alertNo) {
