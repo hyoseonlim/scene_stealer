@@ -39,25 +39,35 @@ public interface ProductsRepository extends JpaRepository<Product, Integer> {
     
     @Query("SELECT p FROM Product p WHERE p.name LIKE %:name%")
     Page<Product> findByNameContainingOrderByNoDesc(@Param("name") String name, Pageable pageable);
-    
-    // 이름으로 제품 찾기 (부분 문자열)
-    @Query("SELECT p FROM Product p WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%'))")
-    Page<Product> findByNameContainingIgnoreCaseOrderByNoDesc(@Param("name") String name, Pageable pageable);
+   
 
     // 날짜로 제품 찾기 (날짜 형식에 맞게 쿼리 수정)
     // 아래 쿼리는 문자열 형식으로 날짜를 비교하는 방법을 보여줍니다. 실제 사용 시 날짜를 직접 비교하는 것이 좋습니다.
     //@Query("SELECT p FROM Product p WHERE p.date LIKE %:date%")
     //Page<Product> findByDateContainingIgnoreCase(@Param("date") String date, Pageable pageable);
+    // 이름으로 검색
+    Page<Product> findByNameContainingIgnoreCaseOrderByNoDesc(String name, Pageable pageable);
+
+    // 날짜로 검색
+    Page<Product> findByDateBetween(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
+
+    // 카테고리로 검색
+    Page<Product> findByCategoryContainingIgnoreCaseOrderByNoDesc(String category, Pageable pageable);
+
+    // 이름과 날짜로 검색
+    Page<Product> findByNameContainingIgnoreCaseAndDateBetweenOrderByNoDesc(String name, LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
+
+    // 이름과 카테고리로 검색
+    Page<Product> findByNameContainingIgnoreCaseAndCategoryContainingIgnoreCaseOrderByNoDesc(String name, String category, Pageable pageable);
+
+    // 날짜와 카테고리로 검색
+    Page<Product> findByDateBetweenAndCategoryContainingIgnoreCaseOrderByNoDesc(LocalDateTime startDate, LocalDateTime endDate, String category, Pageable pageable);
+
+    // 이름, 날짜, 카테고리로 검색
+    Page<Product> findByNameContainingIgnoreCaseAndDateBetweenAndCategoryContainingIgnoreCaseOrderByNoDesc(String name, LocalDateTime startDate, LocalDateTime endDate, String category, Pageable pageable);
 
     
-    // 카테고리로 제품 찾기 (부분 문자열)
-    @Query("SELECT p FROM Product p WHERE LOWER(p.category) LIKE LOWER(CONCAT('%', :category, '%'))")
-    Page<Product> findByCategoryContainingIgnoreCaseOrderByNoDesc(@Param("category") String category, Pageable pageable);
-    
-    
- // 날짜로 제품 찾기 (내림차순 정렬 포함)
-    @Query("SELECT p FROM Product p WHERE p.date BETWEEN :startDate AND :endDate ORDER BY p.no DESC")
-    Page<Product> findByDateBetween(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, Pageable pageable);
+
     
     List<Product> findByNoIn(List<Integer> list);
     

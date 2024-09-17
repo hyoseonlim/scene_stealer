@@ -36,15 +36,19 @@ public class AdminProductController {
             @RequestParam(value = "searchTerm", defaultValue = "") String searchTerm,
             @RequestParam(value = "searchField", defaultValue = "name") String searchField,
             @RequestParam(value = "startDate", required = false) String startDate,
-            @RequestParam(value = "endDate", required = false) String endDate, Pageable pageable) {
+            @RequestParam(value = "endDate", required = false) String endDate,
+            @RequestParam(value = "category", defaultValue = "") String category, // 카테고리 추가
+            Pageable pageable) {
 
         pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "date"));
         Page<ProductDto> productPage;
 
-        if (searchTerm.isEmpty() && (startDate == null || endDate == null)) {
+        if (searchTerm.isEmpty() && (startDate == null || endDate == null) && category.isEmpty()) {
+            // 조건이 없을 경우 전체 목록
             productPage = adminProductModel.listAll(pageable);
         } else {
-            productPage = adminProductModel.searchProducts(pageable, searchTerm, searchField, startDate, endDate);
+            // 검색 필터 사용
+            productPage = adminProductModel.searchProducts(pageable, searchTerm, searchField, startDate, endDate, category);
         }
 
         return ResponseEntity.ok(productPage);

@@ -51,25 +51,51 @@ public class AdminProductModel {
         });
     }
  // 검색 기능을 추가한 메서드
-    public Page<ProductDto> searchProducts(Pageable pageable, String searchTerm, String searchField, String startDate, String endDate) {
+    // 검색 기능을 추가한 메서드
+    public Page<ProductDto> searchProducts(Pageable pageable, String searchTerm, String searchField, String startDate, String endDate, String category) {
         Page<Product> products;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-        switch (searchField) {
-            case "name":
-                products = productReposi.findByNameContainingIgnoreCaseOrderByNoDesc(searchTerm, pageable);
-                break;
-            case "date":
-                LocalDateTime start = LocalDateTime.parse(startDate + " 00:00:00", formatter);
-                LocalDateTime end = LocalDateTime.parse(endDate + " 23:59:59", formatter);
-                products = productReposi.findByDateBetween(start, end, pageable);
-                break;
-            case "category":
-                products = productReposi.findByCategoryContainingIgnoreCaseOrderByNoDesc(searchTerm, pageable);
-                break;
-            default:
-                products = productReposi.findAllByOrderByNoDesc(pageable);
-                break;
+        LocalDateTime start = null;
+        LocalDateTime end = null;
+
+        // 날짜 필터가 존재할 경우 파싱
+        if (startDate != null && !startDate.isEmpty()) {
+            start = LocalDateTime.parse(startDate + " 00:00:00", formatter);
+        }
+        if (endDate != null && !endDate.isEmpty()) {
+            end = LocalDateTime.parse(endDate + " 23:59:59", formatter);
+        }
+
+        // 필터 조합에 따른 검색 로직
+        if (!searchTerm.isEmpty() && start != null && end != null && !category.isEmpty()) {
+            // 이름, 날짜, 카테고리 모두 사용
+            products = productReposi.findByNameContainingIgnoreCaseAndDateBetweenAndCategoryContainingIgnoreCaseOrderByNoDesc(
+                    searchTerm, start, end, category, pageable);
+        } else if (!searchTerm.isEmpty() && start != null && end != null) {
+            // 이름과 날짜 필터만 사용
+            products = productReposi.findByNameContainingIgnoreCaseAndDateBetweenOrderByNoDesc(
+                    searchTerm, start, end, pageable);
+        } else if (!searchTerm.isEmpty() && !category.isEmpty()) {
+            // 이름과 카테고리 필터만 사용
+            products = productReposi.findByNameContainingIgnoreCaseAndCategoryContainingIgnoreCaseOrderByNoDesc(
+                    searchTerm, category, pageable);
+        } else if (start != null && end != null && !category.isEmpty()) {
+            // 날짜와 카테고리 필터만 사용
+            products = productReposi.findByDateBetweenAndCategoryContainingIgnoreCaseOrderByNoDesc(
+                    start, end, category, pageable);
+        } else if (!searchTerm.isEmpty()) {
+            // 이름 필터만 사용
+            products = productReposi.findByNameContainingIgnoreCaseOrderByNoDesc(searchTerm, pageable);
+        } else if (start != null && end != null) {
+            // 날짜 필터만 사용
+            products = productReposi.findByDateBetween(start, end, pageable);
+        } else if (!category.isEmpty()) {
+            // 카테고리 필터만 사용
+            products = productReposi.findByCategoryContainingIgnoreCaseOrderByNoDesc(category, pageable);
+        } else {
+            // 조건이 없을 경우 전체 목록
+            products = productReposi.findAllByOrderByNoDesc(pageable);
         }
 
         return products.map(product -> {
