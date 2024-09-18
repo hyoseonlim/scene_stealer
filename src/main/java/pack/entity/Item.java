@@ -31,6 +31,8 @@ public class Item {
 	private String pic; // URL or file path
 	
 	private String name;
+	
+	private String path;
 
 	@ManyToOne
 	@JoinColumn(name = "product_no")
@@ -42,6 +44,7 @@ public class Item {
 				.pic(entity.getPic())
 				.name(entity.getName())
 				.productNo(entity.getProduct().getNo())
+				.path(entity.getPath())
 				.build();
 	}
 }

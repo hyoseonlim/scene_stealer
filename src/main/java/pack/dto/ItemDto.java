@@ -20,6 +20,7 @@ public class ItemDto {
 	  private Integer no;
 	  private String pic;  // URL or file path
 	  private String name;
+	  private String path;
 	  private StyleDto style;
 	  private ProductDto product;
 	  private Integer productNo;
@@ -30,6 +31,7 @@ public class ItemDto {
 	    			.pic(dto.getPic())
 	    			.name(dto.getName())
 	    			.product(ProductDto.toEntity(dto.getProduct()))
+	    			.path(dto.getPath())
 	    			.build();
 		}
 

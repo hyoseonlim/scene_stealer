@@ -205,7 +205,8 @@ public class AdminMainController {
 	
 	// 아이템 추가
 	@PostMapping("/admin/fashion/{no}/item") // 스타일 PK
-	public void addItem(@PathVariable("no") int no, @RequestParam("name") String name, @RequestParam("product") int product, @RequestPart("file") MultipartFile pic) {
+	public void addItem(@PathVariable("no") int no, @RequestParam("name") String name, @RequestParam("product") int product, 
+			@RequestParam("path") String path, @RequestPart("file") MultipartFile pic) {
 		String staticDirectory = System.getProperty("user.dir") + "/src/main/resources/static/images/";
 	    Path uploadPath = Paths.get(staticDirectory, pic.getOriginalFilename());
 	    try {
@@ -214,6 +215,7 @@ public class AdminMainController {
 	        StyleItemDto styleItemDto = new StyleItemDto();
 	        
 	        item.setName(name);
+	        item.setPath(path);
 	        item.setProduct(productsRepository.getReferenceById(product)); // 어거지입니다
 	        item.setPic("/images/" + pic.getOriginalFilename());
 	        
