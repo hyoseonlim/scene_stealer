@@ -83,7 +83,7 @@ public class MainModel {
 	}
 
 	public List<ReviewDto> mainShowReview() {
-		return rrps.findTop3ByOrderByNoDesc().stream().map(Review::toDto).toList();
+		return rrps.findTop3ByPicIsNotNullOrderByNoDesc().stream().map(Review::toDto).toList();
 	}
 
 	public List<PostDto> mainShowPosts() {

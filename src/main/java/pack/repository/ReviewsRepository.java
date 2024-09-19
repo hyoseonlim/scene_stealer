@@ -15,7 +15,7 @@ import pack.entity.Review;
 
 public interface ReviewsRepository extends JpaRepository<Review, Integer>{
 
-	public List<Review> findTop3ByOrderByNoDesc();
+	public List<Review> findTop3ByPicIsNotNullOrderByNoDesc();
 	
 	@Query("SELECT r FROM Review r WHERE r.orderProduct.product.no = :productNo")
 	Page<Review> findByProduct(@Param("productNo") Integer productNo, Pageable pageable); //상품 번호로 리뷰 조회
