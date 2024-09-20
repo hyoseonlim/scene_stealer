@@ -57,7 +57,14 @@ public class MainController {
 	public List<PostDto> mainShowPosts() {
 		return mmd.mainShowPosts();
 	}
+	
+	// Item이 1개 이상인 Style 데이터 수
+	@GetMapping("/main/forRandom")
+	public Integer forRandom() {
+		return mmd.forRandom();
+	}
 
+	// 랜덤 Style 선택
 	@GetMapping("/main/sub/{no}")
 	public SubDto subData(@PathVariable("no") int no) {
 		return mmd.subShowData(no);
@@ -103,11 +110,6 @@ public class MainController {
 		}
 		result.put("result", b);
 		return result;
-	}
-
-	@GetMapping("/main/forRandom")
-	public Integer forRandom() {
-		return mmd.forRandom();
 	}
 	
 	@GetMapping("/main/scrap/count/{characterNo}")

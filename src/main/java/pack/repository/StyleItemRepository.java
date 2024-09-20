@@ -2,6 +2,8 @@ package pack.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -29,5 +31,9 @@ public interface StyleItemRepository extends JpaRepository<StyleItem, Integer> {
 	
 	void deleteByStyleNoAndItemNo(Integer styleNo, Integer itemNo); // 스타일-아이템 관계 삭제
 	
-
+	@Query("SELECT COUNT(DISTINCT style.no) FROM StyleItem")
+	int findAllExceptNoItem();
+	
+	@Query("SELECT DISTINCT style FROM StyleItem")
+	Page<Style> findAllStyleExceptNoItem(Pageable pageable);
 }

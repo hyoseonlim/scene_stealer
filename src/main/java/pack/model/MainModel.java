@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import jakarta.transaction.Transactional;
@@ -91,39 +92,23 @@ public class MainModel {
 	}
 
 	public SubDto subShowData(int no) {
-	    ShowDto dto = srps.findById(no).stream().map(Show::toDto).toList().get(0);
+	    // PK가 n인 데이터는 삭제되었을 수 있음. 따라서 n번째 데이터를 가져와야 함
+		Pageable pageable = PageRequest.of(no-1, 1, Sort.by(Sort.Direction.ASC, "no")); // 0-based index이므로 n-1을 설정하여 원하는 nth 데이터를 가져옴
+		Style style = sirps.findAllStyleExceptNoItem(pageable).getContent().get(0);
+	    Character character = style.getCharacter();
+	    Show show = character.getShow();	    
+	    List<String> characters = show.getCharacters().stream().map(c -> c.getName()).toList();
 	    
-	   
-	    List<CharacterDto> clist = new ArrayList<CharacterDto>();
-	    List<StyleDto> slist = new ArrayList<StyleDto>();
-	    List<Integer> styleItemNoList = new ArrayList<Integer>();
-	    List<Integer> itemNoList = new ArrayList<Integer>(); 
-	    
-	    for (Integer c : dto.getCharacterNo()) {
-	        crps.findById(c).map(Character::toDto).ifPresent(cdto -> {
-	        	// c : show 의 character 번호
-	        	clist.add(cdto);
-	            for (Integer s : cdto.getStyleNo()) {
-	            	// s : character의 style 번호
-	                strps.findById(s).map(Style::toDto).ifPresent(sdto -> {
-	                	slist.add(sdto);
-	                	for (Integer si : cdto.getStyleNo()) {
-	                		styleItemNoList.add(si);
-	                		for(StyleItemDto i : sirps.findByStyleNo(si).stream().map(StyleItem::toDto).collect(Collectors.toList())) {
-	                			itemNoList.add(i.getItemNo());
-	                		};
-	                	}
-	                });
-	            }
-	        });
-	    }
-	    
+	    List<StyleItem> styleItemList = sirps.findByStyleNo(style.getNo());
+	    List<Item> itemList = styleItemList.stream().map(si -> si.getItem()).toList();
+
 	    return SubDto.builder()
-	                 .show(dto)
-	                 .characters(clist)
-	                 .styles(slist)
-	                 .styleItems(sirps.findByStyleNoIn(styleItemNoList).stream().map(StyleItem::toDto).collect(Collectors.toList()))
-	                 .items(irps.findByNoIn(itemNoList).stream().map(Item::toDto).collect(Collectors.toList()))
+	                 .show(Show.toDto(show))
+	                 .names(characters)
+	                 .character(Character.toDto(character))
+	                 .style(Style.toDto(style))
+	                 .styleItems(styleItemList.stream().map(StyleItem::toDto).collect(Collectors.toList()))
+	                 .items(itemList.stream().map(Item::toDto).collect(Collectors.toList()))
 	                 .build();
 	    
 	}
@@ -168,7 +153,7 @@ public class MainModel {
 	}
 	
 	public Integer forRandom() {
-		return srps.findAll().size();
+		return sirps.findAllExceptNoItem();
 	}
 	
 	public Integer scrapCountNow(int characterNo) {

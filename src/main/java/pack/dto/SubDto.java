@@ -15,8 +15,9 @@ import lombok.Setter;
 @AllArgsConstructor
 public class SubDto {
 	private ShowDto show;
-	private List<CharacterDto> characters;
-	private List<StyleDto> styles;
+	private List<String> names;
+	private CharacterDto character;
+	private StyleDto style;
 	private List<StyleItemDto> styleItems;
 	private List<ItemDto> items;
 }
