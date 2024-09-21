@@ -17,6 +17,7 @@ import pack.dto.CharacterDto;
 import pack.dto.CharacterLikeDto;
 import pack.dto.PopupDto;
 import pack.dto.PostDto;
+import pack.dto.RandomStyleDto;
 import pack.dto.ReviewDto;
 import pack.dto.ShowDto;
 import pack.dto.StyleDto;
@@ -90,8 +91,46 @@ public class MainModel {
 	public List<PostDto> mainShowPosts() {
 		return prps.findTop5ByDeletedIsFalseOrderByNoDesc().stream().map(Post::toDto).toList();
 	}
-
+	
 	public SubDto subShowData(int no) {
+	    ShowDto dto = srps.findById(no).stream().map(Show::toDto).toList().get(0);
+	    
+	   
+	    List<CharacterDto> clist = new ArrayList<CharacterDto>();
+	    List<StyleDto> slist = new ArrayList<StyleDto>();
+	    List<Integer> styleItemNoList = new ArrayList<Integer>();
+	    List<Integer> itemNoList = new ArrayList<Integer>(); 
+	    
+	    for (Integer c : dto.getCharacterNo()) {
+	        crps.findById(c).map(Character::toDto).ifPresent(cdto -> {
+	        	// c : show 의 character 번호
+	        	clist.add(cdto);
+	            for (Integer s : cdto.getStyleNo()) {
+	            	// s : character의 style 번호
+	                strps.findById(s).map(Style::toDto).ifPresent(sdto -> {
+	                	slist.add(sdto);
+	                	for (Integer si : cdto.getStyleNo()) {
+	                		styleItemNoList.add(si);
+	                		for(StyleItemDto i : sirps.findByStyleNo(si).stream().map(StyleItem::toDto).collect(Collectors.toList())) {
+	                			itemNoList.add(i.getItemNo());
+	                		};
+	                	}
+	                });
+	            }
+	        });
+	    }
+	    
+	    return SubDto.builder()
+	                 .show(dto)
+	                 .characters(clist)
+	                 .styles(slist)
+	                 .styleItems(sirps.findByStyleNoIn(styleItemNoList).stream().map(StyleItem::toDto).collect(Collectors.toList()))
+	                 .items(irps.findByNoIn(itemNoList).stream().map(Item::toDto).collect(Collectors.toList()))
+	                 .build();
+	    
+	}
+
+	public RandomStyleDto randomStyle(int no) {
 	    // PK가 n인 데이터는 삭제되었을 수 있음. 따라서 n번째 데이터를 가져와야 함
 		Pageable pageable = PageRequest.of(no-1, 1, Sort.by(Sort.Direction.ASC, "no")); // 0-based index이므로 n-1을 설정하여 원하는 nth 데이터를 가져옴
 		Style style = sirps.findAllStyleExceptNoItem(pageable).getContent().get(0);
@@ -102,7 +141,7 @@ public class MainModel {
 	    List<StyleItem> styleItemList = sirps.findByStyleNo(style.getNo());
 	    List<Item> itemList = styleItemList.stream().map(si -> si.getItem()).toList();
 
-	    return SubDto.builder()
+	    return RandomStyleDto.builder()
 	                 .show(Show.toDto(show))
 	                 .names(characters)
 	                 .character(Character.toDto(character))

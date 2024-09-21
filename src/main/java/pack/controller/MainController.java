@@ -21,6 +21,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import pack.dto.CharacterLikeDto;
 import pack.dto.PopupDto;
 import pack.dto.PostDto;
+import pack.dto.RandomStyleDto;
 import pack.dto.ReviewDto;
 import pack.dto.ShowDto;
 import pack.dto.SubDto;
@@ -64,12 +65,18 @@ public class MainController {
 		return mmd.forRandom();
 	}
 
-	// 랜덤 Style 선택
 	@GetMapping("/main/sub/{no}")
 	public SubDto subData(@PathVariable("no") int no) {
 		return mmd.subShowData(no);
 	}
-
+	
+	// 랜덤 Style 선택
+	@GetMapping("/main/random/{no}")
+	public RandomStyleDto randomstyle(@PathVariable("no") int no) {
+		return mmd.randomStyle(no);
+	}
+	
+	// 랜덤 Style 선택
 	@GetMapping("/main/like/{no}/{userNo}")
 	public boolean isLike(@PathVariable("no") int cno, @PathVariable("userNo") int uno) {
 		return mmd.isLike(cno, uno);
