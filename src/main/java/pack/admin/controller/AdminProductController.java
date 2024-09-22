@@ -1,4 +1,4 @@
-		package pack.admin.controller;
+package pack.admin.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

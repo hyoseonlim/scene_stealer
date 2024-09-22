@@ -11,7 +11,9 @@ import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -70,16 +72,18 @@ public class ShopController {
 
 	// ----Rest 요청
 	@GetMapping("/list")
-	public ResponseEntity<Page<ProductDto>> getList(Pageable pageable) {
+	public ResponseEntity<Page<ProductDto>> getList(@RequestParam(value = "page", defaultValue = "0") int page, 
+			@RequestParam(value = "size", defaultValue = "9") int size, Pageable pageable) {
+		pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "no"));
 		Page<ProductDto> list = smodel.list(pageable); // Pageable 객체로 데이터를 가져옴
 		return ResponseEntity.ok(list);
 	}
 
 	// 카테고리별 나열
 	@GetMapping("/list/category/{category}")
-	public ResponseEntity<Page<ProductDto>> getProductsByCategory(@PathVariable("category") String category,
-			Pageable pageable) {
-
+	public ResponseEntity<Page<ProductDto>> getProductsByCategory(@RequestParam(value = "page", defaultValue = "0") int page, 
+			@RequestParam(value = "size", defaultValue = "9") int size, @PathVariable("category") String category, Pageable pageable) {
+		pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "no"));
 		// Product 엔티티를 ProductDto로 변환
 		Page<ProductDto> productDtoPage = productsRepository.findByCategoryOrderByNoDesc(category, pageable).map(Product::toDto);
 		// 변환된 Page<ProductDto>를 반환
