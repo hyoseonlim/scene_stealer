@@ -1,0 +1,61 @@
+･ ﾟ ₊ ﾟ+ ♡ ♡ ᕬ ᕬ ♡ ♡ ･₊ + . ﾟ
+    + ･ﾟ ♡ ( ⌯′-′⌯) + ♡ + ･₊ ﾟ .･
+┏━ ʚෆɞ ━━━━━ U U━━ ʚෆɞ ━┓
+SceneStealer FROM Daracle
+┗━ ʚෆɞ ━━━━━━━━━━━ ʚෆɞ ━┛
+
+2024-09-22T10:16:09.808Z  INFO 2637 --- [SceneStealerFinal] [           main] pack.SceneStealerFinalApplication        : Starting SceneStealerFinalApplication v0.0.1-SNAPSHOT using Java 17.0.12 with PID 2637 (/home/ubuntu/Daracle/SceneStealerFinal/build/libs/SceneStealerFinal-0.0.1-SNAPSHOT.jar started by ubuntu in /home/ubuntu/Daracle/SceneStealerFinal)
+2024-09-22T10:16:09.819Z  INFO 2637 --- [SceneStealerFinal] [           main] pack.SceneStealerFinalApplication        : No active profile set, falling back to 1 default profile: "default"
+2024-09-22T10:16:11.361Z  INFO 2637 --- [SceneStealerFinal] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-09-22T10:16:11.482Z  INFO 2637 --- [SceneStealerFinal] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 112 ms. Found 28 JPA repository interfaces.
+2024-09-22T10:16:12.423Z  INFO 2637 --- [SceneStealerFinal] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-09-22T10:16:12.438Z  INFO 2637 --- [SceneStealerFinal] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-09-22T10:16:12.438Z  INFO 2637 --- [SceneStealerFinal] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.26]
+2024-09-22T10:16:12.492Z  INFO 2637 --- [SceneStealerFinal] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-09-22T10:16:12.493Z  INFO 2637 --- [SceneStealerFinal] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2554 ms
+2024-09-22T10:16:12.752Z  INFO 2637 --- [SceneStealerFinal] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2024-09-22T10:16:12.898Z  INFO 2637 --- [SceneStealerFinal] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.mariadb.jdbc.Connection@1ab14636
+2024-09-22T10:16:12.901Z  INFO 2637 --- [SceneStealerFinal] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2024-09-22T10:16:12.954Z  INFO 2637 --- [SceneStealerFinal] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-09-22T10:16:13.028Z  INFO 2637 --- [SceneStealerFinal] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.2.Final
+2024-09-22T10:16:13.058Z  INFO 2637 --- [SceneStealerFinal] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2024-09-22T10:16:13.468Z  INFO 2637 --- [SceneStealerFinal] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-09-22T10:16:13.541Z  WARN 2637 --- [SceneStealerFinal] [           main] org.hibernate.orm.deprecation            : HHH90000025: MariaDBDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-09-22T10:16:13.565Z DEBUG 2637 --- [SceneStealerFinal] [           main] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(12, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@55e42684) replaced previous registration(org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@18d610e1)
+2024-09-22T10:16:13.566Z DEBUG 2637 --- [SceneStealerFinal] [           main] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(-9, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@528e5e38) replaced previous registration(org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@16391278)
+2024-09-22T10:16:13.567Z DEBUG 2637 --- [SceneStealerFinal] [           main] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(-3, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@621dc63d) replaced previous registration(org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@4ae49387)
+2024-09-22T10:16:13.569Z DEBUG 2637 --- [SceneStealerFinal] [           main] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(4003, org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@6abb7b7d) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@34cf0e80)
+2024-09-22T10:16:13.570Z DEBUG 2637 --- [SceneStealerFinal] [           main] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(4001, org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@38ef1a0a) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@56f9de3b)
+2024-09-22T10:16:13.570Z DEBUG 2637 --- [SceneStealerFinal] [           main] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(4002, org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@6728370a) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@2b5f8e61)
+2024-09-22T10:16:13.572Z DEBUG 2637 --- [SceneStealerFinal] [           main] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(2004, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@6ba0ee4a) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@73b0ed03)
+2024-09-22T10:16:13.573Z DEBUG 2637 --- [SceneStealerFinal] [           main] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(2005, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@55061418) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@27db45f)
+2024-09-22T10:16:13.573Z DEBUG 2637 --- [SceneStealerFinal] [           main] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(2011, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@6ec3d8e4) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@1aeff8ca)
+2024-09-22T10:16:15.370Z  INFO 2637 --- [SceneStealerFinal] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-09-22T10:16:15.375Z  INFO 2637 --- [SceneStealerFinal] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-09-22T10:16:15.891Z  INFO 2637 --- [SceneStealerFinal] [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2024-09-22T10:16:16.386Z  WARN 2637 --- [SceneStealerFinal] [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'userController': Unsatisfied dependency expressed through field 'passwordResetService': Error creating bean with name 'passwordResetService' defined in URL [jar:nested:/home/ubuntu/Daracle/SceneStealerFinal/build/libs/SceneStealerFinal-0.0.1-SNAPSHOT.jar/!BOOT-INF/classes/!/pack/service/PasswordResetService.class]: Unsatisfied dependency expressed through constructor parameter 1: No qualifying bean of type 'org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
+2024-09-22T10:16:16.386Z  INFO 2637 --- [SceneStealerFinal] [           main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-09-22T10:16:16.388Z  INFO 2637 --- [SceneStealerFinal] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2024-09-22T10:16:16.401Z  INFO 2637 --- [SceneStealerFinal] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2024-09-22T10:16:16.403Z  INFO 2637 --- [SceneStealerFinal] [           main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2024-09-22T10:16:16.417Z  INFO 2637 --- [SceneStealerFinal] [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2024-09-22T10:16:16.444Z ERROR 2637 --- [SceneStealerFinal] [           main] o.s.b.d.LoggingFailureAnalysisReporter   : 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Parameter 1 of constructor in pack.service.PasswordResetService required a bean of type 'org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder' that could not be found.
+
+The injection point has the following annotations:
+	- @org.springframework.beans.factory.annotation.Autowired(required=true)
+
+
+Action:
+
+Consider defining a bean of type 'org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder' in your configuration.
+
