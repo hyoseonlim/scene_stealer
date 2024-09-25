@@ -460,7 +460,21 @@ public class PostsModel {
 	@Transactional
 	public boolean permanentDeletePost(int postNo) {
 		try {
+			// Comment_like
+	    	crps.findByPostNo(postNo).stream()
+	        	.map(Comment::getNo) // 각 댓글의 no 값 추출
+	        	.forEach(commentNo -> clrps.deleteByCommentNo(commentNo));
+	    	// Comment
+	    	crps.deleteByPostNo(postNo);
+	    	// Post_like
+	    	plrps.deleteByPostNo(postNo);
+	    	// Reported_post
+	    	rprps.deleteByPostNo(postNo);
+	    	// Post
+	    	prps.deleteById(postNo);
+		
 			int rowsDeleted = prps.deleteByNoAndDeletedTrue(postNo);
+			
 			return rowsDeleted > 0;
 		} catch (Exception e) {
 			System.out.println("permanentDeletePost ERROR : " + e.getMessage());
