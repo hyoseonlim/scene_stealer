@@ -22,11 +22,13 @@ public class PasswordResetService {
     private final JavaMailSender javaMailSender;
 
     @Autowired
-    public PasswordResetService(UsersRepository usersRepository, BCryptPasswordEncoder bCryptPasswordEncoder, JavaMailSender javaMailSender) {
+     public PasswordResetService(UsersRepository usersRepository, JavaMailSender javaMailSender) {
         this.usersRepository = usersRepository;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.bCryptPasswordEncoder = new BCryptPasswordEncoder();
         this.javaMailSender = javaMailSender;
     }
+
+
 
     @Transactional
     public void resetPassword(FindPassDto findPassDto) {

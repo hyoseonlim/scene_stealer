@@ -11,9 +11,7 @@ import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -66,26 +64,25 @@ public class ShopController {
 
 	@Autowired
 	private UsersRepository usersRepository;
-	
+
 	@Autowired
 	private OrderProductRepository orderProductRepository;
 
 	// ----Rest 요청
 	@GetMapping("/list")
-	public ResponseEntity<Page<ProductDto>> getList(@RequestParam(value = "page", defaultValue = "0") int page, 
-			@RequestParam(value = "size", defaultValue = "9") int size, Pageable pageable) {
-		pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "no"));
+	public ResponseEntity<Page<ProductDto>> getList(Pageable pageable) {
 		Page<ProductDto> list = smodel.list(pageable); // Pageable 객체로 데이터를 가져옴
 		return ResponseEntity.ok(list);
 	}
 
 	// 카테고리별 나열
 	@GetMapping("/list/category/{category}")
-	public ResponseEntity<Page<ProductDto>> getProductsByCategory(@RequestParam(value = "page", defaultValue = "0") int page, 
-			@RequestParam(value = "size", defaultValue = "9") int size, @PathVariable("category") String category, Pageable pageable) {
-		pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "no"));
+	public ResponseEntity<Page<ProductDto>> getProductsByCategory(@PathVariable("category") String category,
+			Pageable pageable) {
+
 		// Product 엔티티를 ProductDto로 변환
-		Page<ProductDto> productDtoPage = productsRepository.findByCategoryOrderByNoDesc(category, pageable).map(Product::toDto);
+		Page<ProductDto> productDtoPage = productsRepository.findByCategoryOrderByNoDesc(category, pageable)
+				.map(Product::toDto);
 		// 변환된 Page<ProductDto>를 반환
 		return ResponseEntity.ok(productDtoPage);
 	}
@@ -102,21 +99,22 @@ public class ShopController {
 //		return smodel.reviewshow(no);
 //	}
 	// 상품별 리뷰보기 (페이징 처리)
-    @GetMapping("/list/review/{no}")
-    public ResponseEntity<ShopDto> reviewData(@PathVariable("no") Integer no, Pageable pageable) {
-        ShopDto shopDto = smodel.reviewshow(no, pageable); // pageable을 전달하여 페이징 처리
-        return ResponseEntity.ok(shopDto);
-    }
+	@GetMapping("/list/review/{no}")
+	public ResponseEntity<ShopDto> reviewData(@PathVariable("no") Integer no, Pageable pageable) {
+		ShopDto shopDto = smodel.reviewshow(no, pageable); // pageable을 전달하여 페이징 처리
+		return ResponseEntity.ok(shopDto);
+	}
+
 	// 내가 쓴 리뷰 보기
 //	@GetMapping("/mypage/review/{userNo}")
 //	public ShopDto myreviewOnly(@PathVariable("userNo") int userNo) {
 //		return smodel.mybuyreviews(userNo);
 //	}
-    @GetMapping("/mypage/review/{userNo}")
-    public ResponseEntity<ShopDto> myreviewOnly(@PathVariable("userNo") int userNo, Pageable pageable) {
-        ShopDto shopDto = smodel.mybuyreviews(userNo, pageable); // 페이징 정보를 함께 전달
-        return ResponseEntity.ok(shopDto);
-    }
+	@GetMapping("/mypage/review/{userNo}")
+	public ResponseEntity<ShopDto> myreviewOnly(@PathVariable("userNo") int userNo, Pageable pageable) {
+		ShopDto shopDto = smodel.mybuyreviews(userNo, pageable); // 페이징 정보를 함께 전달
+		return ResponseEntity.ok(shopDto);
+	}
 
 	// 주문 내역 보기
 	@GetMapping("/order/orderlist/{userNo}")
@@ -138,7 +136,6 @@ public class ShopController {
 
 		return result;
 	}
-
 
 	// 리뷰 디테일 보기
 	@GetMapping("/mypage/review/detail/{reviewNo}")
@@ -165,7 +162,6 @@ public class ShopController {
 
 		// reviewDto의 productNo 필드에 @PathVariable에서 받은 값을 설정
 		reviewDto.setOrderProductNo(orderProductNo);
-		
 
 		// 이미지가 있는 경우 처리
 		if (pic != null && !pic.isEmpty()) {
@@ -203,41 +199,39 @@ public class ShopController {
 	// 리뷰 수정
 	@PutMapping("/review/update/{reviewNo}")
 	public ResponseEntity<String> updateReview(@PathVariable("reviewNo") int reviewNo,
-	                                           @RequestPart("reviewDto") String reviewDtoJson,
-	                                           @RequestPart(value = "pic", required = false) MultipartFile pic) {
-	    try {
-	        // JSON 문자열을 ReviewDto 객체로 변환
-	        ObjectMapper objectMapper = new ObjectMapper();
-	        ReviewDto reviewDto = objectMapper.readValue(reviewDtoJson, ReviewDto.class);
-	        
-	        // 리뷰 업데이트 로직
-	        boolean success = smodel.updateReview(reviewNo, reviewDto);
-	        
-	        // 파일 업로드 처리
-	        if (pic != null && !pic.isEmpty()) {
-	            String staticDirectory = System.getProperty("user.dir") + "/src/main/resources/static/images/";
-	            Path uploadPath = Paths.get(staticDirectory, pic.getOriginalFilename());
-	            
-	            pic.transferTo(uploadPath); // 파일을 지정된 경로에 저장
-	            reviewDto.setPic("/images/" + pic.getOriginalFilename()); // 파일 경로를 리뷰 DTO에 설정   
-	        }
-	       
-	        // 파일 업로드 후 다시 리뷰 업데이트
-	        smodel.updateReview(reviewNo, reviewDto);
-	        
-	        // 성공 여부에 따른 응답 처리
-	        if (success) {
-	            return ResponseEntity.ok("리뷰 수정이 완료되었습니다.");
-	        } else {
-	            return ResponseEntity.status(500).body("리뷰 수정에 실패했습니다.");
-	        }
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        return ResponseEntity.status(500).body("오류 발생: " + e.getMessage());
-	    }
+			@RequestPart("reviewDto") String reviewDtoJson,
+			@RequestPart(value = "pic", required = false) MultipartFile pic) {
+		try {
+			// JSON 문자열을 ReviewDto 객체로 변환
+			ObjectMapper objectMapper = new ObjectMapper();
+			ReviewDto reviewDto = objectMapper.readValue(reviewDtoJson, ReviewDto.class);
+
+			// 리뷰 업데이트 로직
+			boolean success = smodel.updateReview(reviewNo, reviewDto);
+
+			// 파일 업로드 처리
+			if (pic != null && !pic.isEmpty()) {
+				String staticDirectory = System.getProperty("user.dir") + "/src/main/resources/static/images/";
+				Path uploadPath = Paths.get(staticDirectory, pic.getOriginalFilename());
+
+				pic.transferTo(uploadPath); // 파일을 지정된 경로에 저장
+				reviewDto.setPic("/images/" + pic.getOriginalFilename()); // 파일 경로를 리뷰 DTO에 설정
+			}
+
+			// 파일 업로드 후 다시 리뷰 업데이트
+			smodel.updateReview(reviewNo, reviewDto);
+
+			// 성공 여부에 따른 응답 처리
+			if (success) {
+				return ResponseEntity.ok("리뷰 수정이 완료되었습니다.");
+			} else {
+				return ResponseEntity.status(500).body("리뷰 수정에 실패했습니다.");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(500).body("오류 발생: " + e.getMessage());
+		}
 	}
-
-
 
 	// 리뷰 삭제
 	@DeleteMapping("/review/delete/{reviewNo}")
@@ -260,79 +254,78 @@ public class ShopController {
 //	public List<Map<String, Object>> stockCheck(@RequestBody List<Integer> productNos) {
 //		return smodel.stockCheck(productNos);
 //	}
-	
+
 	// 재고량 체크 API
-		@PostMapping("/cart/stock")
-		public List<Map<String, Object>> stockCheck(@RequestBody Map<String, Object> requestData) {
-		    // 요청 데이터에서 productNos와 userNo를 추출
-		    List<Object> productNosRaw = (List<Object>) requestData.get("productNos");
-		    List<Integer> productNos = new ArrayList<>();
-		    
-		    // productNos를 String에서 Integer로 변환
-		    for (Object productNoRaw : productNosRaw) {
-		        try {
-		            productNos.add(Integer.parseInt(productNoRaw.toString())); // String을 Integer로 변환
-		        } catch (NumberFormatException e) {
-		            throw new IllegalArgumentException("Invalid productNo format: " + productNoRaw);
-		        }
-		    }
-		    
-		    Integer userNo;
-		    try {
-		        userNo = Integer.parseInt(requestData.get("userNo").toString()); // String을 Integer로 변환
-		    } catch (NumberFormatException e) {
-		        throw new IllegalArgumentException("Invalid userNo format");
-		    }
+	@PostMapping("/cart/stock")
+	public List<Map<String, Object>> stockCheck(@RequestBody Map<String, Object> requestData) {
+		// 요청 데이터에서 productNos와 userNo를 추출
+		List<Object> productNosRaw = (List<Object>) requestData.get("productNos");
+		List<Integer> productNos = new ArrayList<>();
 
-		    // 재고 확인 로직
-		    List<Map<String, Object>> result = new ArrayList<>();
-
-		    for (Integer productNo : productNos) {
-		        Product product = productsRepository.findById(productNo).orElse(null);
-		        if (product != null) {
-		            Map<String, Object> productStock = new HashMap<>();
-		            productStock.put("productNo", productNo);
-		            productStock.put("stock", product.getStock()); // 상품의 재고량을 반환
-		            productStock.put("available", product.isAvailable()); // 판매 종료된 상품
-		            result.add(productStock);
-		        }
-		    }
-
-		    return result; // 재고 정보를 클라이언트로 반환
+		// productNos를 String에서 Integer로 변환
+		for (Object productNoRaw : productNosRaw) {
+			try {
+				productNos.add(Integer.parseInt(productNoRaw.toString())); // String을 Integer로 변환
+			} catch (NumberFormatException e) {
+				throw new IllegalArgumentException("Invalid productNo format: " + productNoRaw);
+			}
 		}
-	
+
+		Integer userNo;
+		try {
+			userNo = Integer.parseInt(requestData.get("userNo").toString()); // String을 Integer로 변환
+		} catch (NumberFormatException e) {
+			throw new IllegalArgumentException("Invalid userNo format");
+		}
+
+		// 재고 확인 로직
+		List<Map<String, Object>> result = new ArrayList<>();
+
+		for (Integer productNo : productNos) {
+			Product product = productsRepository.findById(productNo).orElse(null);
+			if (product != null) {
+				Map<String, Object> productStock = new HashMap<>();
+				productStock.put("productNo", productNo);
+				productStock.put("stock", product.getStock()); // 상품의 재고량을 반환
+				productStock.put("available", product.isAvailable()); // 판매 종료된 상품
+				result.add(productStock);
+			}
+		}
+
+		return result; // 재고 정보를 클라이언트로 반환
+	}
+
 	@PostMapping("/order")
 	public ResponseEntity<Map<String, Boolean>> newOrder(@RequestBody OrderProductAllDto dto) {
-	    Map<String, Boolean> result = new HashMap<>();
-	    
-	    try {
-	        boolean isOrderSuccessful = smodel.newOrder(dto);
-	        result.put("success", isOrderSuccessful);
-	        return ResponseEntity.ok(result);  // 성공 시 200 OK 응답과 함께 결과 반환
-	    } catch (Exception e) {
-	        result.put("success", false);
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);  // 실패 시 500 오류 응답
-	    }
-	}
-	
-	 // 주문 취소 API
-    @DeleteMapping("/cancel/{orderNo}")
-    public String cancelOrder(@PathVariable("orderNo") Integer orderNo) {
-        boolean isCancelled = smodel.cancelOrder(orderNo);
-        if (isCancelled) {
-            return "주문이 성공적으로 취소되었습니다.";
-        } else {
-            return "주문을 취소할 수 없습니다.";
-        }
-    }
-    
-  
+		Map<String, Boolean> result = new HashMap<>();
 
-    // 리뷰 써는지 체크
-    @GetMapping("/review/check/{userNo}/{productNo}")
-    public ResponseEntity<Boolean> checkReview(@PathVariable("userNo") int userNo,@PathVariable("productNo") int productNo) {
-        boolean hasReviewed = smodel.userReviewed(userNo, productNo);
-        return ResponseEntity.ok(hasReviewed);
-    }
-    
+		try {
+			boolean isOrderSuccessful = smodel.newOrder(dto);
+			result.put("success", isOrderSuccessful);
+			return ResponseEntity.ok(result); // 성공 시 200 OK 응답과 함께 결과 반환
+		} catch (Exception e) {
+			result.put("success", false);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result); // 실패 시 500 오류 응답
+		}
+	}
+
+	// 주문 취소 API
+	@DeleteMapping("/cancel/{orderNo}")
+	public String cancelOrder(@PathVariable("orderNo") Integer orderNo) {
+		boolean isCancelled = smodel.cancelOrder(orderNo);
+		if (isCancelled) {
+			return "주문이 성공적으로 취소되었습니다.";
+		} else {
+			return "주문을 취소할 수 없습니다.";
+		}
+	}
+
+	// 리뷰 써는지 체크
+	@GetMapping("/review/check/{userNo}/{productNo}")
+	public ResponseEntity<Boolean> checkReview(@PathVariable("userNo") int userNo,
+			@PathVariable("productNo") int productNo) {
+		boolean hasReviewed = smodel.userReviewed(userNo, productNo);
+		return ResponseEntity.ok(hasReviewed);
+	}
+
 }
