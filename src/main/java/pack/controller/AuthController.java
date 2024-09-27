@@ -100,8 +100,10 @@ public class AuthController {
             } else {
                 // 새로운 사용자 등록 처리
                 User user = UserDto.toEntity(userDto);
-                String encodedPwd = passwordEncoder.encode(userDto.getPwd());
-                user.setPwd(encodedPwd);
+    	        if (userDto.getPwd() != null && !userDto.getPwd().isEmpty() && !userDto.getPwd().equals(user.getPwd())) {
+    	            String encodedPassword = passwordEncoder.encode(userDto.getPwd());
+    	            user.setPwd(encodedPassword);
+    	        }
 
                 model.saveUser(user);
 

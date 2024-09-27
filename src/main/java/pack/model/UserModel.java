@@ -110,7 +110,7 @@ public class UserModel {
 	    }
 	    for (String state : states) {
 	        if (!"배송완료".equals(state) && !"주문취소".equals(state)) {
-	            return false; // "배송완료"가 아닌 상태가 있으면 false 반환
+	            return false; // "배송완료"나 "주문취소"가 아닌 상태가 있으면 false 반환
 	        }
 	    }
 	    return true; // 모든 상태가 "배송완료"인 경우에만 true 반환
