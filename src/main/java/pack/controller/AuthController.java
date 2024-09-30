@@ -80,50 +80,21 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
-    // 로그인 처리 메소드
+    // 로그인
     @PostMapping("/user/auth/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody UserDto userDto) {
-        String id = userDto.getId();
-        String pwd = userDto.getPwd();
-
-        Map<String, Object> response = new HashMap<>();
-        
         try {
-            // 사용자 정보 로드
-            UserDetails userDetails = model.loadUserByUsername(id);
-            
-            // 비밀번호 검증
-            if (passwordEncoder.matches(pwd, userDetails.getPassword())) {
-                // JWT 생성
-                String jwtToken = jwtUtil.generateToken(userDetails.getUsername());
-
-                CustomUserDetails customUserDetails = (CustomUserDetails) userDetails;
-                
-                // 응답에 JWT 포함
-                response.put("success", true);
-                response.put("user", Map.of(
-                        "id", customUserDetails.getUsername(), 
-                        "no", customUserDetails.getNo() // 사용자 no 반환
-                    ));
-                response.put("token", jwtToken);
-                return ResponseEntity.ok(response);
-            } else {
-                // 비밀번호가 틀렸을 때
-                response.put("success", false);
-                response.put("message", "비밀번호를 확인해주세요."); // 적절한 오류 메시지
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-            }
-        } catch (UsernameNotFoundException e) {
-            // 사용자 정보가 없을 때
-            response.put("success", false);
-            response.put("message", "계정이 존재하지 않습니다."); // 사용자 계정이 없을 때 메시지
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            Map<String, Object> response = model.login(userDto);
+            return ResponseEntity.ok(response); // 로그인 성공 시 200 응답
+        } catch (IllegalArgumentException e) {
+            // 아이디 또는 비밀번호가 틀린 경우 401 응답
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(Map.of("success", false, "message", e.getMessage()));
         } catch (Exception e) {
-            // 기타 예외 처리
-            response.put("success", false);
-            response.put("message", "로그인에 실패했습니다."); // 일반적인 로그인 실패 메시지
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-        }  
+            // 그 외 모든 예외는 500 응답
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Map.of("success", false, "message", "로그인에 실패했습니다."));
+        }
     }
     
     @GetMapping("/user/auth/check")
