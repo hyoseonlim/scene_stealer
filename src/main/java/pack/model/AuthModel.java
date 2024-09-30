@@ -16,6 +16,7 @@ import pack.entity.CouponUser;
 import pack.entity.User;
 import pack.repository.CouponUserRepository;
 import pack.repository.UsersRepository;
+import pack.service.EmailService;
 
 @Service
 public class AuthModel implements UserDetailsService {
@@ -44,38 +45,48 @@ public class AuthModel implements UserDetailsService {
         );
     }
 
+    @Autowired
+    private EmailService emailService;
+    
     // 회원가입
-    public void saveUser(pack.entity.User user) {
-        // 비밀번호를 암호화합니다.
-        String encodedPassword = passwordEncoder.encode(user.getPwd());
+    public void saveUser(UserDto userDto) {
+        // 기본 프로필 사진 설정
+        userDto.setPic("/images/default.png");
+        userDto.setNickname(userDto.getId());
 
-        // 암호화된 비밀번호를 User 엔티티에 설정
-        user.setPwd(encodedPassword);
-        
-        Optional<User> userCheck = usersRepository.findByEmail(user.getEmail());
-        if(userCheck.isPresent()) {
-        	// 이미 등록된 이메일
-        	User preUser = userCheck.get();
-        	if(preUser.getId() == null) {
-        		preUser.setId(user.getId());
-        	}
-        	usersRepository.save(preUser);
+        Optional<User> existingUser = usersRepository.findByEmail(userDto.getEmail());
+
+        if (existingUser.isPresent()) {
+            // 사용자가 이미 존재하는 경우 업데이트 처리
+            User user = existingUser.get();
+            user.setId(userDto.getId());
+            user.setName(userDto.getName());
+            user.setPwd(passwordEncoder.encode(userDto.getPwd())); // 비밀번호 암호화
+            user.setTel(userDto.getTel());
+            user.setEmail(userDto.getEmail());
+            user.setZipcode(userDto.getZipcode());
+            user.setAddress(userDto.getAddress());
+
+            usersRepository.save(user); // 업데이트된 사용자 저장
         } else {
-        	// 최초 가입자
-        	usersRepository.save(user);
+            // 새로운 사용자 등록 처리
+            User user = UserDto.toEntity(userDto);
+            user.setPwd(passwordEncoder.encode(userDto.getPwd())); // 비밀번호 암호화
 
-        	CouponUser cu = CouponUser.builder()
-                   .user(User.builder().no(user.getNo()).build())
-                   .coupon(Coupon.builder().no(1).build())
-                   .build();
-        	
+
+            // 새로운 사용자 저장
+            usersRepository.save(user);
+            
+            CouponUser cu = CouponUser.builder()
+            		.user(User.builder().no(user.getNo()).build())
+            		.coupon(Coupon.builder().no(1).build())
+            		.build();
+            
             curps.save(cu);
-        }
-    }
 
-    public void saveUserFromDto(UserDto userDto) {
-        pack.entity.User user = UserDto.toEntity(userDto);
-        saveUser(user);
+            // 환영 이메일 발송
+            emailService.sendWelcomeEmail(user);
+        }
     }
     
     // 회원가입 아이디 체크

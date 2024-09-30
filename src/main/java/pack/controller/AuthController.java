@@ -70,56 +70,14 @@ public class AuthController {
         }
     }
 
-    // 회원가입 처리
-    @PostMapping("/user/auth/register")
-    public ResponseEntity<Map<String, Object>> signUp(@RequestBody UserDto userDto) {
-        Map<String, Object> response = new HashMap<>();
-        userDto.setPic("/images/default.png");  // 기본 이미지 경로
-        userDto.setNickname(userDto.getId());
-
-        try {
-            Optional<User> existingUser = model.findByEmail(userDto.getEmail());
-
-            if (existingUser.isPresent()) {
-                // 사용자가 이미 존재하는 경우 업데이트 처리
-                User user = existingUser.get();
-                
-                // userDto의 필드들을 user 엔티티에 덮어쓰기
-                user.setId(userDto.getId());
-                user.setName(userDto.getName());
-                user.setPwd(userDto.getPwd());
-                user.setTel(userDto.getTel());
-                user.setEmail(userDto.getEmail());
-                user.setZipcode(userDto.getZipcode());
-                user.setAddress(userDto.getAddress());
-
-                model.saveUser(user); // 업데이트된 사용자 저장
-                response.put("status", "success");
-                response.put("message", "회원 정보 업데이트 성공");
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            } else {
-                // 새로운 사용자 등록 처리
-                User user = UserDto.toEntity(userDto);
-    	        if (userDto.getPwd() != null && !userDto.getPwd().isEmpty() && !userDto.getPwd().equals(user.getPwd())) {
-    	            String encodedPassword = passwordEncoder.encode(userDto.getPwd());
-    	            user.setPwd(encodedPassword);
-    	        }
-
-                model.saveUser(user);
-
-                // 환영 이메일 발송
-                emailService.sendWelcomeEmail(user);
-
-                response.put("status", "success");
-                response.put("message", "회원가입 성공");
-                return new ResponseEntity<>(response, HttpStatus.CREATED);
-            }
-
-        } catch (Exception e) {
-            response.put("status", "error");
-            response.put("message", "처리 실패: " + e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        }
+    // 회원가입
+    @PostMapping(value = "/user/auth/register", produces = "application/json; charset=utf8")
+    public ResponseEntity<Void> signup(@RequestBody UserDto userDto) {
+        // 서비스 계층으로 UserDto를 전달하여 비즈니스 로직 처리
+        model.saveUser(userDto);
+        
+        // 성공 시 본문 없이 상태 코드만 반환
+        return ResponseEntity.ok().build();
     }
 
     // 로그인 처리 메소드
