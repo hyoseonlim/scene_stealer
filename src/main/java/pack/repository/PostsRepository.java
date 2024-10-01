@@ -21,7 +21,9 @@ public interface PostsRepository extends JpaRepository<Post, Integer> {
 
 	Page<Post> findByReportsCountGreaterThanOrderByReportsCountDesc(int count, Pageable pageable);
 
-	public List<Post> findTop5ByDeletedIsFalseOrderByNoDesc();
+
+//	public List<Post> findTop5ByDeletedIsFalseOrderByNoDesc();
+public List<Post> findTop5ByDeletedIsFalseOrderByLikesCountDesc();
 
 	public List<Post> findByUserNo(int no);
 	

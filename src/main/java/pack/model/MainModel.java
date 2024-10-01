@@ -89,7 +89,7 @@ public class MainModel {
 	}
 
 	public List<PostDto> mainShowPosts() {
-		return prps.findTop5ByDeletedIsFalseOrderByNoDesc().stream().map(Post::toDto).toList();
+		return prps.findTop5ByDeletedIsFalseOrderByLikesCountDesc().stream().map(Post::toDto).toList();
 	}
 	
 	public SubDto subShowData(int no) {
