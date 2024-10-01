@@ -23,7 +23,7 @@ import pack.repository.OrderProductRepository;
 import pack.repository.OrdersRepository;
 
 @RestController
-@RequestMapping("/admin/statistics")
+@RequestMapping("/api/admin/statistics")
 public class AdminStatisticsController {
 	@Autowired OrdersRepository orderRepository;
 	@Autowired OrderProductRepository orderProductRepository;

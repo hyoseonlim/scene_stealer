@@ -22,7 +22,7 @@ import pack.dto.PostDto;
 import pack.dto.ReportedPostDto;
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/api/admin")
 public class AdminCommunityController {
 
     @Autowired

@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/admin/product")
+@RequestMapping("/api/admin/product")
 public class AdminProductController {
 
     @Autowired

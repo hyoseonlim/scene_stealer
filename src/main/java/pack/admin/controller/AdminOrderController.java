@@ -16,7 +16,7 @@ import pack.entity.User;
 import pack.repository.UsersRepository;
 
 @RestController
-@RequestMapping("/admin/orders")
+@RequestMapping("/api/admin/orders")
 public class AdminOrderController {
 
     @Autowired
