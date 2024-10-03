@@ -13,10 +13,12 @@ import org.springframework.stereotype.Service;
 
 import pack.config.CustomUserDetails;
 import pack.dto.UserDto;
+import pack.entity.Alert;
 import pack.entity.Coupon;
 import pack.entity.CouponUser;
 import pack.entity.User;
 import pack.login.JwtUtil;
+import pack.repository.AlertsRepository;
 import pack.repository.CouponUserRepository;
 import pack.repository.UsersRepository;
 import pack.service.EmailService;
@@ -27,17 +29,19 @@ public class AuthModel implements UserDetailsService {
     private final UsersRepository usersRepository;
     private final PasswordEncoder passwordEncoder;
     private final CouponUserRepository curps;
+    private final AlertsRepository alertRepository;
     private final EmailService emailService;
     private final JwtUtil jwtUtil;
 
     @Autowired
     public AuthModel(UsersRepository usersRepository, PasswordEncoder passwordEncoder,
-                     CouponUserRepository curps, EmailService emailService, JwtUtil jwtUtil) {
+                     CouponUserRepository curps, EmailService emailService, JwtUtil jwtUtil, AlertsRepository alertRepository) {
         this.usersRepository = usersRepository;
         this.passwordEncoder = passwordEncoder;
         this.curps = curps;
         this.emailService = emailService;
         this.jwtUtil = jwtUtil;
+        this.alertRepository = alertRepository;
     }
 
     // 로그인
@@ -94,6 +98,14 @@ public class AuthModel implements UserDetailsService {
                 .coupon(Coupon.builder().no(1).build())  // 기본 쿠폰 할당
                 .build();
             curps.save(cu);
+            
+            // 쿠폰 발급 알림 전송
+            Alert alert  = new Alert();
+            alert.setCategory("프로모션");
+            alert.setContent("WELCOME TO SCENE STEALER WORLD! 쿠폰 선물 드려요");
+            alert.setUser(user);
+            alert.setPath("/user/mypage/coupon");
+            alertRepository.save(alert);
 
             // 환영 이메일 발송
             emailService.sendWelcomeEmail(user);
