@@ -42,7 +42,7 @@ public class SearchModel {
     @Autowired
     private UsersRepository usersRepository;
 
-    // 자동완성 기능을 처리하는 메서드
+    // 자동완성 기능을 처리하는 메소드
     public List<?> autocomplete(String category, String term) {
         switch (category.toLowerCase()) {
             case "actor":
@@ -56,7 +56,7 @@ public class SearchModel {
         }
     }
 
-    // 자동완성용 메서드
+    // 자동완성용 메소드
     public List<ActorDto> autocompleteActors(String term) {
         return actorsRepository.findByNameContaining(term).stream()
             .map(Actor::toDto)
@@ -75,7 +75,7 @@ public class SearchModel {
             .toList();
     }
     
-    // 검색을 수행하는 메서드 (서비스 역할 수행)
+    // 검색을 수행하는 메소드
     public Map<String, Object> performSearch(String category, String term, int page, int size) {
         Map<String, Object> result = new HashMap<>();
         Page<?> searchResults;
