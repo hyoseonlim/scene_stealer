@@ -18,6 +18,9 @@ public interface ProductsRepository extends JpaRepository<Product, Integer> {
     // 전체 자료 읽기
     Page<Product> findAll(Pageable pageable);
     
+    // 전체) 판매중
+    Page<Product> findAllByAvailableTrueOrderByNoDesc(Pageable pageable);
+    
     // 최신순 (PK 내림차순)
     Page<Product> findAllByOrderByNoDesc(Pageable pageable);
     
@@ -30,6 +33,10 @@ public interface ProductsRepository extends JpaRepository<Product, Integer> {
     // 카테고리로 제품 찾기
     //List<Product> findByCategory(String category);
     Page<Product> findByCategoryOrderByNoDesc(String category, Pageable pageable);
+    
+    // 카테고리별) 판매중
+    Page<Product> findByCategoryAndAvailableIsTrue(String category, Pageable pageable);
+    Page<Product> findByCategoryAndAvailableIsTrueOrderByNoDesc(String category, Pageable pageable);
         
     @Query("SELECT p FROM Product p WHERE p.name LIKE %:name%")
     List<Product> findByNameContaining(@Param("name") String name);

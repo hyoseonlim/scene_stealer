@@ -77,7 +77,7 @@ public class ShopModel {
 
 //    // 전체 자료 읽기 (페이징된 상품 리스트 조회)
 	public Page<ProductDto> list(Pageable pageable) {
-		Page<Product> products = productsRepository.findAll(pageable);
+		Page<Product> products = productsRepository.findAllByAvailableTrueOrderByNoDesc(pageable);
 		return products.map(Product::toDto);
 	}
 

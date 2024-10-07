@@ -83,7 +83,7 @@ public class ShopController {
 			Pageable pageable) {
 
 		// Product 엔티티를 ProductDto로 변환
-		Page<ProductDto> productDtoPage = productsRepository.findByCategoryOrderByNoDesc(category, pageable)
+		Page<ProductDto> productDtoPage = productsRepository.findByCategoryAndAvailableIsTrueOrderByNoDesc(category, pageable)
 				.map(Product::toDto);
 		// 변환된 Page<ProductDto>를 반환
 		return ResponseEntity.ok(productDtoPage);
