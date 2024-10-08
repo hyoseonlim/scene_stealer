@@ -1,6 +1,7 @@
 package pack.config;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +25,6 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConf) throws Exception {
         return authConf.getAuthenticationManager();
     }
-    
 
 
     @Bean
@@ -41,16 +41,13 @@ public class SecurityConfig {
 //        .sessionManagement(session -> session
 //        		.sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
 //        );
-        http
-                .csrf(csrf -> csrf.disable()) // CSRF 비활성화
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/user/auth/login").permitAll() // 로그인 요청 허용
+
+        http.csrf(csrf -> csrf.disable()) // CSRF 비활성화
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/user/auth/login").permitAll() // 로그인 요청 허용
                         .requestMatchers("/ws/**").permitAll() // WebSocket 엔드포인트 허용
                         .anyRequest().permitAll() // 나머지 모든 요청 허용
-                )
-                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS 설정
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.ALWAYS) // 세션 설정
+                ).cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS 설정
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS) // 세션 설정
                 );
 
         return http.build();
@@ -60,20 +57,16 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         System.out.println("BCryptPasswordEncoder Bean 등록!");
-    	    return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder();
     }
-
-
-
-
 
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://scenestealer.kr"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+        configuration.setAllowedOrigins(List.of("http://scenestealer.kr"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
