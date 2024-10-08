@@ -29,28 +29,44 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    	http
-        .csrf(csrf -> csrf.disable()) // CSRF 비활성화
-        .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/user/auth/login").permitAll() // 로그인 요청 허용
-            .anyRequest().permitAll() // 나머지 모든 요청 허용
-        )
-        .cors(cors -> cors
-            .configurationSource(corsConfigurationSource())
-        )
-        .sessionManagement(session -> session
-        		.sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
-        );
+//    	http
+//        .csrf(csrf -> csrf.disable()) // CSRF 비활성화
+//        .authorizeHttpRequests(auth -> auth
+//            .requestMatchers("/user/auth/login").permitAll() // 로그인 요청 허용
+//            .anyRequest().permitAll() // 나머지 모든 요청 허용
+//        )
+//        .cors(cors -> cors
+//            .configurationSource(corsConfigurationSource())
+//        )
+//        .sessionManagement(session -> session
+//        		.sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+//        );
+        http
+                .csrf(csrf -> csrf.disable()) // CSRF 비활성화
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/user/auth/login").permitAll() // 로그인 요청 허용
+                        .requestMatchers("/ws/**").permitAll() // WebSocket 엔드포인트 허용
+                        .anyRequest().authenticated() // 나머지 요청은 인증 필요
+                )
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS 설정
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.ALWAYS) // 세션 설정
+                );
 
-    return http.build();
+        return http.build();
     }
 
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-System.out.println("BCryptPasswordEncoder Bean 등록!");
+        System.out.println("BCryptPasswordEncoder Bean 등록!");
     	    return new BCryptPasswordEncoder();
     }
+
+
+
+
+
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
