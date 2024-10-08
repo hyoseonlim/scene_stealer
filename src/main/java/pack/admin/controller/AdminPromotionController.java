@@ -3,16 +3,21 @@ package pack.admin.controller;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.util.Streamable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -136,13 +141,27 @@ public class AdminPromotionController {
 		}
 	}
 	
-	// 쿠폰 목록
+//	// 쿠폰 목록
+//	@GetMapping("/admin/coupons")
+//	public Page<CouponDto> getAllCoupons(Pageable pageable) {
+//		pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "no"));
+//		Page<Coupon> couponPage = couponsRepo.findAll(pageable);
+//		return couponPage.map(Coupon::toDto);
+//	}
+	 // 쿠폰 목록 조회 - 품절 제외 옵션 추가@GetMapping("/admin/coupons")
 	@GetMapping("/admin/coupons")
-	public Page<CouponDto> getAllCoupons(Pageable pageable) {
-		pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "no"));
-		Page<Coupon> couponPage = couponsRepo.findAll(pageable);
-		return couponPage.map(Coupon::toDto);
+	public Page<CouponDto> getAllCoupons(@PageableDefault(sort = "no", direction = Sort.Direction.DESC) Pageable pageable) {
+	    Page<Coupon> couponPage = couponsRepo.findAll(pageable); // 모든 쿠폰 조회
+	    return couponPage.map(Coupon::toDto);
 	}
+
+	@GetMapping("/admin/coupons/active")
+	public Page<CouponDto> getActiveCoupons(@PageableDefault(sort = "no", direction = Sort.Direction.DESC) Pageable pageable) {
+	    Date currentDate = new Date(); // 현재 날짜 가져오기
+	    Page<Coupon> couponPage = couponsRepo.findByExpiryDateAfterOrExpiryDateIsNull(currentDate, pageable); // 만료되지 않은 쿠폰 조회
+	    return couponPage.map(Coupon::toDto);
+	}
+
 	
 	// 팝업 목록
 	@GetMapping("/admin/popups")
