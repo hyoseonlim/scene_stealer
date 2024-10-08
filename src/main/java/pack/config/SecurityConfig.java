@@ -46,7 +46,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/user/auth/login").permitAll() // 로그인 요청 허용
                         .requestMatchers("/ws/**").permitAll() // WebSocket 엔드포인트 허용
-                        .anyRequest().authenticated() // 나머지 요청은 인증 필요
+                        .anyRequest().permitAll() // 나머지 모든 요청 허용
                 )
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS 설정
                 .sessionManagement(session -> session
