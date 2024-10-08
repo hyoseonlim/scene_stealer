@@ -88,27 +88,15 @@ public class ShopController {
 //		return ResponseEntity.ok(productDtoPage);
 //	}
 	@GetMapping("/list/category/{category}")
-	public ResponseEntity<Page<ProductDto>> getProductsByCategory(@PathVariable("category") String category, Pageable pageable) {
-	    Page<ProductDto> productDtoPage;
+	   public ResponseEntity<Page<ProductDto>> getProductsByCategory(@PathVariable("category") String category,
+	         Pageable pageable) {
 
-<<<<<<< Updated upstream
-		// Product 엔티티를 ProductDto로 변환
-		Page<ProductDto> productDtoPage = productsRepository.findByCategoryAndAvailableIsTrueOrderByNoDesc(category, pageable)
-				.map(Product::toDto);
-		// 변환된 Page<ProductDto>를 반환
-		return ResponseEntity.ok(productDtoPage);
-=======
-	    // '전체' 카테고리를 선택하면 모든 상품을 반환
-	    if ("전체".equalsIgnoreCase(category)) {
-	        productDtoPage = productsRepository.findAll(pageable).map(Product::toDto);
-	    } else {
-	        // 선택한 카테고리에 맞는 상품만 반환
-	        productDtoPage = productsRepository.findByCategoryOrderByNoDesc(category, pageable).map(Product::toDto);
-	    }
-
-	    return ResponseEntity.ok(productDtoPage);
->>>>>>> Stashed changes
-	}
+	      // Product 엔티티를 ProductDto로 변환
+	      Page<ProductDto> productDtoPage = productsRepository.findByCategoryAndAvailableIsTrueOrderByNoDesc(category, pageable)
+	            .map(Product::toDto);
+	      // 변환된 Page<ProductDto>를 반환
+	      return ResponseEntity.ok(productDtoPage);
+	   }
 
 
 
