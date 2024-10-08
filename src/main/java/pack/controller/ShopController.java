@@ -335,11 +335,13 @@ public class ShopController {
 	}
 
 	// 리뷰 써는지 체크
-	@GetMapping("/review/check/{userNo}/{productNo}")
-	public ResponseEntity<Boolean> checkReview(@PathVariable("userNo") int userNo,
-			@PathVariable("productNo") int productNo) {
-		boolean hasReviewed = smodel.userReviewed(userNo, productNo);
-		return ResponseEntity.ok(hasReviewed);
+	@GetMapping("/review/check/{userNo}/{orderProductNo}")
+	public Map<String, Boolean> checkReview(@PathVariable("userNo") int userNo,
+											   @PathVariable("orderProductNo") int orderProductNo) {
+		Map<String, Boolean> result = new HashMap<>();
+		boolean hasReviewed = smodel.userReviewed(userNo, orderProductNo);
+		result.put("result", hasReviewed);
+		return result;
 	}
 
 }

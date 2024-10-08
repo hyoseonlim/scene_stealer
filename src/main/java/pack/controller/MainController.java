@@ -103,9 +103,10 @@ public class MainController {
 	}
 
 	@GetMapping("/main/popupSet/{userNo}")
-	public Map<String, Boolean> popupCookie(HttpServletResponse response, @PathVariable("userNo") int userNo) {
+	public Map<String, Boolean> popupCookie(HttpServletResponse response, @PathVariable("userNo") String userNo) {
 		Map<String, Boolean> result = new HashMap<String, Boolean>();
 		boolean b = false;
+
 		try {
 			Cookie cookie = new Cookie(userNo + "_popup", "DO_NOT_SHOW_POPUP");
 			cookie.setMaxAge(24 * 60 * 60); // 유효기간 하루 (초 단위)
