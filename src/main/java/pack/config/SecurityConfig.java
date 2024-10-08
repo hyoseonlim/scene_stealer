@@ -29,18 +29,6 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//    	http
-//        .csrf(csrf -> csrf.disable()) // CSRF 비활성화
-//        .authorizeHttpRequests(auth -> auth
-//            .requestMatchers("/user/auth/login").permitAll() // 로그인 요청 허용
-//            .anyRequest().permitAll() // 나머지 모든 요청 허용
-//        )
-//        .cors(cors -> cors
-//            .configurationSource(corsConfigurationSource())
-//        )
-//        .sessionManagement(session -> session
-//        		.sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
-//        );
 
         http.csrf(csrf -> csrf.disable()) // CSRF 비활성화
                 .authorizeHttpRequests(auth -> auth.requestMatchers("/user/auth/login").permitAll() // 로그인 요청 허용
@@ -63,16 +51,7 @@ public class SecurityConfig {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-//        CorsConfiguration configuration = new CorsConfiguration();
-//        configuration.setAllowedOrigins(List.of("http://scenestealer.kr"));
-//        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-//        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
-//        configuration.setAllowCredentials(true);
-//
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", configuration);
-//
-//        return source;
+
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("http://scenestealer.kr")); // 올바른 도메인 설정
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // POST 허용
