@@ -93,12 +93,12 @@ public class AuthModel implements UserDetailsService {
                 .build();
         curps.save(couponUser);
 
-        // 알림 생성
-        Alert alert = new Alert();
-        alert.setCategory("회원가입");
-        alert.setContent("환영합니다! 회원가입을 축하합니다.");
+        // 쿠폰 발급 알림 전송
+        Alert alert  = new Alert();
+        alert.setCategory("프로모션");
+        alert.setContent("WELCOME TO SCENE STEALER WORLD! 쿠폰 선물 드려요");
         alert.setUser(user);
-        alert.setPath("/user/mypage");
+        alert.setPath("/user/mypage/coupon");
         alertRepository.save(alert);
 
         // 환영 이메일 발송
